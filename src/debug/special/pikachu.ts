@@ -1,9 +1,7 @@
-import { __window__ } from "@debug/__";
-import { EnchantedSprite } from "@game/core/enchanted-classes";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
-import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
+import gsap from "gsap";
 
 const PIKACHU_TEXTURE = Texture.from(`https://upload.wikimedia.org/wikipedia/en/a/a6/Pok%C3%A9mon_Pikachu_art.png`);
 
@@ -12,6 +10,10 @@ type PickByValueType<T, U> = {
 };
 
 type Mods = Partial<PickByValueType<Sprite, number | string | boolean> & { scale: number; anchor: number }>;
+
+const __window__ = window as any;
+
+console.log(`PIkACHU`)
 
 export function __createPikachu(mods: Mods = {}) {
   let scale = 1;
@@ -26,11 +28,12 @@ export function __createPikachu(mods: Mods = {}) {
     delete mods.anchor;
   }
 
-  const pikachu = new EnchantedSprite(PIKACHU_TEXTURE);
+  const pikachu = new Sprite(PIKACHU_TEXTURE);
   pikachu.scale.set(scale);
   pikachu.anchor.set(anchor);
 
-  const tweener = new TemporaryTweeener(pikachu);
+  // const tweener = new TemporaryTweeener(pikachu);
+  const tweener = gsap;
 
   const playShowAnimation = () => {
     return tweener.from(pikachu, {

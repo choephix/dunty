@@ -1,55 +1,24 @@
 {
+  "include": ["../src", "../vite.config.ts"],
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
     "declaration": true,
-    "outDir": "./build-ts",
-
-    "strict": true,
-
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "strictNullChecks": true,
-    "exactOptionalPropertyTypes": false,
-    //// UNCOMMEND FOR PRODUCTION LATER ////
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": false,
-
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-
-
-    // "baseUrl": "src",
-    // "paths": {
-      //   "@client/*": ["./client/*"],
-      //   "@debug/*": ["./debug/*"],
-      //   "@sdk/*": ["./sdk/*"],
-      //   "@sdk-pixi/*": ["./sdk-pixi/*"],
-      //   "@sdk-ui/*": ["./sdk-ui/*"],
-      // },
-    "baseUrl": "..",
-    "paths": {
-      "@*": [
-        "src/*"
-      ]
-    },
-
-    "types": [
-      "vite/client"
-    ],
-
-    "moduleResolution": "Node",
-    "isolatedModules": true,
-    "noEmit": true,
-    "allowJs": true,
-
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "outDir": "dist",
     "sourceMap": true,
-    "inlineSources": true,
-    "sourceRoot": "/"
-  },
-  "include": ["src", "vite.config.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts", "dist", "build"]
+    "strict": true,
+    "target": "es2018",
+
+    "esModuleInterop": true,
+    "allowJs": true,
+    "checkJs": true,
+    "jsx": "react-jsx",
+    "lib": ["dom", "es2018"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["vite/client"]
+  }
 }
