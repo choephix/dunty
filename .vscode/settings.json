@@ -1,0 +1,11 @@
+{
+  "editor.tabSize": 2,
+  "prettier.configPath": "./.prettierrc",
+  "prettier.tabWidth": 2,
+  "prettier.semi": true,
+  "prettier.quoteProps": "consistent",
+  "prettier.singleQuote": false,
+  "prettier.arrowParens": "avoid",
+  "prettier.bracketSpacing": true,
+  "prettier.trailingComma": "es5"
+}

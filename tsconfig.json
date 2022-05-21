@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "declaration": true,
+    "outDir": "./build-ts",
+
+    "strict": true,
+
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strictNullChecks": true,
+    "exactOptionalPropertyTypes": false,
+    //// UNCOMMEND FOR PRODUCTION LATER ////
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": false,
+
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+
+    "baseUrl": "src",
+    "paths": {
+      "@*": ["./*"]
+    },
+
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts", "dist", "build"]
+}
