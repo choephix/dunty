@@ -22,20 +22,20 @@
     "esModuleInterop": true,
 
 
-    "baseUrl": "src",
-    "paths": {
-        // "@client/*": ["./client/*"],
-        "@debug/*": ["debug/*"],
-        // "@sdk/*": ["./sdk/*"],
-        // "@sdk-pixi/*": ["./sdk-pixi/*"],
-        // "@sdk-ui/*": ["./sdk-ui/*"],
-      },
-    // "baseUrl": ".",
+    // "baseUrl": "src",
     // "paths": {
-    //   "@*": [
-    //     "src/*"
-    //   ]
-    // },
+      //   "@client/*": ["./client/*"],
+      //   "@debug/*": ["./debug/*"],
+      //   "@sdk/*": ["./sdk/*"],
+      //   "@sdk-pixi/*": ["./sdk-pixi/*"],
+      //   "@sdk-ui/*": ["./sdk-ui/*"],
+      // },
+    "baseUrl": "..",
+    "paths": {
+      "@*": [
+        "src/*"
+      ]
+    },
 
     "types": [
       "vite/client"

@@ -2,9 +2,9 @@
   "name": "dunty",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite src/client",
-    "build": "tsc && vite build src/client",
-    "preview": "vite preview src/client"
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@eosdacio/ual-wax": "^1.5.1",
@@ -102,6 +102,7 @@
     "typescript": "^4.6.4",
     "universal-authenticator-library": "^0.3.0",
     "vite": "^2.9.9",
+    "vite-tsconfig-paths": "^3.4.1",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.9.0"
