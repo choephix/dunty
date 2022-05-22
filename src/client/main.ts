@@ -6,6 +6,7 @@ import { VCombatStage } from "@client/display/VCombatStage";
 import { CombatSide as CombatGroup, Game } from "./game/game";
 import { VCombatant } from "./display/VCombatant";
 import { VCard } from "./display/VCard";
+import { GameController } from "./game/game.controller";
 
 export async function main(app: Application) {
   await nextFrame();
@@ -16,16 +17,14 @@ export async function main(app: Application) {
   const container = new VCombatStage();
   app.stage.addChild(container);
 
-  container.alpha  = 0.5
-
   function drawSide(state: CombatGroup, leftSide: boolean) {
     const sideMul = leftSide ? -1 : 1;
-    const firstUnitPosition = container.getFractionalPosition(0.5 + sideMul * .2, 0.5);
+    const firstUnitPosition = container.getFractionalPosition(0.5 + sideMul * 0.2, 0.5);
     for (const [index, char] of state.combatants.entries()) {
       const unit = new VCombatant(char);
       unit.setRightSide(leftSide);
       unit.position.set(firstUnitPosition.x + sideMul * index * 100, firstUnitPosition.y - index * 320);
-      unit.scale.set(1.1 - .1 * index);
+      unit.scale.set(1.1 - 0.1 * index);
       unit.zIndex = 100 - index;
       container.addChild(unit);
       container.sortChildren();
@@ -35,10 +34,16 @@ export async function main(app: Application) {
   drawSide(game.sideA, true);
   drawSide(game.sideB, false);
 
-  const handOrigin = container.getFractionalPosition(0.5, 0.9);
-  for (const card of game.sideA.hand) {
-    const vcard = new VCard(card);
+  GameController.drawCards(5, game.sideA);
 
-    vcard.position.set(handOrigin.x, handOrigin.y - 100);
+  const handOrigin = container.getFractionalPosition(0.5, 0.9);
+  for (const [index, card] of game.sideA.hand.entries()) {
+    const vcard = new VCard(card);
+    
+    const xmul = index - (game.sideA.hand.length - 1) / 2;
+    const delta = Math.min(200, 0.9 * container.designWidth / game.sideA.hand.length);
+    vcard.position.set(handOrigin.x + delta * xmul, handOrigin.y - 100);
+    vcard.scale.set(0.4);
+    container.addChild(vcard);
   }
 }

@@ -24,5 +24,5 @@ export function enchantInstance<T extends EnchantableInstance>(target: T) {
     },
   });
 
-  return enchantedInstance as (Container & T & typeof enchantedInstance);
+  return enchantedInstance as Container & T & typeof enchantedInstance;
 }

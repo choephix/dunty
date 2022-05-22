@@ -1,6 +1,8 @@
 import { GameSingletons } from "@client";
+import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
+import { TilingSprite } from "@pixi/sprite-tiling";
 
 const T_BACKDROP = `https://public.cx/dunty/bg/gb60.jpg`;
 
@@ -10,23 +12,40 @@ const DESIGN_SPECS = {
 };
 
 export class VCombatStage extends Container {
+  readonly designWidth = DESIGN_SPECS.width;
+  readonly designHeight = DESIGN_SPECS.height;
+
   readonly backdrop;
+  readonly ln;
 
   constructor() {
     super();
 
     this.backdrop = Sprite.from(T_BACKDROP);
     this.addChild(this.backdrop);
+
+    const lnTextureId = "https://public.cx/mock/ln2.jpg";
+    this.ln = TilingSprite.from(lnTextureId, { width: this.designWidth, height: this.designHeight });
+    // this.ln.blendMode = BLEND_MODES.ADD;
+    this.ln.blendMode = BLEND_MODES.SUBTRACT;
+    this.ln.tint = 0xf03030;
+    this.ln.scale.y = 2;
+    this.ln.tileScale.y = 4;
+    this.addChild(this.ln);
+
+    this.ln.visible = false;
   }
 
   onEnterFrame() {
     const app = GameSingletons.getPixiApplicaiton();
-    const SCALE = Math.min(app.screen.width / DESIGN_SPECS.width, app.screen.height / DESIGN_SPECS.height);
+    const SCALE = Math.min(app.screen.width / this.designWidth, app.screen.height / this.designHeight);
     this.scale.set(SCALE);
     this.position.set(
-      0.5 * (app.screen.width - DESIGN_SPECS.width * SCALE),
-      0.5 * (app.screen.height - DESIGN_SPECS.height * SCALE)
+      0.5 * (app.screen.width - this.designWidth * SCALE),
+      0.5 * (app.screen.height - this.designHeight * SCALE)
     );
+
+    this.ln.tilePosition.y -= 40;
   }
 
   // addChildAtFractionalPosition(child: Sprite, x: number, y: number) {
@@ -35,6 +54,6 @@ export class VCombatStage extends Container {
   // }
 
   getFractionalPosition(x: number, y: number) {
-    return { x: x * DESIGN_SPECS.width, y: y * DESIGN_SPECS.height };
+    return { x: x * this.designWidth, y: y * this.designHeight };
   }
 }

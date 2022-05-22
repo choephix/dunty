@@ -1,5 +1,4 @@
 import { __window__ } from "@debug/__";
-import { GameContext } from "@game/app/app";
 import { Ease } from "@sdk/time/Ease";
 import { createSimpleTicker } from "@sdk/time/SimpleTicker";
 import { createSimpleTweener } from "@sdk/time/SimpleTweener";

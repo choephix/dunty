@@ -56,7 +56,7 @@ export function deepEquals(a: JsonValue, b: JsonValue): boolean {
   return JSON.stringify(a) == JSON.stringify(b);
 }
 
-export function deepCopy<T extends JsonValue>(a: T): T {
+export function deepCopy<T extends {} | any[]>(a: T): T {
   return JSON.parse(JSON.stringify(a));
 }
 
@@ -100,7 +100,7 @@ export function map<T extends {}>(obj: T, fn: <K extends keyof T>(key: K, value:
   return result;
 }
 
-export function *iterateObjectProperties<T extends {}>(obj: T) {
+export function* iterateObjectProperties<T extends {}>(obj: T) {
   for (const [index, [key, value]] of Object.entries(obj).entries()) {
     yield [key as keyof T, value as T[keyof T], index] as const;
   }

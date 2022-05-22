@@ -13,8 +13,12 @@ export function destroySafely(
   target: DisplayObject,
   { children = true, shouldDeleteProperty = defaultShouldDeleteProperty }: Partial<DestroySafelyOptions> = {}
 ) {
-  if (!target.destroyed && target.destroy) {
-    target.destroy({ children });
+  try {
+    if (!target.destroyed && target.destroy) {
+      target.destroy({ children });
+    }
+  } catch (error) {
+    console.error(error);
   }
 
   //// Clean up any possible dangling refs

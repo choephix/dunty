@@ -12,8 +12,8 @@ export class SpriteWithText extends Sprite {
   public readonly labelAnchor = new Point(0.5, 0.5);
   public label: Text | null = null;
 
-  constructor(textureId: string, text: string = "", style: Partial<ITextStyle> = {}) {
-    super(Texture.from(textureId));
+  constructor(textureId?: string, text: string = "", style: Partial<ITextStyle> = {}) {
+    super(textureId ? Texture.from(textureId) : undefined);
 
     this.setText(text, style);
 
@@ -21,7 +21,7 @@ export class SpriteWithText extends Sprite {
     this.anchor.cb = () => {
       originalAnchorCb.call(this);
       this.updateLabelPosition();
-    }
+    };
   }
 
   public setText(text: string | null, style: Partial<ITextStyle> = {}) {

@@ -1,11 +1,12 @@
 import { GameContext } from "@game/app/app";
+import { GameSingletons } from "@game/app/GameSingletons";
 import { Texture } from "@pixi/core";
 import { ParticleContainer } from "@pixi/particle-container";
 import { Emitter, EmitterConfigV3 } from "@pixi/particle-emitter";
 import { Rectangle as EmitterSpawnShapeRectangle } from "@pixi/particle-emitter/lib/behaviors/shapes/Rectangle";
 
-export function makeParticlesForSnowyWeather(context: GameContext) {
-  const { app, assets, mapData, ticker, animator, viewport, viewSize } = context;
+export function makeParticlesForSnowyWeather() {
+  const { app, assets, mapData, ticker, animator, viewport, viewSize } = GameSingletons.getGameContext();
 
   const emitterContainer = new ParticleContainer(1000, {
     scale: true,

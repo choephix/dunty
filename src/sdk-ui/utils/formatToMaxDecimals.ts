@@ -7,7 +7,7 @@ export function formatToMaxDecimals(
   maxDecimals: number = 1,
   groupThousands: boolean = true
 ): string {
-  if (isNaN(+value)) return "--";
+  if (isNaN(+value)) return typeof value === "string" ? value : "--";
   if (!isFinite(+value)) return "--";
 
   const str = typeof value === "number" ? value.toFixed(maxDecimals) : value;

@@ -9,12 +9,11 @@ export function createObservableFunction<T extends (...args: any[]) => unknown =
   const $this = this ?? null;
 
   const observableFunction = (...args: Parameters<T>) => {
-    if (result.enabled && callbacksLen) {
-      const _cbs = [...callbacks];
-      for (let i = 0; i < callbacksLen; i++) {
-        _cbs[i].apply($this, args);
-      }
-    } else {
+    if (!result.enabled) return;
+    if (!callbacksLen) return;
+    const _cbs = [...callbacks];
+    for (let i = 0; i < callbacksLen; i++) {
+      _cbs[i].apply($this, args);
     }
   };
 

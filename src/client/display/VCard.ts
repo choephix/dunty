@@ -14,14 +14,14 @@ export class VCard extends Container {
   }
 
   addBackground() {
-    const sprite = Sprite.from("https://public.cx/public/mock/cards/front-unit-mida.png");
+    const sprite = Sprite.from("https://public.cx/mock/cards/front-unit-mida.png");
     sprite.anchor.set(0.5);
     this.addChild(sprite);
     return sprite;
   }
 
   addArt() {
-    const sprite = Sprite.from("https://public.cx/public/mock/cards/skull-straight-9.png");
+    const sprite = Sprite.from("https://public.cx/mock/cards/skull-straight-9.png");
     sprite.anchor.set(0.5);
     this.addChild(sprite);
     return sprite;

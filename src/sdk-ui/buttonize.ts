@@ -1,7 +1,6 @@
 import { DisplayObject, Container } from "@pixi/display";
 import { InteractionData, InteractionEvent } from "@pixi/interaction";
 import { EventBus } from "@sdk/core/EventBus";
-import { modifyInstanceOrConstructor } from "../sdk-pixi/core/modifyInstanceOrConstructor";
 
 export class ObservableValue<T> {
   private _value: T;
@@ -29,7 +28,7 @@ export class ObservableValue<T> {
 
 type Buttonizable = DisplayObject | Container;
 
-export function buttonizeInstance<T extends Buttonizable, TModifications extends Record<string, any>>(
+export function buttonizeInstance<T extends Buttonizable, TModifications extends Record<string, any> = {}>(
   target: T,
   mods: TModifications = {} as TModifications
 ) {

@@ -1,14 +1,19 @@
 import { DisplayObject } from "@pixi/display";
-import { GlowFilter } from "@pixi/filter-glow";
+import { GlowFilter, GlowFilterOptions } from "@pixi/filter-glow";
 
 export class GlowFilterService {
-  private readonly filter = new GlowFilter({
-    outerStrength: 2.6,
-    distance: 12,
-    color: 0x00ffff,
-  });
+  public readonly filter;
+  private readonly targets;
 
-  private readonly targets = new Set<DisplayObject>();
+  constructor(options?: Partial<GlowFilterOptions>) {
+    this.targets = new Set<DisplayObject>();
+    this.filter = new GlowFilter({
+      outerStrength: 2.6,
+      distance: 12,
+      color: 0x00ffff,
+      ...options,
+    });
+  }
 
   addFilter(sprite: DisplayObject) {
     this.targets.add(sprite);
@@ -24,7 +29,7 @@ export class GlowFilterService {
 
   removeFrom(sprite: DisplayObject) {
     this.targets.delete(sprite);
-    
+
     if (sprite.filters == null) {
       return;
     }

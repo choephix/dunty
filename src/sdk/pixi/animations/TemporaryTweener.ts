@@ -26,6 +26,11 @@ export class TemporaryTweeener<T extends DestroyableDisplayObject = DestroyableD
     sustainer.addListener("removed", cleanUp);
   }
 
+  public onEveryFrame(cb: () => void | null) {
+    gsap.ticker.add(cb);
+    this.onDestroyFunctions.add(() => gsap.ticker.remove(cb));
+  }
+
   public registerForDestruction<T extends gsap.core.Animation>(tween: T): T {
     this.onSustainerDestroyed(() => tween.kill());
     return tween;

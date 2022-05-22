@@ -9,6 +9,9 @@ Renderer.registerPlugin("interaction", InteractionManager);
 import { BatchRenderer } from "@pixi/core";
 Renderer.registerPlugin("batch", BatchRenderer);
 
+import { TilingSpriteRenderer } from "@pixi/sprite-tiling";
+Renderer.registerPlugin("tilingSprite", TilingSpriteRenderer);
+
 import { AppLoaderPlugin, Loader } from "@pixi/loaders";
 import { SpritesheetLoader } from "@pixi/spritesheet";
 Application.registerPlugin(AppLoaderPlugin);

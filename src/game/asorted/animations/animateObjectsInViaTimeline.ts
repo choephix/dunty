@@ -1,24 +1,62 @@
 import type { DisplayObject } from "@pixi/display";
 import type { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
-import type { gsap } from "gsap/gsap-core";
 
-export function animateObjectsInViaTimeline(
-  objects: [target: DisplayObject | undefined | null, vars: gsap.TweenVars, playHeadAdvance?: number][],
+type StepParams =
+  | [target: DisplayObject | undefined | null, vars: gsap.TweenVars, playHeadAdvance?: number]
+  | [fn: Function | undefined, this: any, playHeadAdvance?: number];
+
+export async function animateObjectsInViaTimeline(
+  objects: StepParams[],
   tweeener: TemporaryTweeener,
-  delay: number
+  delay: number = 0
 ) {
   const tl = tweeener.createTimeline();
 
-  objects.forEach(([object]) => object && (object.visible = false));
+  objects.forEach(([object]) => {
+    if (object && "visible" in object) {
+      object.visible = false;
+    }
+  });
   tl.delay(delay);
 
   let playHead = 0;
   for (const [object, vars, playHeadAdvance] of objects) {
     if (!object) continue;
+
     playHead += playHeadAdvance || 0;
-    tl.call(() => void (object.visible = true), undefined, playHead);
-    tl.from(object, vars, playHead);
+
+    if (typeof object === "function") {
+      tl.call(() => object.call(vars || null), undefined, playHead);
+    } else {
+      tl.call(() => void (object.visible = true), undefined, playHead);
+      tl.from(object, vars, playHead);
+    }
   }
 
-  return tl.play();
+  return await tl.play();
+}
+
+export async function animateObjectsOutViaTimeline(
+  objects: StepParams[],
+  tweeener: TemporaryTweeener,
+  delay: number = 0
+) {
+  const tl = tweeener.createTimeline();
+
+  tl.delay(delay);
+
+  let playHead = 0;
+  for (const [object, vars, playHeadAdvance] of objects) {
+    if (!object) continue;
+
+    playHead += playHeadAdvance || 0;
+
+    if (typeof object === "function") {
+      tl.call(() => object.call(vars || null), undefined, playHead);
+    } else {
+      tl.to(object, vars, playHead).then(() => void (object.visible = false));
+    }
+  }
+
+  return await tl.play();
 }
