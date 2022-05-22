@@ -13,8 +13,6 @@ type Mods = Partial<PickByValueType<Sprite, number | string | boolean> & { scale
 
 const __window__ = window as any;
 
-console.log(`PIkACHU`)
-
 export function __createPikachu(mods: Mods = {}) {
   let scale = 1;
   if (mods.scale) {

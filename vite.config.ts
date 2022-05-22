@@ -14,11 +14,6 @@ const alias = getDirectories("./src").map(dir => {
   };
 });
 
-console.log({ alias });
-
-console.log(`right`);
-console.log(path.resolve(__dirname, "./src/"));
-
 export default defineConfig({
   root: "src/client",
   resolve: { alias },

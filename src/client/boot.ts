@@ -1,5 +1,5 @@
-import { Renderer } from "@pixi/core";
 import { Application, IApplicationOptions } from "@pixi/app";
+import { Renderer } from "@pixi/core";
 
 import "@pixi/events";
 
@@ -9,14 +9,13 @@ Renderer.registerPlugin("interaction", InteractionManager);
 import { BatchRenderer } from "@pixi/core";
 Renderer.registerPlugin("batch", BatchRenderer);
 
-import { AppLoaderPlugin } from "@pixi/loaders";
-Application.registerPlugin(AppLoaderPlugin);
-import { Loader } from "@pixi/loaders";
+import { AppLoaderPlugin, Loader } from "@pixi/loaders";
 import { SpritesheetLoader } from "@pixi/spritesheet";
+Application.registerPlugin(AppLoaderPlugin);
 Loader.registerPlugin(SpritesheetLoader);
 
-import { Ticker } from "@pixi/ticker";
 import "@pixi/math-extras";
+import { Ticker } from "@pixi/ticker";
 
 import { skipHello } from "@pixi/utils";
 

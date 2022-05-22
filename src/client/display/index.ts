@@ -3,7 +3,8 @@ import { Texture } from "@pixi/core";
 import { Combatant } from "../game/game";
 import { Container } from "@pixi/display";
 
-const T_BACKDROP = `https://public.cx/dunty/bg2.png`;
+// const T_BACKDROP = `https://public.cx/dunty/gb01.png`;
+const T_BACKDROP = `https://public.cx/dunty/gb60.jpg`;
 
 export class VCombatStage extends Container {
   readonly backdrop;
