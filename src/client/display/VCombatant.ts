@@ -38,6 +38,6 @@ export class VCombatant extends Container {
 
   setRightSide(rightSide: boolean) {
     this.sprite.scale.x = rightSide ? -1 : 1;
-    this.healthIndicator.position.set(rightSide ? -70 : 70, 150);
+    this.healthIndicator.position.set(rightSide ? -150 : 150, 100);
   }
 }

@@ -24,7 +24,7 @@ export async function main(app: Application) {
     for (const [index, char] of state.combatants.entries()) {
       const unit = new VCombatant(char);
       unit.setRightSide(leftSide);
-      unit.position.set(firstUnitPosition.x + sideMul * index * 100, firstUnitPosition.y - index * 320);
+      unit.position.set(firstUnitPosition.x + sideMul * index * 60, firstUnitPosition.y - index * 240);
       unit.scale.set(1.1 - 0.1 * index);
       unit.zIndex = 100 - index;
       container.addChild(unit);
