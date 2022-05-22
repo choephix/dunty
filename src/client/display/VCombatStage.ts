@@ -4,7 +4,8 @@ import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { TilingSprite } from "@pixi/sprite-tiling";
 
-const T_BACKDROP = `https://public.cx/dunty/bg/gb60.jpg`;
+// const T_BACKDROP = `https://public.cx/dunty/bg-1080x1920/gb60.jpg`;
+const T_BACKDROP = `https://public.cx/dunty/bg-1920x1920/4.jpg`;
 
 const DESIGN_SPECS = {
   width: 1080,
@@ -22,6 +23,8 @@ export class VCombatStage extends Container {
     super();
 
     this.backdrop = Sprite.from(T_BACKDROP);
+    this.backdrop.anchor.set(0.5);
+    this.backdrop.position.set(this.designWidth / 2, this.designHeight / 2);
     this.addChild(this.backdrop);
 
     const lnTextureId = "https://public.cx/mock/ln2.jpg";

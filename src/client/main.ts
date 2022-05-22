@@ -7,6 +7,7 @@ import { CombatSide as CombatGroup, Game } from "./game/game";
 import { VCombatant } from "./display/VCombatant";
 import { VCard } from "./display/VCard";
 import { GameController } from "./game/game.controller";
+import { buttonizeInstance } from "@sdk-ui/buttonize";
 
 export async function main(app: Application) {
   await nextFrame();
@@ -19,7 +20,7 @@ export async function main(app: Application) {
 
   function drawSide(state: CombatGroup, leftSide: boolean) {
     const sideMul = leftSide ? -1 : 1;
-    const firstUnitPosition = container.getFractionalPosition(0.5 + sideMul * 0.2, 0.5);
+    const firstUnitPosition = container.getFractionalPosition(0.5 + sideMul * 0.2, 0.55);
     for (const [index, char] of state.combatants.entries()) {
       const unit = new VCombatant(char);
       unit.setRightSide(leftSide);
@@ -28,6 +29,12 @@ export async function main(app: Application) {
       unit.zIndex = 100 - index;
       container.addChild(unit);
       container.sortChildren();
+
+      const { behavior } = buttonizeInstance(unit);
+      behavior.on({
+        hoverIn: () => container.ln.visible = true,
+        hoverOut: () => container.ln.visible = false,
+      })
     }
   }
 
@@ -36,7 +43,7 @@ export async function main(app: Application) {
 
   GameController.drawCards(5, game.sideA);
 
-  const handOrigin = container.getFractionalPosition(0.5, 0.9);
+  const handOrigin = container.getFractionalPosition(0.5, 0.8);
   for (const [index, card] of game.sideA.hand.entries()) {
     const vcard = new VCard(card);
     

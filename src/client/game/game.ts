@@ -41,15 +41,14 @@ export class CombatSide {
     this.drawPile.push(
       ...range(20).map(() => {
         return getRandomItemFrom<Card>([
-          { emoji: "⚔", atk: 1 },
-          { emoji: "🛡", def: 1 },
+          { type: "atk", emoji: "⚔", value: 1 },
+          { type: "def", emoji: "🛡", value: 1 },
         ]);
       })
     );
   }
 }
 
-const PIKA = `https://upload.wikimedia.org/wikipedia/en/thumb/a/a6/Pok%C3%A9mon_Pikachu_art.png/220px-Pok%C3%A9mon_Pikachu_art.png`;
 export class Combatant {
   // Properties
   characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
@@ -62,6 +61,6 @@ export class Combatant {
 
 export interface Card {
   emoji: string;
-  atk?: number;
-  def?: number;
+  type: string;
+  value?: number;
 }
