@@ -2,11 +2,11 @@ import { __addPikachu } from "@debug/special/pikachu";
 import { __window__ } from "@debug/__window__";
 import { Application } from "@pixi/app";
 import { nextFrame } from "@sdk/utils/promises";
-import { VCombatStage } from "@client/display/VCombatStage";
-import { CombatSide as CombatGroup, Game } from "./game/game";
-import { VCombatant } from "./display/VCombatant";
-import { VCard } from "./display/VCard";
-import { GameController } from "./game/game.controller";
+import { VCombatStage } from "@client/display/entities/VCombatStage";
+import { CombatSide as CombatGroup, Game } from "@client/game/game";
+import { VCombatant } from "@client/display/entities/VCombatant";
+import { VCard } from "@client/display/entities/VCard";
+import { GameController } from "@client/game/game.controller";
 import { buttonizeInstance } from "@sdk-ui/buttonize";
 
 export async function main(app: Application) {

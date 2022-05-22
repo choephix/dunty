@@ -1,7 +1,7 @@
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { Texture } from "@pixi/core";
-import { Combatant } from "../game/game";
+import { Combatant } from "@client/game/game";
 import { Container } from "@pixi/display";
 import { createEnchantedFrameLoop } from "@client/sdk/createEnchantedFrameLoop";
 

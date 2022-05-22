@@ -1,4 +1,4 @@
-import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/VCombatant.textures";
+import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
 

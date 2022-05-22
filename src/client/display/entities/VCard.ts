@@ -5,7 +5,7 @@ import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
-import { Card } from "../game/game";
+import { Card } from "../../game/game";
 
 export class VCard extends Container {
   background;
