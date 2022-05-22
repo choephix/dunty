@@ -1,4 +1,6 @@
-import { getRandomItemFrom, range } from "../sdk/misc";
+import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/VCombatant.textures";
+import { getRandomItemFrom } from "@sdk/helpers/arrays";
+import { range } from "@sdk/utils/range";
 
 function createOnChangeProxy<T extends object>(onPropertyChange: Function, target: T) {
   return new Proxy(target, {
@@ -47,9 +49,11 @@ export class CombatSide {
   }
 }
 
+const PIKA = `https://upload.wikimedia.org/wikipedia/en/thumb/a/a6/Pok%C3%A9mon_Pikachu_art.png/220px-Pok%C3%A9mon_Pikachu_art.png`;
 export class Combatant {
   // Properties
-  textureId: string = `https://upload.wikimedia.org/wikipedia/en/thumb/a/a6/Pok%C3%A9mon_Pikachu_art.png/220px-Pok%C3%A9mon_Pikachu_art.png`;
+  characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
+  textureId: string = `https://public.cx/mock/sugimori/${this.characterId}.png`;
   color: number = ~~(Math.random() * 0xffffff);
 
   // State

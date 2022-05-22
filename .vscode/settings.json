@@ -7,5 +7,18 @@
   "prettier.singleQuote": false,
   "prettier.arrowParens": "avoid",
   "prettier.bracketSpacing": true,
-  "prettier.trailingComma": "es5"
+  "prettier.trailingComma": "es5",
+  "files.refactoring.autoSave": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    "*.jsx": "${capture}.js",
+    "*.tsx": "${capture}.ts",
+    "tsconfig.json": "tsconfig.*.json",
+    "package.json": "package-lock.json, yarn.lock",
+    ".env": ".env, .env.*",
+    "atlas-*.json": "atlas-${capture}.*",
+    "*.ts": "${capture}.*.ts, ${capture}.js",
+    "webpack.js": "webpack.*.js"
+  }
 }
