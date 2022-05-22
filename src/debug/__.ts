@@ -4,11 +4,12 @@ import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
+import { EventEmitter } from "@pixi/utils";
 import { buttonizeInstance } from "@sdk-ui/buttonize";
-import { range } from "@sdk/utils/range";
-import { EventEmitter } from "eventemitter3";
-import { __explore } from "./api/__explore";
 import { makeDraggable } from "./utils/makeDraggable";
+
+import './global-space/assign-misc-classes-to-window';
+import './global-space/assign-pixi-classes-to-window';
 
 export const __var = {} as Record<string, any>;
 export const __fn = {} as Record<string, Function>;
@@ -112,45 +113,3 @@ export const __add = {
   },
 };
 
-type Mutable<T> = {
-  -readonly [P in keyof T]: T[P];
-};
-export const __window__ = Object.assign(
-  window as any as Record<string, any> & Window & Mutable<GameContext>,
-  { __MIDDLE_MOUSE_BUTTON__: false },
-  { __var, __ev, __fn, add: __add, __explore, makeDraggable, ["👁"]: new Array<any>() },
-  { range, Texture, Sprite, Graphics, Text, Container }
-);
-
-// __window__.generateStations = () => {
-//   function getDistance(a:any, b:any) {
-//     const dx = a.x-b.x, dy = a.y-b.y;
-//     return Math.sqrt(dx*dx + dy*dy);
-//   }
-//   const stations = getGameContext().mapData.stations as any[];
-//   const ss = stations.map((s) => {
-//     return {
-//       station_id: s.uid,
-//       rarity: [`common`, `uncommon`, `rare`, `epic`, `legendary`, `mythic`][s.rarityLevel - 1],
-//       region: 'west',
-//       multiplier: s.rarityLevel * 10 + 5 * ~~(Math.random() * 8),
-//       type_rates: getRandomCommodityTypeRates(),
-//       connected_stations: s.links.map(link => {
-//         const otherStation = __window__.mapData.stations[link.assetId] as any;
-//         const distance = getDistance(link.path.pointA, link.path.pointB);
-//         return {
-//           station_id: otherStation.uid,
-//           distance: distance,
-//         };
-//       })
-//     };
-//   });
-//   const longestDist = Math.max(...new Array<any>().concat(...ss.map((s) => s.connected_stations)).map(o => o.distance));
-//   console.log({ longestDist });
-//   new Array<any>().concat(...ss.map(s => s.connected_stations)).forEach(o => o.distance = Math.ceil(o.distance * 80 / longestDist))
-//   return ss;
-// };
-
-// if (__DEBUG__) {
-//   import(`pixi.js`).then(o => __window__.PIXI = o);
-// }
