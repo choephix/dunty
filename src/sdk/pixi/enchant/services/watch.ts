@@ -1,3 +1,5 @@
+import { __window__ } from "@debug/__window__";
+
 type Falsy = false | 0 | "" | null | undefined;
 type Truthy<T> = T extends Falsy ? never : NonNullable<T>;
 
@@ -40,22 +42,49 @@ export function makeWatchService(ticker: ITicker) {
     return ticker.add(performValueCheck);
   }
 
-  function watchArray<T extends readonly unknown[]>(
+  function watchArray<T extends unknown[]>(
     getValues: () => Readonly<T>,
-    onChange: (newValues: T, oldValues: T, changeFlags: { [K in keyof T]: boolean }) => any,
+    onChange: (newValues: Readonly<T>, oldValues: Readonly<T>, changeFlags: { [K in keyof T]: boolean }) => any,
     shouldMakeInitialCall = false
   ) {
-    const prevValues = [...getValues()] as unknown as T;
+    let prevValues = [...getValues()] as T;
     shouldMakeInitialCall && onChange(prevValues, prevValues, new Array(prevValues.length).fill(true) as any);
     const compare = (value: T[number], i: number) => value !== prevValues[i];
     return ticker.add(function observeArrayFunc() {
       const newValues = getValues();
-      if (newValues.some(compare)) {
-        onChange(newValues, prevValues, newValues.map(compare) as any);
-        Object.assign(prevValues, newValues);
+      const len = newValues.length > prevValues.length ? newValues.length : prevValues.length;
+      const changeFlags = new Array(len).fill(false) as any;
+      for (let i = 0; i < len; i++) {
+        changeFlags[i] = compare(newValues[i], i);
+      }
+      if (changeFlags.some(Boolean)) {
+        try {
+          onChange(newValues, prevValues, changeFlags);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          prevValues = [...newValues] as T;
+        }
       }
     });
   }
+
+  // function watchArray<T extends readonly unknown[]>(
+  //   getValues: () => Readonly<T>,
+  //   onChange: (newValues: T, oldValues: T, changeFlags: { [K in keyof T]: boolean }) => any,
+  //   shouldMakeInitialCall = false
+  // ) {
+  //   const prevValues = [...getValues()] as unknown as T;
+  //   shouldMakeInitialCall && onChange(prevValues, prevValues, new Array(prevValues.length).fill(true) as any);
+  //   const compare = (value: T[number], i: number) => value !== prevValues[i];
+  //   return ticker.add(function observeArrayFunc() {
+  //     const newValues = getValues();
+  //     if (newValues.some(compare)) {
+  //       onChange(newValues, prevValues, newValues.map(compare) as any);
+  //       Object.assign(prevValues, newValues);
+  //     }
+  //   });
+  // }
 
   function watchProperties<T extends {}>(
     getValues: () => Readonly<T>,

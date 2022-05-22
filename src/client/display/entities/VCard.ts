@@ -1,7 +1,8 @@
-import { createEnchantedFrameLoop } from "@client/sdk/createEnchantedFrameLoop";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
+import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";
+import { Rectangle } from "@pixi/math";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
@@ -23,8 +24,15 @@ export class VCard extends Container {
 
     this.glow = this.addGlow();
 
-    createAnimatedButtonBehavior(this.background, {
-      onUpdate: ({ hoverProgress }) => {
+    this.hitArea = new Rectangle(
+      -250,
+      -350,
+      500,
+      700
+    )
+
+    createAnimatedButtonBehavior(this, {
+      onUpdate({ hoverProgress }) {
         this.glow.alpha = hoverProgress;
         this.glow.scale.set(2.1 + 0.05 * hoverProgress * hoverProgress);
       }

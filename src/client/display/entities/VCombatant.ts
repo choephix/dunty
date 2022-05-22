@@ -1,9 +1,9 @@
+import { Combatant } from "@client/game/game";
+import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
+import { Texture } from "@pixi/core";
+import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
-import { Texture } from "@pixi/core";
-import { Combatant } from "@client/game/game";
-import { Container } from "@pixi/display";
-import { createEnchantedFrameLoop } from "@client/sdk/createEnchantedFrameLoop";
 
 export class VCombatant extends Container {
   sprite;
@@ -27,9 +27,13 @@ export class VCombatant extends Container {
     this.healthIndicator.anchor.set(0.5);
     this.addChild(this.healthIndicator);
 
-    this.onEnterFrame.watch(
-      () => data.health,
-      health => void (this.healthIndicator.text = `♥${health}`),
+    this.onEnterFrame.watch.array(
+      () => [data.health, data.block],
+      ([health, block]) => {
+        let str = `❤${health}`;
+        if (block) str += ` 🛡${block}`;
+        this.healthIndicator.text = str;
+      },
       true
     );
   }

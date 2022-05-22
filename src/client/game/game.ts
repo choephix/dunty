@@ -24,7 +24,7 @@ export class Game {
   sideB = new CombatSide(3);
 
   constructor(onChange: Function) {
-    return createOnChangeProxy(onChange, this);
+    // return createOnChangeProxy(onChange, this);
   }
 }
 
@@ -43,6 +43,10 @@ export class CombatSide {
         return getRandomItemFrom<Card>([
           { type: "atk", emoji: "⚔", value: 1 },
           { type: "def", emoji: "🛡", value: 1 },
+          { type: "atk", emoji: "⚔", value: 2 },
+          { type: "def", emoji: "🛡", value: 2 },
+          { type: "atk", emoji: "⚔", value: 3 },
+          { type: "def", emoji: "🛡", value: 3 },
         ]);
       })
     );
@@ -56,7 +60,8 @@ export class Combatant {
   color: number = ~~(Math.random() * 0xffffff);
 
   // State
-  health: number = 100;
+  health: number = 10;
+  block: number = 0;
 }
 
 export interface Card {

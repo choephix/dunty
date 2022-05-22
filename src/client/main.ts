@@ -1,13 +1,13 @@
-import { __addPikachu } from "@debug/special/pikachu";
+import { VCombatant } from "@client/display/entities/VCombatant";
+import { VCombatStage } from "@client/display/entities/VCombatStage";
+import { Combatant, CombatSide as CombatGroup, Game } from "@client/game/game";
+import { GameController } from "@client/game/game.controller";
 import { __window__ } from "@debug/__window__";
 import { Application } from "@pixi/app";
-import { nextFrame } from "@sdk/utils/promises";
-import { VCombatStage } from "@client/display/entities/VCombatStage";
-import { CombatSide as CombatGroup, Game } from "@client/game/game";
-import { VCombatant } from "@client/display/entities/VCombatant";
-import { VCard } from "@client/display/entities/VCard";
-import { GameController } from "@client/game/game.controller";
 import { buttonizeInstance } from "@sdk-ui/buttonize";
+import { delay, nextFrame } from "@sdk/utils/promises";
+import { VHand } from "./display/compund/VHand";
+import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 
 export async function main(app: Application) {
   await nextFrame();
@@ -18,6 +18,7 @@ export async function main(app: Application) {
   const container = new VCombatStage();
   app.stage.addChild(container);
 
+  const combatantsDictionary = new Map<Combatant, VCombatant>();
   function drawSide(state: CombatGroup, leftSide: boolean) {
     const sideMul = leftSide ? -1 : 1;
     const firstUnitPosition = container.getFractionalPosition(0.5 + sideMul * 0.2, 0.55);
@@ -30,27 +31,60 @@ export async function main(app: Application) {
       container.addChild(unit);
       container.sortChildren();
 
+      combatantsDictionary.set(char, unit);
+
       const { behavior } = buttonizeInstance(unit);
       behavior.on({
-        hoverIn: () => container.ln.visible = true,
-        hoverOut: () => container.ln.visible = false,
-      })
+        hoverIn: () => (container.ln.visible = true),
+        hoverOut: () => (container.ln.visible = false),
+      });
     }
   }
 
   drawSide(game.sideA, true);
   drawSide(game.sideB, false);
 
-  GameController.drawCards(5, game.sideA);
-
   const handOrigin = container.getFractionalPosition(0.5, 0.8);
-  for (const [index, card] of game.sideA.hand.entries()) {
-    const vcard = new VCard(card);
-    
-    const xmul = index - (game.sideA.hand.length - 1) / 2;
-    const delta = Math.min(200, 0.9 * container.designWidth / game.sideA.hand.length);
-    vcard.position.set(handOrigin.x + delta * xmul, handOrigin.y - 100);
-    vcard.scale.set(0.4);
-    container.addChild(vcard);
+  const hand = new VHand();
+  hand.cardList = game.sideA.hand;
+  hand.position.set(handOrigin.x, handOrigin.y);
+  container.addChild(hand);
+  __window__.hand = hand;
+
+  hand.onCardClick = async card => {
+    const target = game.sideB.combatants[0];
+    game.sideA.hand.splice(game.sideA.hand.indexOf(card), 1);
+
+    target.health -= card.value || 0;
+
+    if (target.health <= 0) {
+      game.sideB.combatants.splice(game.sideB.combatants.indexOf(target), 1);
+
+      const vunit = combatantsDictionary.get(target)!;
+      VCombatantAnimations.die(vunit);
+    }
+
+    if (game.sideA.hand.length === 0) {
+      await delay(0.3);
+      startPlayerTurn();
+    }
+  };
+
+  function startPlayerTurn() {
+    GameController.drawCards(4, game.sideA);
   }
+
+  await delay(0.6);
+  startPlayerTurn();
+
+  // const handOrigin = container.getFractionalPosition(0.5, 0.8);
+  // for (const [index, card] of game.sideA.hand.entries()) {
+  //   const vcard = new VCard(card);
+
+  //   const xmul = index - (game.sideA.hand.length - 1) / 2;
+  //   const delta = Math.min(200, 0.9 * container.designWidth / game.sideA.hand.length);
+  //   vcard.position.set(handOrigin.x + delta * xmul, handOrigin.y - 100);
+  //   vcard.scale.set(0.4);
+  //   container.addChild(vcard);
+  // }
 }
