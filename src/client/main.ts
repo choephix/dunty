@@ -1,14 +1,18 @@
-import { boot } from './boot';
-import { __addPikachu } from '@debug/special/pikachu';
+import { GameSingletons } from "@client";
+import { __addPikachu } from "@debug/special/pikachu";
+import { nextFrame } from "@sdk/utils/promises";
+import { VCombatStage } from "./display";
+import { Game } from "./game/game";
 
-const __window__ = window as any;
+export async function main() {
+  const { app } = GameSingletons.getPixiStuff();
 
-export const app = (__window__.app = boot());
+  await nextFrame();
 
-__addPikachu(app.stage, { x: 500, y: 600 })
+  const game = new Game();
 
-// const app = document.querySelector<HTMLDivElement>('#app')!
-// app.innerHTML = `
-//   <h1>Hello Vite!</h1>
-//   <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-// `
+  const container = new VCombatStage();
+  app.stage.addChild(container);
+
+  __addPikachu(container, { x: 600, y: 600 });
+}

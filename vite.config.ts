@@ -1,18 +1,25 @@
+import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+
+const getDirectories = (source: string) => {
+  const rd = fs.readdirSync(source, { withFileTypes: true });
+  return rd.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
+};
+
+const alias = getDirectories("./src").map(dir => {
+  return {
+    find: `@${dir}`,
+    replacement: path.resolve(__dirname, `./src/${dir}`),
+  };
+});
+
+console.log({ alias });
 
 console.log(`right`);
 console.log(path.resolve(__dirname, "./src/"));
 
 export default defineConfig({
   root: "src/client",
-  // plugins: [tsconfigPaths()],
-  resolve: { alias: [
-    { find: "@debug", replacement: path.resolve(__dirname, "./src/debug") },
-    { find: "@game", replacement: path.resolve(__dirname, "./src/game") },
-    { find: "@sdk", replacement: path.resolve(__dirname, "./src/sdk") },
-    { find: "@sdk-pixi", replacement: path.resolve(__dirname, "./src/sdk-pixi") },
-  ] },
-  // resolve: { alias: [{ find: /@(.+)/ig, replacement: path.resolve(__dirname, "./src/$1") }] },
+  resolve: { alias },
 });

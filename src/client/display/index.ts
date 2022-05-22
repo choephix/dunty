@@ -1,30 +1,33 @@
 import { Sprite } from "@pixi/sprite";
 import { Texture } from "@pixi/core";
 import { Combatant } from "../game/game";
+import { Container } from "@pixi/display";
 
-const T = {
-  PIKACHU: `https://upload.wikimedia.org/wikipedia/en/thumb/a/a6/Pok%C3%A9mon_Pikachu_art.png/220px-Pok%C3%A9mon_Pikachu_art.png`
+const T_BACKDROP = `https://public.cx/dunty/bg2.png`;
+
+export class VCombatStage extends Container {
+  readonly backdrop;
+
+  constructor() {
+    super();
+
+    this.backdrop = Sprite.from(T_BACKDROP);
+    this.addChild(this.backdrop);
+  }
 }
 
-// export class CombatantSprite extends Sprite {
-//   constructor(public readonly opposite: boolean) {
-//     super(Texture.from(T.PIKACHU));
-//     this.anchor.set(0.5);
-//   }
-// }
+export class VCombatant extends Container {
+  sprite;
 
-type Props = {
-  opposite: boolean;
-  data: Combatant
-} & Partial<Sprite>
+  constructor(public readonly data: Combatant) {
+    super();
 
-export const Combatant_ = PixiComponent('Counter', {
-  create: () => {
-    return new Sprite(Texture.from(T.PIKACHU))
-  },
-  applyProps: (instance, oldProps: Props, newProps: Props) => {
-    instance.anchor.set(0.5);
-    instance.scale.x = newProps.opposite ? 1 : -1;
-    Object.assign(instance, newProps);
-  },
-})
+    this.sprite = new Sprite(Texture.from(data.textureId));
+    this.sprite.anchor.set(0.5);
+    this.sprite.tint = data.color;
+  }
+
+  setRightSide(rightSide: boolean) {
+    this.scale.x = rightSide ? -1 : 1;
+  }
+}
