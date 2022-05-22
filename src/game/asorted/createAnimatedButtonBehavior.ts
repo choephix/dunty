@@ -26,6 +26,7 @@ type UpdateProperties = {
   pressProgress: number;
   hoverProgress: number;
   highlightProgress: number;
+  disableProgress: number;
 };
 
 export function createAnimatedButtonBehavior<T extends DisplayObject>(
@@ -41,10 +42,12 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
   const state = {
     isPressed: new ObservableValue(false),
     isHovered: new ObservableValue(false),
+    isDisabled: new ObservableValue(false),
     isHighlighted: new ObservableValue(false),
 
     pressProgress: 0,
     hoverProgress: 0,
+    disableProgress: 0,
     highlightProgress: 0,
   };
 
@@ -60,6 +63,7 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
     const tweeener = new TemporaryTweeener(target);
     const tweenPress = makeTweenFunc("pressProgress", 0.2);
     const tweenHover = makeTweenFunc("hoverProgress", 0.3);
+    const tweenDisabled = makeTweenFunc("disableProgress", 0.4);
     const tweenHightlight = makeTweenFunc("highlightProgress", 0.4);
     tweeener.onEveryFrame(() => {
       if (dirty) onUpdate.call(target, state);
@@ -68,6 +72,7 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
 
     state.isPressed.onChange = value => tweenPress(value ? 1 : 0);
     state.isHovered.onChange = value => tweenHover(value ? 1 : 0);
+    state.isDisabled.onChange = value => tweenDisabled(value ? 1 : 0);
     state.isHighlighted.onChange = value => tweenHightlight(value ? 1 : 0);
 
     target.on("pointerdown", function (e: InteractionEvent) {
@@ -93,8 +98,8 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
   }
 
   if (onClick) {
-    target.on("click", e => onClick(e.data));
-    target.on("tap", e => onClick(e.data));
+    target.on("click", e => !state.isDisabled.value && onClick(e.data));
+    target.on("tap", e => !state.isDisabled.value && onClick(e.data));
   }
 
   return state;

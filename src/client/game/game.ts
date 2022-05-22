@@ -37,7 +37,7 @@ export class CombatSide {
 
   constructor(combatants: number) {
     this.combatants = range(combatants).map(() => new Combatant());
-    this.drawPile.push(...range(20).map(() => Card.generateRandomCard()));
+    this.drawPile.push(...range(200).map(() => Card.generateRandomCard()));
   }
 }
 

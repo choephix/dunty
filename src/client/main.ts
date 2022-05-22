@@ -3,11 +3,13 @@ import { VCombatStage } from "@client/display/entities/VCombatStage";
 import { Combatant, CombatSide as CombatGroup, Game } from "@client/game/game";
 import { GameController } from "@client/game/game.controller";
 import { __window__ } from "@debug/__window__";
+import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { Application } from "@pixi/app";
 import { buttonizeInstance } from "@sdk-ui/buttonize";
 import { delay, nextFrame } from "@sdk/utils/promises";
 import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
+import { EndTurnButton } from "./display/ui/EndTurnButton";
 
 export async function main(app: Application) {
   await nextFrame();
@@ -86,9 +88,30 @@ export async function main(app: Application) {
     }
   };
 
-  function startPlayerTurn() {
-    GameController.drawCards(4, game.sideA);
+  async function startPlayerTurn() {
+    endTurnButtonBehavior.isDisabled.value = true;
+    await GameController.discardHand(game.sideA);
+    await delay(0.3);
+    await GameController.drawCards(4, game.sideA);
+    endTurnButtonBehavior.isDisabled.value = false;
   }
+
+  const endTurnButton = new EndTurnButton();
+  const endTurnButtonBehavior = createAnimatedButtonBehavior(
+    endTurnButton,
+    {
+      onClick: () => {
+        startPlayerTurn();
+      },
+      onUpdate: ({ pressProgress, hoverProgress, disableProgress }) => {
+        endTurnButton.alpha = (1 - disableProgress) * (0.7 + 0.3 * hoverProgress);
+        endTurnButton.pivot.y = -10 * pressProgress;
+      },
+    },
+    true
+  );
+  endTurnButton.position.copyFrom(container.getFractionalPosition(0.5, 0.9));
+  container.addChild(endTurnButton);
 
   await delay(0.6);
   startPlayerTurn();
