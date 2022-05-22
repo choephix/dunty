@@ -52,16 +52,32 @@ export async function main(app: Application) {
   __window__.hand = hand;
 
   hand.onCardClick = async card => {
-    const target = game.sideB.combatants[0];
     game.sideA.hand.splice(game.sideA.hand.indexOf(card), 1);
 
-    target.health -= card.value || 0;
+    if (card.type === "atk") {
+      const target = game.sideB.combatants[0];
 
-    if (target.health <= 0) {
-      game.sideB.combatants.splice(game.sideB.combatants.indexOf(target), 1);
+      let damage = card.value || 0;
+      if (damage < target.block) {
+        target.block -= damage;
+      } else {
+        target.block = 0;
+        damage -= target.block;
+      }
+      target.health -= damage;
 
-      const vunit = combatantsDictionary.get(target)!;
-      VCombatantAnimations.die(vunit);
+      if (target.health <= 0) {
+        game.sideB.combatants.splice(game.sideB.combatants.indexOf(target), 1);
+
+        const vunit = combatantsDictionary.get(target)!;
+        VCombatantAnimations.die(vunit);
+      }
+    }
+
+    if (card.type === "def") {
+      const target = game.sideA.combatants[0];
+
+      target.block += card.value || 0;
     }
 
     if (game.sideA.hand.length === 0) {

@@ -37,19 +37,7 @@ export class CombatSide {
 
   constructor(combatants: number) {
     this.combatants = range(combatants).map(() => new Combatant());
-
-    this.drawPile.push(
-      ...range(20).map(() => {
-        return getRandomItemFrom<Card>([
-          { type: "atk", emoji: "⚔", value: 1 },
-          { type: "def", emoji: "🛡", value: 1 },
-          { type: "atk", emoji: "⚔", value: 2 },
-          { type: "def", emoji: "🛡", value: 2 },
-          { type: "atk", emoji: "⚔", value: 3 },
-          { type: "def", emoji: "🛡", value: 3 },
-        ]);
-      })
-    );
+    this.drawPile.push(...range(20).map(() => Card.generateRandomCard()));
   }
 }
 
@@ -68,4 +56,17 @@ export interface Card {
   emoji: string;
   type: string;
   value?: number;
+}
+
+export module Card {
+  export function generateRandomCard(): Card {
+    return getRandomItemFrom<Card>([
+      { type: "atk", emoji: "⚔", value: 1 },
+      { type: "def", emoji: "🛡", value: 1 },
+      { type: "atk", emoji: "⚔", value: 2 },
+      { type: "def", emoji: "🛡", value: 2 },
+      { type: "atk", emoji: "⚔", value: 3 },
+      { type: "def", emoji: "🛡", value: 3 },
+    ]);
+  }
 }

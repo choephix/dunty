@@ -24,19 +24,21 @@ export class VCard extends Container {
 
     this.glow = this.addGlow();
 
-    this.hitArea = new Rectangle(
-      -250,
-      -350,
-      500,
-      700
-    )
+    this.hitArea = new Rectangle(-250, -350, 500, 700);
 
-    createAnimatedButtonBehavior(this, {
-      onUpdate({ hoverProgress }) {
-        this.glow.alpha = hoverProgress;
-        this.glow.scale.set(2.1 + 0.05 * hoverProgress * hoverProgress);
-      }
-    }, true)
+    createAnimatedButtonBehavior(
+      this,
+      {
+        onUpdate({ hoverProgress }) {
+          this.glow.alpha = hoverProgress;
+          this.glow.scale.set(2.1 + 0.05 * hoverProgress * hoverProgress);
+          this.zIndex = hoverProgress * 1000;
+          this.pivot.y = hoverProgress * hoverProgress * 25;
+          this.scale.set(0.4 + 0.05 * hoverProgress * hoverProgress);
+        },
+      },
+      true
+    );
   }
 
   addBackground() {

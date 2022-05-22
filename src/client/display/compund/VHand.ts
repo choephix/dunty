@@ -18,7 +18,7 @@ export class VHand extends Container {
   constructor() {
     super();
 
-    __window__.foo = 0;
+    this.sortableChildren = true;
 
     this.onEnterFrame.watch.array(
       () => this.cardList,
