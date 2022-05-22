@@ -22,6 +22,7 @@ import { skipHello } from "@pixi/utils";
 import * as PIXI from "@pixi/display";
 import { gsap } from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
+import { callOnEnterFrameRecursively } from "@sdk/pixi/enchant/oef/callOnEnterFrameRecursively";
 
 PixiPlugin.registerPIXI(PIXI);
 gsap.registerPlugin(PixiPlugin);
@@ -54,9 +55,19 @@ export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   parentElement.innerHTML = ``;
   parentElement.appendChild(app.view);
 
+  const onlyIfPageVisible = (callback: () => void) => () => void (document.visibilityState === "visible" && callback());
   const ticker = new Ticker();
-  ticker.add(() => app.render());
   ticker.start();
+  ticker.add(
+    onlyIfPageVisible(() => app.render()),
+    null,
+    -100
+  );
+  ticker.add(
+    onlyIfPageVisible(() => callOnEnterFrameRecursively(app.stage)),
+    null,
+    99
+  );
   app.ticker = ticker;
 
   return app;

@@ -1,4 +1,5 @@
 import { __addPikachu } from "@debug/special/pikachu";
+import { __window__ } from "@debug/__window__";
 import { Application } from "@pixi/app";
 import { nextFrame } from "@sdk/utils/promises";
 import { VCombatStage } from "./display";
@@ -10,11 +11,10 @@ const DESIGN_SPECS = {
 };
 
 export async function main(app: Application) {
-  console.log(`Main initializing...`, app);
-
   await nextFrame();
 
-  const game = new Game();
+  const game = new Game(console.warn);
+  __window__.game = game;
 
   const container = new VCombatStage();
   app.stage.addChild(container);

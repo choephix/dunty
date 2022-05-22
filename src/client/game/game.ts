@@ -1,11 +1,28 @@
 import { getRandomItemFrom, range } from "../sdk/misc";
 
-export class Game {
-  readonly sideA = new CombatSide(1);
-  readonly sideB = new CombatSide(3);
+function createOnChangeProxy<T extends object>(onPropertyChange: Function, target: T) {
+  return new Proxy(target, {
+    get(target: any, property: any): T {
+      const item = target[property];
+      if (item && typeof item === "object") return createOnChangeProxy(onPropertyChange, item);
+      return item;
+    },
+    set(target, property, newValue) {
+      target[property] = newValue;
+      if (newValue instanceof Object) {
+        onPropertyChange.call(target, property, newValue, target);
+      }
+      return true;
+    },
+  });
+}
 
-  constructor() {
-    
+export class Game {
+  sideA = new CombatSide(1);
+  sideB = new CombatSide(3);
+
+  constructor(onChange: Function) {
+    return createOnChangeProxy(onChange, this);
   }
 }
 
