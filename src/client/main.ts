@@ -25,7 +25,9 @@ export async function main(app: Application) {
 export async function startGame(app: Application) {
   await nextFrame();
 
-  game = __window__.game = new Game(console.warn);
+  game = __window__.game = new Game();
+
+  game.start();
 
   const container = new VCombatStage();
   app.stage.addChild(container);
@@ -33,7 +35,7 @@ export async function startGame(app: Application) {
   await container.playShowAnimation();
 
   const combatantsDictionary = new Map<Combatant, VCombatant>();
-  function drawSide(state: CombatGroup, leftSide: boolean) {
+  function composeSide(state: CombatGroup, leftSide: boolean) {
     const sideMul = leftSide ? -1 : 1;
     const firstUnitPosition = container.getFractionalPosition(0.5 + sideMul * 0.2, 0.55);
     for (const [index, char] of state.combatants.entries()) {
@@ -55,8 +57,8 @@ export async function startGame(app: Application) {
     }
   }
 
-  drawSide(game.sideA, true);
-  drawSide(game.sideB, false);
+  composeSide(game.sideA, true);
+  composeSide(game.sideB, false);
 
   const handOrigin = container.getFractionalPosition(0.5, 0.8);
   const hand = new VHand();
@@ -124,6 +126,11 @@ export async function startGame(app: Application) {
 
     game.sideA.onTurnStart();
 
+    for (const foe of game.sideB.combatants) {
+      foe.nextCard = Card.generateRandomEnemyCard();
+      await delay(0.1);
+    }
+
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
     await GameController.drawCards(4, game.sideA);
@@ -144,17 +151,17 @@ export async function startGame(app: Application) {
     const playerCombatant = game.sideA.combatants[0];
     if (playerCombatant && game.sideB.combatants.length) {
       for (const foe of game.sideB.combatants) {
-        await delay(0.2);
-  
-        const card = Card.generateRandomEnemyCard();
+        await delay(0.35);
+
+        const card = foe.nextCard ?? Card.generateRandomEnemyCard();
         const target = card.type === "atk" ? playerCombatant : foe;
         await playCard(card, foe, target);
-  
+
         if (!playerCombatant.alive) break;
       }
-  
+
       if (!game.sideA.combatants[0]?.alive) return;
-  
+
       await delay(0.4);
     }
 
@@ -180,8 +187,9 @@ export async function startGame(app: Application) {
       disableProgress: 1,
     }
   );
-
+  
   await delay(0.6);
+  
   startPlayerTurn();
 
   const onEnterFrame = createEnchantedFrameLoop(container);

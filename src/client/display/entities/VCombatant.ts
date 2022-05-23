@@ -9,6 +9,7 @@ import { VCombatantAnimations } from "./VCombatant.animations";
 export class VCombatant extends Container {
   sprite;
   healthIndicator;
+  intentionIndicator;
 
   constructor(public readonly data: Combatant) {
     super();
@@ -34,7 +35,7 @@ export class VCombatant extends Container {
       ([health, block, retaliation]) => {
         const col = [`❤${health}`];
         if (block > 0) col.unshift(`⛨${block}`);
-        if (retaliation > 0) col.unshift(`🠈${retaliation}`);
+        if (retaliation > 0) col.unshift(`☇${retaliation}`);
         this.healthIndicator.text = col.join("\n");
       },
       true
@@ -50,14 +51,36 @@ export class VCombatant extends Container {
       },
       true
     );
+
+    this.intentionIndicator = new Text("-", {
+      fill: 0xf0f0f0,
+      fontFamily: "Impact, sans-serif",
+      fontSize: 32,
+      stroke: 0x202020,
+      strokeThickness: 5,
+    });
+    this.intentionIndicator.anchor.set(0.5);
+    this.addChild(this.intentionIndicator);
+
+    this.onEnterFrame.watch(
+      () => data.nextCard,
+      nextCard => {
+        this.intentionIndicator.text = (nextCard?.type || '').toUpperCase();
+      },
+      true
+    );
   }
 
   readonly onEnterFrame = createEnchantedFrameLoop(this);
 
   setRightSide(rightSide: boolean) {
     this.sprite.scale.x = rightSide ? -1 : 1;
+    
     this.healthIndicator.position.set(rightSide ? -200 : 200, 140);
     this.healthIndicator.anchor.set(rightSide ? 0 : 1, 1.0);
+
+    this.intentionIndicator.position.set(rightSide ? 200 : -200, -100);
+    this.intentionIndicator.anchor.set(rightSide ? 1 : 0, 1.0);
   }
 
   waitUntilLoaded() {

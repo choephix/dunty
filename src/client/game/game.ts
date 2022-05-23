@@ -3,13 +3,21 @@ import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
 
 export class Game {
-  sideA = new CombatSide(1);
-  sideB = new CombatSide(3);
+  sideA = new CombatSide();
+  sideB = new CombatSide();
 
+  start() {
+    const { sideA, sideB } = this;
 
+    const HEALTH = 3;
 
-  constructor(onChange: Function) {
-    // return createOnChangeProxy(onChange, this);
+    const playerCombatant = new Combatant({ health: HEALTH });
+    sideA.addCombatant(playerCombatant);
+    sideA.drawPile.push(...range(200).map(() => Card.generateRandomCard()));
+
+    for (const _ of range(3)) {
+      sideB.addCombatant(new Combatant({ health: HEALTH }));
+    }
   }
 
   calculateAttackPower(card: Card, attacker?: Combatant, target?: Combatant) {
@@ -48,20 +56,18 @@ export class CombatSide {
   readonly discardPile = new Array<Card>();
   readonly hand = new Array<Card>();
 
-  readonly combatants;
-
-  constructor(combatants: number) {
-    this.combatants = range(combatants).map(() => new Combatant());
-    for (const combatant of this.combatants) combatant.side = this;
-
-    this.drawPile.push(...range(200).map(() => Card.generateRandomCard()));
-  }
+  readonly combatants = new Array<Combatant>();
 
   onTurnStart() {
     for (const unit of this.combatants) {
       unit.status.retaliation = 0;
       unit.status.block = 0;
     }
+  }
+
+  addCombatant(combatant: Combatant) {
+    this.combatants.push(combatant);
+    combatant.side = this;
   }
 }
 
@@ -75,6 +81,8 @@ export class Combatant {
 
   // State
 
+  nextCard: Card | null = null;
+
   strength: number = 1;
   status = {
     health: 1,
@@ -84,6 +92,10 @@ export class Combatant {
 
   get alive() {
     return this.status.health > 0;
+  }
+
+  constructor(initialStatus: Partial<CombatantStatus> = {}) {
+    Object.assign(this.status, initialStatus);
   }
 }
 

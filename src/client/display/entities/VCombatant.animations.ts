@@ -8,7 +8,7 @@ import { delay } from "@sdk/utils/promises";
 function spawnBlobOfLight(parent: Container, tint: number) {
   const fx = spawnSpriteWave(
     "https://public.cx/3/radial-4.png",
-    { pixi: { scale: 2.7 } },
+    { pixi: { scale: 2.7 }, duration: 2 },
     { tint: tint, blendMode: BLEND_MODES.ADD }
   );
   return parent.addChild(fx);
@@ -51,7 +51,7 @@ export module VCombatantAnimations {
       pixi: { alpha: 0.6, pivotX: -direction * 140 },
       repeat: 1,
       yoyo: true,
-      duration: 0.15,
+      duration: 0.10,
       ease: `power2.in`,
     });
   }
@@ -132,7 +132,7 @@ export module VCombatantAnimations {
 
   export async function die(unit: VCombatant) {
     console.log(`${unit.name} is dying`);
-    
+
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
