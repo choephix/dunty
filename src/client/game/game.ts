@@ -54,6 +54,13 @@ export class CombatSide {
 
     this.drawPile.push(...range(200).map(() => Card.generateRandomCard()));
   }
+
+  onTurnStart() {
+    for (const unit of this.combatants) {
+      unit.status.retaliation = 0;
+      unit.block = 0;
+    }
+  }
 }
 
 export interface CombatantStatus {
@@ -103,6 +110,7 @@ export module Card {
   export function generateRandomEnemyCard(): Card {
     return getRandomItemFrom<Card>([
       { type: "atk", value: 1 },
+      { type: "atk", value: 2 },
       { type: "def", value: 1 },
       { type: "func", effect: actor => (actor.status.retaliation += 1) },
     ]);

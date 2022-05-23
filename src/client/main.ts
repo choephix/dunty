@@ -112,9 +112,7 @@ export async function main(app: Application) {
   async function startPlayerTurn() {
     container.ln.visible = false;
 
-    for (const unit of combatantsDictionary.keys()) {
-      unit.status.retaliation = 0;
-    }
+    game.sideA.onTurnStart();
 
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
@@ -130,6 +128,8 @@ export async function main(app: Application) {
     await delay(0.1);
 
     container.ln.visible = true;
+
+    game.sideB.onTurnStart();
 
     for (const foe of game.sideB.combatants) {
       await delay(0.2);
