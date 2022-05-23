@@ -76,7 +76,8 @@ export class VCard extends Container {
       // def: "shield",
       // atk: "bol-laba",
       // atk: "slot-purple",
-      atk: { file: "slot-spike (1)", color: 0xe04040, scale: 1.8 },
+      // atk: { file: "slot-spike (1)", color: 0xe04040, scale: 1.8 },
+      atk: { file: "slot-sword", color: 0xe04040, scale: 1.1 },
       def: { file: "slot-shield (1)", color: 0x70b0f0, scale: 1.8 },
     }[this.data.type]!;
 
@@ -97,7 +98,7 @@ export class VCard extends Container {
       strokeThickness: 8,
     });
     label.anchor.set(0.5);
-    label.scale.set(1.2);
+    label.scale.set(2 / cfg.scale);
     pad.addChild(label);
 
     const getCurrentValue =
