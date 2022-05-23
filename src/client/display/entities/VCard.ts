@@ -67,19 +67,22 @@ export class VCard extends Container {
   }
 
   addValueIndicator() {
-    const padTextureId = {
+    const cfg = {
       // atk: "slot-talons-pink",
       // def: "slot-talons",
-      atk: "bol-laba",
+      // def: "shield",
+      // atk: "bol-laba",
       // atk: "slot-purple",
-      def: "shield",
-    }[this.data.type];
+      atk: { file: "slot-spike (1)", color: 0xe04040, scale: 1.8 },
+      def: { file: "slot-shield (1)", color: 0x70b0f0, scale: 1.8 },
+    }[this.data.type]!;
 
     // const sprite = Sprite.from(`https://public.cx/dunty/asorted/slot.png`);
-    const pad = Sprite.from(`https://public.cx/dunty/asorted/${padTextureId}.png`);
+    const pad = Sprite.from(`https://public.cx/dunty/asorted/${cfg.file}.png`);
     pad.anchor.set(0.5);
-    pad.position.set(0, 280);
-    pad.scale.set(0.4);
+    pad.position.set(0, 300);
+    pad.scale.set(cfg.scale);
+    pad.tint = cfg.color;
     this.addChild(pad);
 
     const label = new Text(``, {
@@ -91,7 +94,7 @@ export class VCard extends Container {
       strokeThickness: 8,
     });
     label.anchor.set(0.5);
-    label.scale.set(6);
+    label.scale.set(1.2);
     pad.addChild(label);
 
     const onEnterFrame = createEnchantedFrameLoop(pad);
