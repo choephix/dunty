@@ -4,8 +4,8 @@ import { Card, Combatant, CombatSide as CombatGroup, Game } from "@client/game/g
 import { GameController } from "@client/game/game.controller";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
+import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Application } from "@pixi/app";
-import { buttonizeInstance } from "@sdk-ui/buttonize";
 import { lerp } from "@sdk/utils/math";
 import { delay, nextFrame } from "@sdk/utils/promises";
 import { VHand } from "./display/compund/VHand";
@@ -17,10 +17,20 @@ export let game: Game;
 export async function main(app: Application) {
   await nextFrame();
 
+  while(true) {
+    await startGame(app);
+  }
+}
+
+export async function startGame(app: Application) {
+  await nextFrame();
+
   game = __window__.game = new Game(console.warn);
 
   const container = new VCombatStage();
   app.stage.addChild(container);
+
+  await container.playShowAnimation();
 
   const combatantsDictionary = new Map<Combatant, VCombatant>();
   function drawSide(state: CombatGroup, leftSide: boolean) {
@@ -166,6 +176,16 @@ export async function main(app: Application) {
 
   await delay(0.6);
   startPlayerTurn();
+
+  const onEnterFrame = createEnchantedFrameLoop(container);
+  app.ticker.add(onEnterFrame);
+  await onEnterFrame.waitUntil(() => !game.sideA.combatants.length || !game.sideB.combatants.length);
+  app.ticker.remove(onEnterFrame);
+
+  await container.playHideAnimation();
+  container.destroy({ children: true });
+
+  console.log("Game over");
 
   // const handOrigin = container.getFractionalPosition(0.5, 0.8);
   // for (const [index, card] of game.sideA.hand.entries()) {

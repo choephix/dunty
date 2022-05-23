@@ -4,6 +4,7 @@ import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { Sprite } from "@pixi/sprite";
 import { TilingSprite } from "@pixi/sprite-tiling";
+import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 
 // const T_BACKDROP = `https://public.cx/dunty/bg-1080x1920/gb60.jpg`;
 const T_BACKDROP = `https://public.cx/dunty/bg-1920x1920/4.jpg`;
@@ -19,6 +20,8 @@ export class VCombatStage extends Container {
 
   readonly backdrop;
   readonly ln;
+
+  readonly tweeener = new TemporaryTweeener(this);
 
   constructor() {
     super();
@@ -65,5 +68,13 @@ export class VCombatStage extends Container {
 
   getFractionalPosition(x: number, y: number) {
     return { x: x * this.designWidth, y: y * this.designHeight };
+  }
+
+  playShowAnimation() {
+    return this.tweeener.from(this, { alpha: 0, duration: 0.5 });
+  }
+
+  playHideAnimation() {
+    return this.tweeener.to(this, { alpha: 0, duration: 2.5 });
   }
 }
