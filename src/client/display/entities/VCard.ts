@@ -83,6 +83,7 @@ export class VCard extends Container {
       // atk: "bol-laba",
       // atk: "slot-purple",
       // atk: { file: "slot-spike (1)", color: 0xe04040, scale: 1.8 },
+      func: { file: "starc", color: 0xf0f0f0, scale: 0.7 },
       atk: { file: "slot-sword", color: 0xe04040, scale: 1.1 },
       def: { file: "slot-shield (1)", color: 0x70b0f0, scale: 1.8 },
     }[this.data.type];
@@ -97,29 +98,31 @@ export class VCard extends Container {
     pad.tint = cfg.color || 0xffffff;
     this.addChild(pad);
 
-    const label = new Text(``, {
-      fill: 0xf0f0f0,
-      fontFamily: "Impact, sans-serif",
-      fontSize: 60,
-      fontWeight: `bold`,
-      stroke: 0x0,
-      strokeThickness: 8,
-    });
-    label.anchor.set(0.5);
-    label.scale.set(2 / cfg.scale);
-    pad.addChild(label);
-
-    const getCurrentValue =
-      this.data.type == "atk" ? () => game.calculateAttackPower(this.data, this.actor) : () => this.data.value || 0;
-    const onEnterFrame = createEnchantedFrameLoop(pad);
-    onEnterFrame.watch(
-      getCurrentValue,
-      v => {
-        label.text = String(v);
-      },
-      true
-    );
-    Object.assign(pad, { onEnterFrame });
+    if (this.data.type === "atk" || this.data.type === "def") {
+      const label = new Text(``, {
+        fill: 0xf0f0f0,
+        fontFamily: "Impact, sans-serif",
+        fontSize: 60,
+        fontWeight: `bold`,
+        stroke: 0x0,
+        strokeThickness: 8,
+      });
+      label.anchor.set(0.5);
+      label.scale.set(2 / cfg.scale);
+      pad.addChild(label);
+  
+      const getCurrentValue =
+        this.data.type == "atk" ? () => game.calculateAttackPower(this.data, this.actor) : () => this.data.value || 0;
+      const onEnterFrame = createEnchantedFrameLoop(pad);
+      onEnterFrame.watch(
+        getCurrentValue,
+        v => {
+          label.text = String(v);
+        },
+        true
+      );
+      Object.assign(pad, { onEnterFrame });
+    }
 
     return pad;
   }

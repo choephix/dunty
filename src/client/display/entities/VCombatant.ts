@@ -32,10 +32,10 @@ export class VCombatant extends Container {
     this.onEnterFrame.watch.array(
       () => [data.status.health, data.status.block, data.status.retaliation],
       ([health, block, retaliation]) => {
-        let ln = `❤${health}`;
-        if (block > 0) ln += ` ⛨${block}`;
-        if (retaliation > 0) ln += ` 🠈${retaliation}`;
-        this.healthIndicator.text = ln;
+        const col = [`❤${health}`];
+        if (block > 0) col.unshift(`⛨${block}`);
+        if (retaliation > 0) col.unshift(`🠈${retaliation}`);
+        this.healthIndicator.text = col.join("\n");
       },
       true
     );
