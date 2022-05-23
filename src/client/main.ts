@@ -2,6 +2,7 @@ import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatStage } from "@client/display/entities/VCombatStage";
 import { Card, Combatant, CombatSide as CombatGroup, Game } from "@client/game/game";
 import { GameController } from "@client/game/game.controller";
+import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
@@ -61,9 +62,9 @@ export async function startGame(app: Application) {
 
   const glow = new GlowFilterService({
     color: 0xffffff,
-    distance: 8,
-    outerStrength: 0.99,
-    innerStrength: 0.99,
+    distance: 40,
+    outerStrength: 0.59,
+    innerStrength: 0.09,
   });
   const activeCombatant = new CurrentSelectionHelper<Combatant>({
     onSelect: combatant => {
@@ -90,7 +91,7 @@ export async function startGame(app: Application) {
     game.sideA.hand.splice(game.sideA.hand.indexOf(card), 1);
 
     const actor = game.sideA.combatants[0];
-    const target = card.type === "atk" ? game.sideB.combatants[0] : game.sideA.combatants[0];
+    const target = card.type === "atk" ? await selectAttackTarget() : game.sideA.combatants[0];
     await playCard(card, actor, target);
   };
 
@@ -116,6 +117,41 @@ export async function startGame(app: Application) {
 
       await Promise.resolve(card.effect?.(actor, target));
     }
+  }
+
+  async function selectAttackTarget() {
+    const candidates = game.sideB.combatants.filter(c => c.alive);
+    if (candidates.length === 0) return;
+
+    if (candidates.length === 1) return candidates[0];
+
+    const glow = new GlowFilterService({
+      color: 0xff0000,
+      distance: 8,
+      outerStrength: 0.99,
+      innerStrength: 0.99,
+    });
+
+    const cleanUp = new Array<Function>();
+    const chosen = await new Promise<Combatant>(resolve => {
+      for (const candidate of candidates) {
+        const vCombatant = combatantsDictionary.get(candidate)!;
+
+        glow.addFilter(vCombatant.sprite);
+        cleanUp.push(() => glow.removeFrom(vCombatant.sprite));
+
+        const rect = drawRect(vCombatant, { x: -150, y: -150, width: 300, height: 300 });
+        rect.alpha = 0.5;
+        rect.interactive = true;
+        rect.buttonMode = true;
+        rect.renderable = false;
+        rect.on("click", () => resolve(candidate));
+        cleanUp.push(() => rect.destroy());
+      }
+    });
+    cleanUp.forEach(fn => fn());
+
+    return chosen;
   }
 
   async function dealDamage(target: Combatant, directDamage: number, blockDamage: number) {

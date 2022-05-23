@@ -11,7 +11,7 @@ export class Game {
 
     const HEALTH = 3;
 
-    const playerCombatant = new Combatant({ health: HEALTH });
+    const playerCombatant = new Combatant({ health: HEALTH * 2 });
     sideA.addCombatant(playerCombatant);
     sideA.drawPile.push(...range(200).map(() => Card.generateRandomCard()));
 
