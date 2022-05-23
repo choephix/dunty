@@ -5,12 +5,14 @@ import { GameController } from "@client/game/game.controller";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
+import { GlowFilterService } from "@game/ui/fx/GlowFilterService";
 import { Application } from "@pixi/app";
 import { lerp } from "@sdk/utils/math";
 import { delay, nextFrame } from "@sdk/utils/promises";
 import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
+import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 
 export let game: Game;
 
@@ -57,6 +59,23 @@ export async function startGame(app: Application) {
     }
   }
 
+  const glow = new GlowFilterService({
+    color: 0xffffff,
+    distance: 8,
+    outerStrength: 0.99,
+    innerStrength: 0.99,
+  });
+  const activeCombatant = new CurrentSelectionHelper<Combatant>({
+    onSelect: combatant => {
+      const vCombatant = combatantsDictionary.get(combatant)!;
+      glow.addFilter(vCombatant.sprite);
+    },
+    onDeselect: combatant => {
+      const vCombatant = combatantsDictionary.get(combatant)!;
+      glow.removeFrom(vCombatant.sprite);
+    },
+  });
+
   composeSide(game.sideA, true);
   composeSide(game.sideB, false);
 
@@ -88,7 +107,7 @@ export async function startGame(app: Application) {
     if (card.type === "def") {
       target.status.block += card.value || 0;
 
-      await delay(.35)
+      await delay(0.35);
     }
 
     if (card.type === "func") {
@@ -136,11 +155,15 @@ export async function startGame(app: Application) {
     await GameController.drawCards(4, game.sideA);
     await delay(0.3);
     endTurnButtonBehavior.isDisabled.value = false;
+
+    activeCombatant.setCurrent(game.sideA.combatants[0]);
   }
 
   async function endPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
     await GameController.discardHand(game.sideA);
+
+    activeCombatant.setCurrent(null);
 
     await delay(0.1);
 
@@ -157,6 +180,8 @@ export async function startGame(app: Application) {
     const playerCombatant = game.sideA.combatants[0];
     if (playerCombatant && game.sideB.combatants.length) {
       for (const foe of game.sideB.combatants) {
+        activeCombatant.setCurrent(foe);
+
         await delay(0.35);
 
         const card = foe.nextCard;
@@ -169,6 +194,8 @@ export async function startGame(app: Application) {
           const target = card.type === "atk" ? playerCombatant : foe;
           await playCard(card, foe, target);
         }
+
+        activeCombatant.setCurrent(null);
 
         if (!playerCombatant.alive) break;
       }
