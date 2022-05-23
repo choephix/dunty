@@ -1,3 +1,4 @@
+import { game } from "@client/main";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
@@ -6,7 +7,7 @@ import { Rectangle } from "@pixi/math";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
-import { Card } from "../../game/game";
+import { Card, Combatant } from "../../game/game";
 
 export class VCard extends Container {
   background;
@@ -14,6 +15,8 @@ export class VCard extends Container {
   valueIndicator;
 
   glow;
+
+  actor?: Combatant;
 
   constructor(public readonly data: Card) {
     super();
@@ -97,10 +100,14 @@ export class VCard extends Container {
     label.scale.set(1.2);
     pad.addChild(label);
 
+    const getCurrentValue =
+      this.data.type == "atk" ? () => game.calculateAttackPower(this.data, this.actor) : () => this.data.value || 0;
     const onEnterFrame = createEnchantedFrameLoop(pad);
     onEnterFrame.watch(
-      () => this.data.value,
-      v => (label.text = String(v || 0)),
+      getCurrentValue,
+      v => {
+        label.text = String(v);
+      },
       true
     );
     Object.assign(pad, { onEnterFrame });

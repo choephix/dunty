@@ -1,21 +1,23 @@
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatStage } from "@client/display/entities/VCombatStage";
-import { Combatant, CombatSide as CombatGroup, Game } from "@client/game/game";
+import { Card, Combatant, CombatSide as CombatGroup, Game } from "@client/game/game";
 import { GameController } from "@client/game/game.controller";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { Application } from "@pixi/app";
 import { buttonizeInstance } from "@sdk-ui/buttonize";
+import { lerp } from "@sdk/utils/math";
 import { delay, nextFrame } from "@sdk/utils/promises";
 import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
 
+export let game: Game;
+
 export async function main(app: Application) {
   await nextFrame();
 
-  const game = new Game(console.warn);
-  __window__.game = game;
+  game = __window__.game = new Game(console.warn);
 
   const container = new VCombatStage();
   app.stage.addChild(container);
@@ -44,7 +46,7 @@ export async function main(app: Application) {
       unit.visible = false;
       unit.waitUntilLoaded().then(async () => {
         unit.visible = true;
-        VCombatantAnimations.enter(unit)
+        VCombatantAnimations.enter(unit);
       });
     }
   }
@@ -64,15 +66,7 @@ export async function main(app: Application) {
 
     if (card.type === "atk") {
       const target = game.sideB.combatants[0];
-
-      let damage = card.value || 0;
-      if (damage < target.block) {
-        target.block -= damage;
-      } else {
-        target.block = 0;
-        damage -= target.block;
-      }
-      target.health -= damage;
+      performAttack(target, game.sideA.combatants[0], card);
 
       if (target.health <= 0) {
         game.sideB.combatants.splice(game.sideB.combatants.indexOf(target), 1);
@@ -81,47 +75,72 @@ export async function main(app: Application) {
 
     if (card.type === "def") {
       const target = game.sideA.combatants[0];
-
       target.block += card.value || 0;
-    }
-
-    if (game.sideA.hand.length === 0) {
-      await delay(0.3);
-      startPlayerTurn();
     }
   };
 
+  async function performAttack(target: Combatant, attacker: Combatant, card: Card) {
+    const { directDamage, blockDamage } = game.calculateAttackDamage(card, attacker, target);
+    target.block -= blockDamage;
+    target.health -= directDamage;
+
+    const vatk = combatantsDictionary.get(attacker)!;
+    const vdef = combatantsDictionary.get(target)!;
+    VCombatantAnimations.attack(vatk, vdef);
+  }
+
   async function startPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
-    await GameController.discardHand(game.sideA);
-    await delay(0.3);
-
-    for (const foe of game.sideB.combatants) {
-      const vunit = combatantsDictionary.get(foe)!;
-      // VCombatantAnimations.attack(vunit);
-    }
-
-    await delay(0.3);
     await GameController.drawCards(4, game.sideA);
+    await delay(0.3);
     endTurnButtonBehavior.isDisabled.value = false;
   }
 
+  async function endPlayerTurn() {
+    endTurnButtonBehavior.isDisabled.value = true;
+    await GameController.discardHand(game.sideA);
+
+    await delay(0.1);
+
+    for (const foe of game.sideB.combatants) {
+      await delay(0.4);
+
+      const card = Card.generateRandomCard();
+
+      if (card.type === "atk") {
+        const target = game.sideA.combatants[0];
+        performAttack(target, foe, card);
+      }
+
+      if (card.type === "def") {
+        foe.block += card.value || 0;
+      }
+    }
+
+    await delay(0.1);
+
+    await startPlayerTurn();
+  }
+
   const endTurnButton = new EndTurnButton();
+  endTurnButton.position.copyFrom(container.getFractionalPosition(0.5, 0.9));
+  container.addChild(endTurnButton);
   const endTurnButtonBehavior = createAnimatedButtonBehavior(
     endTurnButton,
     {
       onClick: () => {
-        startPlayerTurn();
+        endPlayerTurn();
       },
       onUpdate: ({ pressProgress, hoverProgress, disableProgress }) => {
-        endTurnButton.alpha = (1 - disableProgress) * (0.7 + 0.3 * hoverProgress);
+        endTurnButton.alpha = Math.pow(1 - disableProgress, 4) * lerp(0.4, 1.0, hoverProgress);
         endTurnButton.pivot.y = -10 * pressProgress;
+        endTurnButton.scale.set(1.0 + Math.pow(disableProgress, 2), Math.pow(1.0 - disableProgress, 4));
       },
     },
-    true
+    {
+      disableProgress: 1,
+    }
   );
-  endTurnButton.position.copyFrom(container.getFractionalPosition(0.5, 0.9));
-  container.addChild(endTurnButton);
 
   await delay(0.6);
   startPlayerTurn();

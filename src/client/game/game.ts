@@ -26,6 +26,34 @@ export class Game {
   constructor(onChange: Function) {
     // return createOnChangeProxy(onChange, this);
   }
+
+  calculateAttackPower(card: Card, attacker?: Combatant, target?: Combatant) {
+    if (card.type !== "atk") return 0;
+
+    let value = card.value || 0;
+    if (attacker) {
+      value += attacker.strength || 0;
+    }
+
+    return value;
+  }
+
+  calculateAttackDamage(card: Card, attacker: Combatant, target: Combatant) {
+    let directDamage = this.calculateAttackPower(card, attacker, target);
+    let blockDamage = 0;
+
+    let block = target.block || 0;
+
+    if (directDamage < block) {
+      blockDamage = directDamage;
+      directDamage = 0;
+    } else {
+      blockDamage = Math.min(block, directDamage);
+      directDamage -= block;
+    }
+
+    return { directDamage, blockDamage };
+  }
 }
 
 export class CombatSide {
@@ -50,6 +78,8 @@ export class Combatant {
   // State
   health: number = 10;
   block: number = 0;
+
+  strength: number = 1;
 }
 
 export interface Card {
@@ -61,12 +91,11 @@ export interface Card {
 export module Card {
   export function generateRandomCard(): Card {
     return getRandomItemFrom<Card>([
+      { type: "atk", emoji: "⚔", value: 0 },
       { type: "atk", emoji: "⚔", value: 1 },
-      { type: "def", emoji: "🛡", value: 1 },
       { type: "atk", emoji: "⚔", value: 2 },
+      { type: "def", emoji: "🛡", value: 1 },
       { type: "def", emoji: "🛡", value: 2 },
-      { type: "atk", emoji: "⚔", value: 3 },
-      { type: "def", emoji: "🛡", value: 3 },
     ]);
   }
 }

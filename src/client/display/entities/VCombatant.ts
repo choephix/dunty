@@ -39,7 +39,7 @@ export class VCombatant extends Container {
           VCombatantAnimations.die(this);
         } else if (health < prevHealth) {
           VCombatantAnimations.hurt(this);
-        } else {
+        } else if (health > prevHealth || block > prevBlock) {
           VCombatantAnimations.buff(this);
         }
       },

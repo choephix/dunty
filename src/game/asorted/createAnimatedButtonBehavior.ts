@@ -35,7 +35,7 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
     onClick?: (e: InteractionData) => unknown;
     onUpdate?: (this: T, state: UpdateProperties) => void;
   },
-  initialUpdate: boolean = false
+  initialUpdate: boolean | Partial<UpdateProperties> = false
 ) {
   const { onClick, onUpdate } = callbacks;
 
@@ -93,6 +93,9 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
     });
 
     if (initialUpdate) {
+      if (initialUpdate instanceof Object) {
+        Object.assign(state, initialUpdate);
+      }
       onUpdate.call(target, state);
     }
   }
