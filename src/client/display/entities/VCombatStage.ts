@@ -75,6 +75,6 @@ export class VCombatStage extends Container {
   }
 
   playHideAnimation() {
-    return this.tweeener.to(this, { alpha: 0, duration: 2.5 });
+    return this.tweeener.to(this, { alpha: 0, duration: 1.5 });
   }
 }

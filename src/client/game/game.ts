@@ -76,7 +76,7 @@ export class Combatant {
   color: number = ~~(Math.random() * 0xffffff);
 
   // State
-  health: number = 10;
+  health: number = 2;
   block: number = 0;
 
   strength: number = 1;

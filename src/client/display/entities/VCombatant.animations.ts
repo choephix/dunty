@@ -32,6 +32,7 @@ function spawnFlare1(parent: Container, tint: number) {
   return parent.addChild(fx);
 }
 
+
 export module VCombatantAnimations {
   export function enter(unit: VCombatant) {
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
@@ -42,6 +43,8 @@ export module VCombatantAnimations {
   }
 
   export async function attack(unit: VCombatant, target?: VCombatant) {
+    console.log(`${unit.name} is attacking ${target ? target.name : "nothing"}`);
+    
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
@@ -54,6 +57,8 @@ export module VCombatantAnimations {
   }
 
   export async function spellBegin(unit: VCombatant) {
+    console.log(`${unit.name} is casting a spell`);
+
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
       pixi: { pivotY: 4 },
@@ -66,6 +71,8 @@ export module VCombatantAnimations {
   }
 
   export async function buff(unit: VCombatant) {
+    console.log(`${unit.name} is buffing`);
+
     spawnBlobOfLight(unit, 0x0603ff);
     // spawnFlazma(unit, 0x0906ff, );
     // spawnFlare1(unit, 0xFFFFFF);
@@ -73,18 +80,24 @@ export module VCombatantAnimations {
   }
 
   export async function buffHealth(unit: VCombatant) {
+    console.log(`${unit.name} is buffing health`);
+
     spawnFlare1(unit, 0xffffff);
     spawnBlobOfLight(unit, 0x91f140);
     await delay(0.2);
   }
 
   export async function buffRetaliation(unit: VCombatant) {
+    console.log(`${unit.name} is buffing retaliation`);
+
     spawnBlobOfLight(unit, 0xff0000);
     spawnFlazma(unit, 0x902040, 1.2);
     await delay(0.2);
   }
 
   export async function buffBlock(unit: VCombatant) {
+    console.log(`${unit.name} is buffing block`);
+
     const fx = spawnSpriteWave(
       "https://public.cx/dunty/asorted/shield.png",
       { pixi: { scale: 1.2 } },
@@ -103,6 +116,8 @@ export module VCombatantAnimations {
   }
 
   export async function hurt(unit: VCombatant) {
+    console.log(`${unit.name} is hurt`);
+
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
@@ -116,6 +131,8 @@ export module VCombatantAnimations {
   }
 
   export async function die(unit: VCombatant) {
+    console.log(`${unit.name} is dying`);
+    
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {

@@ -42,8 +42,7 @@ export class VCombatant extends Container {
     this.onEnterFrame.watch.array(
       () => [data.health, data.block, data.status.retaliation || 0],
       async ([health, block, retaliation], [prevHealth, prevBlock, prevRetaliation]) => {
-        if (health <= 0) await VCombatantAnimations.die(this);
-        if (health < prevHealth) await VCombatantAnimations.hurt(this);
+        if (health < prevHealth) await (health <= 0 ? VCombatantAnimations.die(this) : VCombatantAnimations.hurt(this));
         if (health > prevHealth) await VCombatantAnimations.buffHealth(this);
         if (block > prevBlock) await VCombatantAnimations.buffBlock(this);
         if (retaliation > prevRetaliation) await VCombatantAnimations.buffRetaliation(this);

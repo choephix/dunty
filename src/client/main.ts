@@ -17,7 +17,7 @@ export let game: Game;
 export async function main(app: Application) {
   await nextFrame();
 
-  while(true) {
+  while (true) {
     await startGame(app);
   }
 }
@@ -141,15 +141,22 @@ export async function startGame(app: Application) {
 
     game.sideB.onTurnStart();
 
-    for (const foe of game.sideB.combatants) {
-      await delay(0.2);
-
-      const card = Card.generateRandomEnemyCard();
-      const target = card.type === "atk" ? game.sideA.combatants[0] : foe;
-      await playCard(card, foe, target);
+    const playerCombatant = game.sideA.combatants[0];
+    if (playerCombatant && game.sideB.combatants.length) {
+      for (const foe of game.sideB.combatants) {
+        await delay(0.2);
+  
+        const card = Card.generateRandomEnemyCard();
+        const target = card.type === "atk" ? playerCombatant : foe;
+        await playCard(card, foe, target);
+  
+        if (!playerCombatant.alive) break;
+      }
+  
+      if (!game.sideA.combatants[0]?.alive) return;
+  
+      await delay(0.4);
     }
-
-    await delay(0.4);
 
     await startPlayerTurn();
   }
