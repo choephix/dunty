@@ -20,7 +20,6 @@ export function spawnSpriteWave<T extends Sprite, TMods extends Partial<T> = {}>
       ...tweenVars,
     })
     .then(() => sprite.destroy());
-  Object.assign(sprite, { tween });
 
   if (mods) {
     if (mods.parent) {
@@ -30,5 +29,6 @@ export function spawnSpriteWave<T extends Sprite, TMods extends Partial<T> = {}>
     Object.assign(sprite, mods);
   }
 
-  return sprite as T & TMods;
+  return Object.assign(sprite, { tween });
+  // return sprite as T & TMods;
 }

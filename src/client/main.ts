@@ -37,12 +37,6 @@ export async function main(app: Application) {
 
       combatantsDictionary.set(char, unit);
 
-      const { behavior } = buttonizeInstance(unit);
-      behavior.on({
-        hoverIn: () => (container.ln.visible = true),
-        hoverOut: () => (container.ln.visible = false),
-      });
-
       unit.visible = false;
       unit.waitUntilLoaded().then(async () => {
         unit.visible = true;
@@ -64,33 +58,62 @@ export async function main(app: Application) {
   hand.onCardClick = async card => {
     game.sideA.hand.splice(game.sideA.hand.indexOf(card), 1);
 
-    if (card.type === "atk") {
-      const target = game.sideB.combatants[0];
-      performAttack(target, game.sideA.combatants[0], card);
+    const actor = game.sideA.combatants[0];
+    const target = card.type === "atk" ? game.sideB.combatants[0] : game.sideA.combatants[0];
+    await playCard(card, actor, target);
+  };
 
-      if (target.health <= 0) {
-        game.sideB.combatants.splice(game.sideB.combatants.indexOf(target), 1);
-      }
+  async function playCard(card: Card, actor: Combatant, target: Combatant = actor) {
+    if (card.type === "atk") {
+      await performAttack(target, actor, card);
+
+      if (!actor.alive) actor.side.combatants.splice(actor.side.combatants.indexOf(target), 1);
+      if (!target.alive) target.side.combatants.splice(target.side.combatants.indexOf(target), 1);
+
+      return;
     }
 
     if (card.type === "def") {
-      const target = game.sideA.combatants[0];
       target.block += card.value || 0;
     }
-  };
 
-  async function performAttack(target: Combatant, attacker: Combatant, card: Card) {
-    const { directDamage, blockDamage } = game.calculateAttackDamage(card, attacker, target);
+    if (card.type === "func") {
+      const vact = combatantsDictionary.get(actor)!;
+      await VCombatantAnimations.spellBegin(vact);
+
+      await Promise.resolve(card.effect?.(actor, target));
+    }
+  }
+
+  async function dealDamage(target: Combatant, directDamage: number, blockDamage: number) {
     target.block -= blockDamage;
     target.health -= directDamage;
+  }
+
+  async function performAttack(target: Combatant, attacker: Combatant, card: Card) {
+    const atkPwr = game.calculateAttackPower(card, attacker, target);
+    const { directDamage, blockedDamage } = game.calculateDamage(atkPwr, target);
+
+    dealDamage(target, directDamage, blockedDamage);
 
     const vatk = combatantsDictionary.get(attacker)!;
     const vdef = combatantsDictionary.get(target)!;
-    VCombatantAnimations.attack(vatk, vdef);
+    await VCombatantAnimations.attack(vatk, vdef);
+
+    if (target.alive) {
+      if (target.status.retaliation) {
+        const { directDamage, blockedDamage } = game.calculateDamage(target.status.retaliation || 0, target);
+        dealDamage(attacker, directDamage, blockedDamage);
+        await VCombatantAnimations.attack(vdef, vatk);
+      }
+    }
   }
 
   async function startPlayerTurn() {
+    container.ln.visible = false;
+
     endTurnButtonBehavior.isDisabled.value = true;
+    await delay(0.3);
     await GameController.drawCards(4, game.sideA);
     await delay(0.3);
     endTurnButtonBehavior.isDisabled.value = false;
@@ -102,22 +125,17 @@ export async function main(app: Application) {
 
     await delay(0.1);
 
+    container.ln.visible = true;
+
     for (const foe of game.sideB.combatants) {
-      await delay(0.4);
+      await delay(0.2);
 
-      const card = Card.generateRandomCard();
-
-      if (card.type === "atk") {
-        const target = game.sideA.combatants[0];
-        performAttack(target, foe, card);
-      }
-
-      if (card.type === "def") {
-        foe.block += card.value || 0;
-      }
+      const card = Card.generateRandomEnemyCard();
+      const target = card.type === "atk" ? game.sideA.combatants[0] : foe;
+      await playCard(card, foe, target);
     }
 
-    await delay(0.1);
+    await delay(0.4);
 
     await startPlayerTurn();
   }

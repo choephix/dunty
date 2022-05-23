@@ -2,23 +2,6 @@ import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VComb
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
 
-function createOnChangeProxy<T extends object>(onPropertyChange: Function, target: T) {
-  return new Proxy(target, {
-    get(target: any, property: any): T {
-      const item = target[property];
-      if (item && typeof item === "object") return createOnChangeProxy(onPropertyChange, item);
-      return item;
-    },
-    set(target, property, newValue) {
-      target[property] = newValue;
-      if (newValue instanceof Object) {
-        onPropertyChange.call(target, property, newValue, target);
-      }
-      return true;
-    },
-  });
-}
-
 export class Game {
   sideA = new CombatSide(1);
   sideB = new CombatSide(3);
@@ -38,21 +21,23 @@ export class Game {
     return value;
   }
 
-  calculateAttackDamage(card: Card, attacker: Combatant, target: Combatant) {
-    let directDamage = this.calculateAttackPower(card, attacker, target);
-    let blockDamage = 0;
+  calculateDamage(damage: number, target: Combatant) {
+    let blockedDamage = 0;
+    let directDamage = 0;
 
     let block = target.block || 0;
 
-    if (directDamage < block) {
-      blockDamage = directDamage;
+    if (damage <= block) {
+      blockedDamage = damage;
       directDamage = 0;
     } else {
-      blockDamage = Math.min(block, directDamage);
-      directDamage -= block;
+      blockedDamage = Math.min(block, damage);
+      directDamage = damage - block;
     }
 
-    return { directDamage, blockDamage };
+    console.log({ damage, block, directDamage, blockedDamage, target });
+
+    return { directDamage, blockedDamage };
   }
 }
 
@@ -65,11 +50,19 @@ export class CombatSide {
 
   constructor(combatants: number) {
     this.combatants = range(combatants).map(() => new Combatant());
+    for (const combatant of this.combatants) combatant.side = this;
+
     this.drawPile.push(...range(200).map(() => Card.generateRandomCard()));
   }
 }
 
+export interface CombatantStatus {
+  retaliation?: number;
+}
+
 export class Combatant {
+  side!: CombatSide;
+
   // Properties
   characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
   textureId: string = `https://public.cx/mock/sugimori/${this.characterId}.png`;
@@ -80,22 +73,40 @@ export class Combatant {
   block: number = 0;
 
   strength: number = 1;
+  status: CombatantStatus = {};
+
+  get alive() {
+    return this.health > 0;
+  }
 }
 
 export interface Card {
-  emoji: string;
   type: string;
   value?: number;
+  effect?: (actor: Combatant, target?: Combatant) => void;
 }
 
 export module Card {
   export function generateRandomCard(): Card {
     return getRandomItemFrom<Card>([
-      { type: "atk", emoji: "⚔", value: 0 },
-      { type: "atk", emoji: "⚔", value: 1 },
-      { type: "atk", emoji: "⚔", value: 2 },
-      { type: "def", emoji: "🛡", value: 1 },
-      { type: "def", emoji: "🛡", value: 2 },
+      { type: "atk", value: 0 },
+      { type: "atk", value: 1 },
+      { type: "atk", value: 2 },
+      { type: "def", value: 1 },
+      { type: "def", value: 2 },
+    ]);
+  }
+  export function generateRandomEnemyCard(): Card {
+    return getRandomItemFrom<Card>([
+      { type: "atk", value: 1 },
+      { type: "def", value: 1 },
+      {
+        type: "func",
+        effect: actor => {
+          actor.status.retaliation ||= 0;
+          actor.status.retaliation += 2;
+        },
+      },
     ]);
   }
 }

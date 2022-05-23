@@ -29,19 +29,24 @@ export class VCombatant extends Container {
     this.addChild(this.healthIndicator);
 
     this.onEnterFrame.watch.array(
-      () => [data.health, data.block],
-      ([health, block], [prevHealth, prevBlock]) => {
-        let str = `❤${health}`;
-        if (block) str += ` 🛡${block}`;
-        this.healthIndicator.text = str;
+      () => [data.health, data.block, data.status.retaliation],
+      ([health, block, retaliation]) => {
+        let ln = `❤${health}`;
+        if (block) ln += ` 🛡${block}`;
+        if (retaliation) ln += ` 🠈${retaliation}`;
+        this.healthIndicator.text = ln;
+      },
+      true
+    );
 
-        if (health <= 0) {
-          VCombatantAnimations.die(this);
-        } else if (health < prevHealth) {
-          VCombatantAnimations.hurt(this);
-        } else if (health > prevHealth || block > prevBlock) {
-          VCombatantAnimations.buff(this);
-        }
+    this.onEnterFrame.watch.array(
+      () => [data.health, data.block, data.status.retaliation || 0],
+      async ([health, block, retaliation], [prevHealth, prevBlock, prevRetaliation]) => {
+        if (health <= 0) await VCombatantAnimations.die(this);
+        if (health < prevHealth) await VCombatantAnimations.hurt(this);
+        if (health > prevHealth) await VCombatantAnimations.buffHealth(this);
+        if (block > prevBlock) await VCombatantAnimations.buffBlock(this);
+        if (retaliation > prevRetaliation) await VCombatantAnimations.buffHealth(this);
       },
       true
     );
