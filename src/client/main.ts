@@ -87,6 +87,8 @@ export async function startGame(app: Application) {
 
     if (card.type === "def") {
       target.status.block += card.value || 0;
+
+      await delay(.35)
     }
 
     if (card.type === "func") {
@@ -122,13 +124,11 @@ export async function startGame(app: Application) {
   }
 
   async function startPlayerTurn() {
-    container.ln.visible = false;
-
     game.sideA.onTurnStart();
 
     for (const foe of game.sideB.combatants) {
+      await delay(0.15);
       foe.nextCard = Card.generateRandomEnemyCard();
-      await delay(0.1);
     }
 
     endTurnButtonBehavior.isDisabled.value = true;
@@ -144,6 +144,12 @@ export async function startGame(app: Application) {
 
     await delay(0.1);
 
+    await resolveEnemyTurn();
+
+    await startPlayerTurn();
+  }
+
+  async function resolveEnemyTurn() {
     container.ln.visible = true;
 
     game.sideB.onTurnStart();
@@ -151,10 +157,11 @@ export async function startGame(app: Application) {
     const playerCombatant = game.sideA.combatants[0];
     if (playerCombatant && game.sideB.combatants.length) {
       for (const foe of game.sideB.combatants) {
-        
         await delay(0.35);
 
         const card = foe.nextCard;
+        foe.nextCard = null;
+
         if (!card) {
           const vunit = combatantsDictionary.get(foe)!;
           await VCombatantAnimations.noCard(vunit);
@@ -171,7 +178,7 @@ export async function startGame(app: Application) {
       await delay(0.4);
     }
 
-    await startPlayerTurn();
+    container.ln.visible = false;
   }
 
   const endTurnButton = new EndTurnButton();
@@ -193,9 +200,9 @@ export async function startGame(app: Application) {
       disableProgress: 1,
     }
   );
-  
+
   await delay(0.6);
-  
+
   startPlayerTurn();
 
   const onEnterFrame = createEnchantedFrameLoop(container);
