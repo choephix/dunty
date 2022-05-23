@@ -40,6 +40,12 @@ export async function main(app: Application) {
         hoverIn: () => (container.ln.visible = true),
         hoverOut: () => (container.ln.visible = false),
       });
+
+      unit.visible = false;
+      unit.waitUntilLoaded().then(async () => {
+        unit.visible = true;
+        VCombatantAnimations.enter(unit)
+      });
     }
   }
 

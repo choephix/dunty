@@ -44,4 +44,8 @@ export class VCombatant extends Container {
     this.sprite.scale.x = rightSide ? -1 : 1;
     this.healthIndicator.position.set(rightSide ? -150 : 150, 100);
   }
+
+  waitUntilLoaded() {
+    return this.onEnterFrame.waitUntil(() => this.sprite.texture.baseTexture.valid);
+  }
 }
