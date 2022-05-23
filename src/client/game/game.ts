@@ -6,6 +6,8 @@ export class Game {
   sideA = new CombatSide(1);
   sideB = new CombatSide(3);
 
+
+
   constructor(onChange: Function) {
     // return createOnChangeProxy(onChange, this);
   }
@@ -25,7 +27,7 @@ export class Game {
     let blockedDamage = 0;
     let directDamage = 0;
 
-    let block = target.block || 0;
+    let block = target.status.block || 0;
 
     if (damage <= block) {
       blockedDamage = damage;
@@ -58,13 +60,9 @@ export class CombatSide {
   onTurnStart() {
     for (const unit of this.combatants) {
       unit.status.retaliation = 0;
-      unit.block = 0;
+      unit.status.block = 0;
     }
   }
-}
-
-export interface CombatantStatus {
-  retaliation: number;
 }
 
 export class Combatant {
@@ -76,18 +74,20 @@ export class Combatant {
   color: number = ~~(Math.random() * 0xffffff);
 
   // State
-  health: number = 2;
-  block: number = 0;
 
   strength: number = 1;
-  status: CombatantStatus = {
+  status = {
+    health: 1,
+    block: 0,
     retaliation: 0,
   };
 
   get alive() {
-    return this.health > 0;
+    return this.status.health > 0;
   }
 }
+
+export type CombatantStatus = Combatant["status"];
 
 export interface Card {
   type: string;
@@ -103,7 +103,7 @@ export module Card {
       { type: "atk", value: 2 },
       { type: "def", value: 1 },
       { type: "def", value: 2 },
-      { type: "func", effect: actor => (actor.health += 2) },
+      { type: "func", effect: actor => (actor.status.health += 2) },
       { type: "func", effect: actor => (actor.status.retaliation += 1) },
     ]);
   }

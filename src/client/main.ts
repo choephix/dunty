@@ -84,7 +84,7 @@ export async function startGame(app: Application) {
     }
 
     if (card.type === "def") {
-      target.block += card.value || 0;
+      target.status.block += card.value || 0;
     }
 
     if (card.type === "func") {
@@ -96,8 +96,8 @@ export async function startGame(app: Application) {
   }
 
   async function dealDamage(target: Combatant, directDamage: number, blockDamage: number) {
-    target.block -= blockDamage;
-    target.health -= directDamage;
+    target.status.block -= blockDamage;
+    target.status.health -= directDamage;
   }
 
   async function performAttack(target: Combatant, attacker: Combatant, card: Card) {

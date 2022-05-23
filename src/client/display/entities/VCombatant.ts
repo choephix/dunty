@@ -18,7 +18,8 @@ export class VCombatant extends Container {
     this.addChild(this.sprite);
 
     this.healthIndicator = new Text("-", {
-      fill: 0xdd1010,
+      // fill: 0xdd1010,
+      fill: 0x202020,
       fontFamily: "Impact, sans-serif",
       fontSize: 40,
       fontWeight: `bold`,
@@ -29,10 +30,10 @@ export class VCombatant extends Container {
     this.addChild(this.healthIndicator);
 
     this.onEnterFrame.watch.array(
-      () => [data.health, data.block, data.status.retaliation],
+      () => [data.status.health, data.status.block, data.status.retaliation],
       ([health, block, retaliation]) => {
         let ln = `❤${health}`;
-        if (block > 0) ln += ` 🛡${block}`;
+        if (block > 0) ln += ` ⛨${block}`;
         if (retaliation > 0) ln += ` 🠈${retaliation}`;
         this.healthIndicator.text = ln;
       },
@@ -40,7 +41,7 @@ export class VCombatant extends Container {
     );
 
     this.onEnterFrame.watch.array(
-      () => [data.health, data.block, data.status.retaliation || 0],
+      () => [data.status.health, data.status.block, data.status.retaliation || 0],
       async ([health, block, retaliation], [prevHealth, prevBlock, prevRetaliation]) => {
         if (health < prevHealth) await (health <= 0 ? VCombatantAnimations.die(this) : VCombatantAnimations.hurt(this));
         if (health > prevHealth) await VCombatantAnimations.buffHealth(this);
@@ -55,7 +56,8 @@ export class VCombatant extends Container {
 
   setRightSide(rightSide: boolean) {
     this.sprite.scale.x = rightSide ? -1 : 1;
-    this.healthIndicator.position.set(rightSide ? -150 : 150, 100);
+    this.healthIndicator.position.set(rightSide ? -200 : 200, 140);
+    this.healthIndicator.anchor.set(rightSide ? 0 : 1, 1.0);
   }
 
   waitUntilLoaded() {
