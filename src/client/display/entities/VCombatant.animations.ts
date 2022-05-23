@@ -14,4 +14,16 @@ export module VCombatantAnimations {
     await tweeener.to(unit, { pixi: { alpha: 0.2, pivotX: direction * 150 } });
     await tweeener.to(unit.healthIndicator, { alpha: 0.0 });
   }
+
+  export async function hurt(unit: VCombatant) {
+    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
+    const tweeener = new TemporaryTweeener(unit);
+    await tweeener.to(unit, { pixi: { alpha: 0.6, pivotX: direction * 40 }, repeat: 1, yoyo: true, duration: 0.1 });
+  }
+
+  export async function buff(unit: VCombatant) {
+    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
+    const tweeener = new TemporaryTweeener(unit);
+    await tweeener.to(unit, { pixi: { pivotY: -direction * 40 }, repeat: 1, yoyo: true, duration: 0.1 });
+  }
 }

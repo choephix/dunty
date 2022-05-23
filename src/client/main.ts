@@ -76,9 +76,6 @@ export async function main(app: Application) {
 
       if (target.health <= 0) {
         game.sideB.combatants.splice(game.sideB.combatants.indexOf(target), 1);
-
-        const vunit = combatantsDictionary.get(target)!;
-        VCombatantAnimations.die(vunit);
       }
     }
 
@@ -97,6 +94,13 @@ export async function main(app: Application) {
   async function startPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
     await GameController.discardHand(game.sideA);
+    await delay(0.3);
+
+    for (const foe of game.sideB.combatants) {
+      const vunit = combatantsDictionary.get(foe)!;
+      // VCombatantAnimations.attack(vunit);
+    }
+
     await delay(0.3);
     await GameController.drawCards(4, game.sideA);
     endTurnButtonBehavior.isDisabled.value = false;

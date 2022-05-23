@@ -4,6 +4,7 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
+import { VCombatantAnimations } from "./VCombatant.animations";
 
 export class VCombatant extends Container {
   sprite;
@@ -29,10 +30,18 @@ export class VCombatant extends Container {
 
     this.onEnterFrame.watch.array(
       () => [data.health, data.block],
-      ([health, block]) => {
+      ([health, block], [prevHealth, prevBlock]) => {
         let str = `❤${health}`;
         if (block) str += ` 🛡${block}`;
         this.healthIndicator.text = str;
+
+        if (health <= 0) {
+          VCombatantAnimations.die(this);
+        } else if (health < prevHealth) {
+          VCombatantAnimations.hurt(this);
+        } else {
+          VCombatantAnimations.buff(this);
+        }
       },
       true
     );
