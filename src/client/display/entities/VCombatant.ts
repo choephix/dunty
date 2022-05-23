@@ -32,8 +32,8 @@ export class VCombatant extends Container {
       () => [data.health, data.block, data.status.retaliation],
       ([health, block, retaliation]) => {
         let ln = `❤${health}`;
-        if (block) ln += ` 🛡${block}`;
-        if (retaliation) ln += ` 🠈${retaliation}`;
+        if (block > 0) ln += ` 🛡${block}`;
+        if (retaliation > 0) ln += ` 🠈${retaliation}`;
         this.healthIndicator.text = ln;
       },
       true
@@ -46,7 +46,7 @@ export class VCombatant extends Container {
         if (health < prevHealth) await VCombatantAnimations.hurt(this);
         if (health > prevHealth) await VCombatantAnimations.buffHealth(this);
         if (block > prevBlock) await VCombatantAnimations.buffBlock(this);
-        if (retaliation > prevRetaliation) await VCombatantAnimations.buffHealth(this);
+        if (retaliation > prevRetaliation) await VCombatantAnimations.buffRetaliation(this);
       },
       true
     );

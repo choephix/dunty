@@ -112,6 +112,10 @@ export async function main(app: Application) {
   async function startPlayerTurn() {
     container.ln.visible = false;
 
+    for (const unit of combatantsDictionary.keys()) {
+      unit.status.retaliation = 0;
+    }
+
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
     await GameController.drawCards(4, game.sideA);

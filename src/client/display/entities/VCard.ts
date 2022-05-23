@@ -2,6 +2,7 @@ import { game } from "@client/main";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
+import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Rectangle } from "@pixi/math";
 import { Sprite } from "@pixi/sprite";
@@ -52,11 +53,16 @@ export class VCard extends Container {
   }
 
   addArt() {
-    const textureCategory = this.data.type == "atk" ? "swords" : "shields";
-    const textureId = `https://public.cx/mock/${textureCategory}/${randomIntBetweenIncluding(1, 48)}.png`;
+    const cfg = {
+      func: { textureCategory: "books-smol", scale: 2.4 },
+      atk: { textureCategory: "swords", scale: 2 },
+      def: { textureCategory: "shields", scale: 2 },
+    }[this.data.type]!;
+
+    const textureId = `https://public.cx/mock/${cfg.textureCategory}/${randomIntBetweenIncluding(1, 48)}.png`;
     const sprite = Sprite.from(textureId);
     sprite.anchor.set(0.5);
-    sprite.scale.set(2);
+    sprite.scale.set(cfg.scale);
     sprite.position.set(0, -100);
     this.addChild(sprite);
     return sprite;
@@ -79,14 +85,16 @@ export class VCard extends Container {
       // atk: { file: "slot-spike (1)", color: 0xe04040, scale: 1.8 },
       atk: { file: "slot-sword", color: 0xe04040, scale: 1.1 },
       def: { file: "slot-shield (1)", color: 0x70b0f0, scale: 1.8 },
-    }[this.data.type]!;
+    }[this.data.type];
+
+    if (!cfg) return Sprite.from(Texture.EMPTY);
 
     // const sprite = Sprite.from(`https://public.cx/dunty/asorted/slot.png`);
     const pad = Sprite.from(`https://public.cx/dunty/asorted/${cfg.file}.png`);
     pad.anchor.set(0.5);
     pad.position.set(0, 300);
     pad.scale.set(cfg.scale);
-    pad.tint = cfg.color;
+    pad.tint = cfg.color || 0xffffff;
     this.addChild(pad);
 
     const label = new Text(``, {

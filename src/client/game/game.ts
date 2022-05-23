@@ -57,7 +57,7 @@ export class CombatSide {
 }
 
 export interface CombatantStatus {
-  retaliation?: number;
+  retaliation: number;
 }
 
 export class Combatant {
@@ -73,7 +73,9 @@ export class Combatant {
   block: number = 0;
 
   strength: number = 1;
-  status: CombatantStatus = {};
+  status: CombatantStatus = {
+    retaliation: 0,
+  };
 
   get alive() {
     return this.health > 0;
@@ -94,19 +96,15 @@ export module Card {
       { type: "atk", value: 2 },
       { type: "def", value: 1 },
       { type: "def", value: 2 },
+      { type: "func", effect: actor => (actor.health += 2) },
+      { type: "func", effect: actor => (actor.status.retaliation += 1) },
     ]);
   }
   export function generateRandomEnemyCard(): Card {
     return getRandomItemFrom<Card>([
       { type: "atk", value: 1 },
       { type: "def", value: 1 },
-      {
-        type: "func",
-        effect: actor => {
-          actor.status.retaliation ||= 0;
-          actor.status.retaliation += 2;
-        },
-      },
+      { type: "func", effect: actor => (actor.status.retaliation += 1) },
     ]);
   }
 }
