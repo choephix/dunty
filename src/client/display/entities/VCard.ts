@@ -54,7 +54,7 @@ export class VCard extends Container {
     const sprite = Sprite.from(textureId);
     sprite.anchor.set(0.5);
     sprite.scale.set(2);
-    sprite.position.set(0, -60);
+    sprite.position.set(0, -100);
     this.addChild(sprite);
     return sprite;
 
@@ -78,7 +78,7 @@ export class VCard extends Container {
     // const sprite = Sprite.from(`https://public.cx/dunty/asorted/slot.png`);
     const pad = Sprite.from(`https://public.cx/dunty/asorted/${padTextureId}.png`);
     pad.anchor.set(0.5);
-    pad.position.set(0, 320);
+    pad.position.set(0, 280);
     pad.scale.set(0.4);
     this.addChild(pad);
 

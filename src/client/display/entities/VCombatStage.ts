@@ -1,6 +1,7 @@
 import { GameSingletons } from "@client";
 import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";
+import { Graphics } from "@pixi/graphics";
 import { Sprite } from "@pixi/sprite";
 import { TilingSprite } from "@pixi/sprite-tiling";
 
@@ -37,6 +38,12 @@ export class VCombatStage extends Container {
     this.addChild(this.ln);
 
     this.ln.visible = false;
+
+    const border = new Graphics();
+    border.lineStyle(4, 0xffffff);
+    border.drawRect(0, 0, this.designWidth, this.designHeight);
+    border.alpha = 0.05;
+    this.addChild(border);
   }
 
   onEnterFrame() {
