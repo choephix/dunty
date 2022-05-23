@@ -20,5 +20,13 @@
     "atlas-*.json": "atlas-${capture}.*",
     "*.ts": "${capture}.*.ts, ${capture}.js",
     "webpack.js": "webpack.*.js"
-  }
+  },
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-linux",
+      "args": ["-i"]
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "bash",
 }
