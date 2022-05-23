@@ -1,4 +1,5 @@
 import { Combatant } from "@client/game/game";
+import { game } from "@client/main";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
@@ -64,11 +65,25 @@ export class VCombatant extends Container {
     this.intentionIndicator.anchor.set(0.5);
     this.addChild(this.intentionIndicator);
 
-    const emojis = { atk: "⚔", def: "⛨", func: "★" } as Record<string, string>;
+    const getIntention = () => {
+      if (data.nextCard) {
+        const { type, value } = data.nextCard;
+        if (type === "atk") {
+          const atk = game.calculateAttackPower(data.nextCard, data);
+          return `⚔${atk}`;
+        }
+        if (type === "def") {
+          return `⛨${value || "?"}`;
+        }
+        if (type === "func") {
+          return `★`;
+        }
+      }
+      return "";
+    };
     this.onEnterFrame.watch(
-      () => this.thought || data.nextCard?.type,
+      () => this.thought || getIntention(),
       v => {
-        v = emojis[v!] || v || '';
         this.intentionIndicator.text = v.toUpperCase();
       },
       true
