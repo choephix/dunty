@@ -32,6 +32,20 @@ function spawnFlare1(parent: Container, tint: number) {
   return parent.addChild(fx);
 }
 
+async function blinkThought(vunit: VCombatant, thought: string) {
+  vunit.thought = thought;
+  await delay(0.1);
+  vunit.thought = undefined;
+  await delay(0.1);
+  vunit.thought = thought;
+  await delay(0.1);
+  vunit.thought = undefined;
+  await delay(0.1);
+  vunit.thought = thought;
+  await delay(0.2);
+  vunit.thought = undefined;
+  await delay(0.1);
+}
 
 export module VCombatantAnimations {
   export function enter(unit: VCombatant) {
@@ -44,14 +58,14 @@ export module VCombatantAnimations {
 
   export async function attack(unit: VCombatant, target?: VCombatant) {
     console.log(`${unit.name} is attacking ${target ? target.name : "nothing"}`);
-    
+
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
-      pixi: { alpha: 0.6, pivotX: -direction * 140 },
+      pixi: { pivotX: -direction * 140 },
       repeat: 1,
       yoyo: true,
-      duration: 0.10,
+      duration: 0.1,
       ease: `power2.in`,
     });
   }
@@ -139,5 +153,9 @@ export module VCombatantAnimations {
       pixi: { alpha: 0.2, pivotX: direction * 150 },
     });
     await tweeener.to(unit.healthIndicator, { alpha: 0.0 });
+  }
+
+  export async function noCard(unit: VCombatant) {
+    await blinkThought(unit, "?");
   }
 }

@@ -151,11 +151,17 @@ export async function startGame(app: Application) {
     const playerCombatant = game.sideA.combatants[0];
     if (playerCombatant && game.sideB.combatants.length) {
       for (const foe of game.sideB.combatants) {
+        
         await delay(0.35);
 
-        const card = foe.nextCard ?? Card.generateRandomEnemyCard();
-        const target = card.type === "atk" ? playerCombatant : foe;
-        await playCard(card, foe, target);
+        const card = foe.nextCard;
+        if (!card) {
+          const vunit = combatantsDictionary.get(foe)!;
+          await VCombatantAnimations.noCard(vunit);
+        } else {
+          const target = card.type === "atk" ? playerCombatant : foe;
+          await playCard(card, foe, target);
+        }
 
         if (!playerCombatant.alive) break;
       }

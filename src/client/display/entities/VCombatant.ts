@@ -11,6 +11,8 @@ export class VCombatant extends Container {
   healthIndicator;
   intentionIndicator;
 
+  thought?: string;
+
   constructor(public readonly data: Combatant) {
     super();
 
@@ -53,19 +55,21 @@ export class VCombatant extends Container {
     );
 
     this.intentionIndicator = new Text("-", {
-      fill: 0xf0f0f0,
+      fill: 0xf0e010,
       fontFamily: "Impact, sans-serif",
-      fontSize: 32,
+      fontSize: 40,
       stroke: 0x202020,
       strokeThickness: 5,
     });
     this.intentionIndicator.anchor.set(0.5);
     this.addChild(this.intentionIndicator);
 
+    const emojis = { atk: "⚔", def: "⛨", func: "★" } as Record<string, string>;
     this.onEnterFrame.watch(
-      () => data.nextCard,
-      nextCard => {
-        this.intentionIndicator.text = (nextCard?.type || '').toUpperCase();
+      () => this.thought || data.nextCard?.type,
+      v => {
+        v = emojis[v!] || v || '';
+        this.intentionIndicator.text = v.toUpperCase();
       },
       true
     );
@@ -75,7 +79,7 @@ export class VCombatant extends Container {
 
   setRightSide(rightSide: boolean) {
     this.sprite.scale.x = rightSide ? -1 : 1;
-    
+
     this.healthIndicator.position.set(rightSide ? -200 : 200, 140);
     this.healthIndicator.anchor.set(rightSide ? 0 : 1, 1.0);
 

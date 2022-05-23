@@ -35,9 +35,10 @@ export class VCombatStage extends Container {
     this.ln = TilingSprite.from(lnTextureId, { width: this.designWidth, height: this.designHeight });
     // this.ln.blendMode = BLEND_MODES.ADD;
     this.ln.blendMode = BLEND_MODES.SUBTRACT;
-    this.ln.tint = 0xf03030;
+    // this.ln.tint = 0xf03030;
     this.ln.scale.y = 2;
     this.ln.tileScale.y = 4;
+    this.ln.alpha = 0.2;
     this.addChild(this.ln);
 
     this.ln.visible = false;
@@ -58,7 +59,7 @@ export class VCombatStage extends Container {
       0.5 * (app.screen.height - this.designHeight * SCALE)
     );
 
-    this.ln.tilePosition.y -= 40;
+    this.ln.tilePosition.y -= 20;
   }
 
   // addChildAtFractionalPosition(child: Sprite, x: number, y: number) {
