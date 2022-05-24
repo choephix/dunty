@@ -58,13 +58,6 @@ export class CombatSide {
 
   readonly combatants = new Array<Combatant>();
 
-  onTurnStart() {
-    for (const unit of this.combatants) {
-      unit.status.retaliation = 0;
-      unit.status.block = 0;
-    }
-  }
-
   addCombatant(combatant: Combatant) {
     this.combatants.push(combatant);
     combatant.side = this;

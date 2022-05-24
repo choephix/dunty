@@ -193,7 +193,7 @@ export async function startGame(app: Application) {
   }
 
   async function startPlayerTurn() {
-    game.sideA.onTurnStart();
+    GameController.resetCombatantsForTurnStart(game.sideA);
 
     for (const foe of game.sideB.combatants) {
       await delay(0.15);
@@ -225,7 +225,7 @@ export async function startGame(app: Application) {
   async function resolveEnemyTurn() {
     container.ln.visible = true;
 
-    game.sideB.onTurnStart();
+    GameController.resetCombatantsForTurnStart(game.sideB);
 
     const playerCombatant = game.sideA.combatants[0];
     if (playerCombatant && game.sideB.combatants.length) {
