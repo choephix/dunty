@@ -191,7 +191,7 @@ export module Card {
       { cost: 1, type: "def", value: 1 },
       { cost: 1, type: "def", value: 2 },
       { cost: 1, type: "func", mods: { health: 2 } },
-      generateRandomStatusEffectCard(),
+      generateStatusEffectCard(),
     ]);
   }
 
@@ -200,17 +200,18 @@ export module Card {
       { cost: 1, type: "atk", value: 1 },
       { cost: 1, type: "atk", value: 2 },
       { cost: 1, type: "def", value: 2 },
-      generateRandomStatusEffectCard(),
-      generateRandomStatusEffectCard(),
-      generateRandomStatusEffectCard(),
-      generateRandomStatusEffectCard(),
+      generateStatusEffectCard(),
+      generateStatusEffectCard(),
+      generateStatusEffectCard(),
+      generateStatusEffectCard(),
+      generateStatusEffectCard(),
+      generateStatusEffectCard(),
     ]);
   }
 
-  function generateRandomStatusEffectCard(): Card {
+  function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card {
     const sampleCombatant = new Combatant();
-    const key = getRandomItemFrom(Object.keys(sampleCombatant.status)) as keyof CombatantStatus;
+    const key = statusProperty || (getRandomItemFrom(Object.keys(sampleCombatant.status)) as keyof CombatantStatus);
     return { cost: 1, type: "func", mods: { [key]: 2 } };
-    // return { type: "func", effect: actor => (actor.status[key] += 1) };
   }
 }

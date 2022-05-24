@@ -167,7 +167,7 @@ export module VCombatantAnimations {
       fontSize: 80,
       fontWeight: `bold`,
       stroke: 0x102030,
-      strokeThickness: 5,
+      strokeThickness: 10,
       align: "right",
     });
     fx.anchor.set(0.5, 0.5);

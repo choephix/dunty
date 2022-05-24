@@ -200,7 +200,8 @@ export async function startGame(app: Application) {
     await VCombatantAnimations.attack(vatk, vdef);
 
     if (target.alive && reflectedDamage > 0) {
-      const { directDamage, blockedDamage } = game.calculateDamage(reflectedDamage, target);
+      const { directDamage, blockedDamage } = game.calculateDamage(reflectedDamage, attacker);
+      console.log("Reflected damage:", directDamage, blockedDamage, reflectedDamage);
       dealDamage(attacker, directDamage, blockedDamage);
       await VCombatantAnimations.attack(vdef, vatk);
     }

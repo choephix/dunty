@@ -54,10 +54,11 @@ export class VCombatant extends Container {
     this.onEnterFrame.watch.array(
       () => [status.health, status.block, status.retaliation || 0],
       async ([health, block, retaliation], [prevHealth, prevBlock, prevRetaliation]) => {
-        if (health < prevHealth) await (health <= 0 ? VCombatantAnimations.die(this) : VCombatantAnimations.hurt(this));
-        if (health > prevHealth) await VCombatantAnimations.buffHealth(this);
-        if (block > prevBlock) await VCombatantAnimations.buffBlock(this);
-        if (retaliation > prevRetaliation) await VCombatantAnimations.buffRetaliation(this);
+        const Ani = VCombatantAnimations;
+        if (health < prevHealth) await (health <= 0 ? Ani.die(this) : Ani.hurt(this));
+        if (health > prevHealth) await (health > 0 ? Ani.buffHealth(this) : Ani.enter(this));
+        if (block > prevBlock) await Ani.buffBlock(this);
+        if (retaliation > prevRetaliation) await Ani.buffRetaliation(this);
       },
       true
     );
@@ -67,7 +68,7 @@ export class VCombatant extends Container {
 
   private addIntentionIndicator() {
     const intentionIndicator = new Text("-", {
-      fill: [0xFFFFFF, 0xf0e010],
+      fill: [0xffffff, 0xf0e010],
       fontFamily: "Impact, sans-serif",
       fontSize: 40,
       stroke: 0x202020,
@@ -81,7 +82,7 @@ export class VCombatant extends Container {
       v => {
         if (typeof v === "string") {
           intentionIndicator.text = v.toUpperCase();
-          intentionIndicator.style.fill = [0xFFFFFF, 0xf0e010];
+          intentionIndicator.style.fill = [0xffffff, 0xf0e010];
         } else {
           const [text, color = 0xf0e010] = getIntentionEmojifiedString(this.data, game);
           intentionIndicator.text = text.toUpperCase();

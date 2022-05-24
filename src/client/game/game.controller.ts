@@ -24,9 +24,9 @@ export module GameController {
       regeneration: u => (u.status.health += u.status.regeneration),
       tactical: u => drawCards(u.status.tactical, side),
       daggers: u => range(u.status.daggers).forEach(() => side.hand.push({ cost: 0, type: "atk", value: 1 })),
-      burning: u => (u.status.health += u.status.burning),
-      poisoned: u => (u.status.health += u.status.poisoned),
-      bleeding: u => (u.status.health += u.status.bleeding),
+      burning: u => (u.status.health -= u.status.burning),
+      poisoned: u => (u.status.health -= u.status.poisoned),
+      bleeding: u => (u.status.health -= u.status.bleeding),
     };
     for (const unit of side.combatants) {
       for (const [key, func] of CombatantStatus.entries(dict)) {
