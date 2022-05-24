@@ -26,6 +26,15 @@ export class Game {
     let value = card.value || 0;
     if (attacker) {
       value += attacker.status.strength || 0;
+      value += attacker.status.rage || 0;
+      value += attacker.status.fury || 0;
+      value -= attacker.status.weak || 0;
+    }
+
+    if (target) {
+      value += target.status.brittle || 0;
+      value *= target.status.exposed ? 2.0 : 1;
+      value *= target.status.doomed ? 2.0 : 1;
     }
 
     return value;
@@ -99,7 +108,8 @@ export class Combatant {
 
     // Negative
     weak: 0,
-    brittle: 0,
+    brittle: 0, // + to dmg received
+    exposed: 0, // + to dmg received
     doomed: 0,
     burning: 0,
     poisoned: 0,
@@ -150,6 +160,9 @@ export module Card {
       { type: "atk", value: 1 },
       { type: "atk", value: 2 },
       { type: "def", value: 2 },
+      generateRandomStatusEffectCard(),
+      generateRandomStatusEffectCard(),
+      generateRandomStatusEffectCard(),
       generateRandomStatusEffectCard(),
     ]);
   }

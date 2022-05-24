@@ -40,6 +40,7 @@ export class VCombatant extends Container {
       fontWeight: `bold`,
       stroke: 0xf0f0f0,
       strokeThickness: 5,
+      align: "right",
     });
     statusIndicator.anchor.set(0.5);
     this.addChild(statusIndicator);
