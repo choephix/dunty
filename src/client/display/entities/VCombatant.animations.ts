@@ -174,8 +174,9 @@ export module VCombatantAnimations {
     unit.addChild(fx);
     const tweeener = new TemporaryTweeener(fx);
     await tweeener.to(fx, {
-      pixi: { y: fx.y - 50, alpha: 0.0 },
+      pixi: { y: fx.y - 40, alpha: 0.0 },
       duration: 1.5,
+      ease: `power1.in`,
     });
     fx.destroy();
   }

@@ -5,7 +5,6 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
-import { Color } from "@sdk/utils/color/Color";
 import { VCombatantAnimations } from "./VCombatant.animations";
 import { getIntentionEmojifiedString, getStatusEffectEmojifiedString } from "./VCombatant.emojis";
 
