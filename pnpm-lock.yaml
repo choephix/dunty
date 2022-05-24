@@ -13,6 +13,7 @@ specifiers:
   '@pixi/display': ^6.3.2
   '@pixi/events': ^6.3.2
   '@pixi/extract': ^6.3.2
+  '@pixi/filter-adjustment': ^4.1.3
   '@pixi/filter-advanced-bloom': ^4.1.5
   '@pixi/filter-bulge-pinch': ^4.1.5
   '@pixi/filter-color-matrix': ^6.3.2
@@ -111,6 +112,7 @@ dependencies:
   '@pixi/display': 6.3.2_47cmrieohhdv7ltpupsiwihjhu
   '@pixi/events': 6.3.2_khztdsnmevet7ncp55jsbzdei4
   '@pixi/extract': 6.3.2_uxqofublrvyynxnwn2fa27hbsq
+  '@pixi/filter-adjustment': 4.1.3_iua7p53wxiu3awmkjhyfz6p2yy
   '@pixi/filter-advanced-bloom': 4.1.5_6spd5x2vpf6l4jypqnkb3yf7lu
   '@pixi/filter-bulge-pinch': 4.1.5_qi2szalln2tjyhylt2opxulpyi
   '@pixi/filter-color-matrix': 6.3.2_@pixi+core@6.3.2

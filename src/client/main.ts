@@ -14,6 +14,7 @@ import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
+import { AdjustmentFilter } from "@pixi/filter-adjustment";
 
 export let game: Game;
 
@@ -66,6 +67,9 @@ export async function startGame(app: Application) {
     outerStrength: 0.59,
     innerStrength: 0.09,
   });
+  // const glow = new GlowFilterService(new AdjustmentFilter({
+  //   brightness: 1.2,
+  // }));
   const activeCombatant = new CurrentSelectionHelper<Combatant>({
     onSelect: combatant => {
       const vCombatant = combatantsDictionary.get(combatant)!;
@@ -231,11 +235,11 @@ export async function startGame(app: Application) {
           await playCard(card, foe, target);
         }
 
-        await delay(0.10);
+        await delay(0.1);
 
         activeCombatant.setCurrent(null);
 
-        await delay(0.10);
+        await delay(0.1);
 
         if (!playerCombatant.alive) break;
       }

@@ -123,7 +123,7 @@ export module Card {
     return getRandomItemFrom<Card>([
       { type: "atk", value: 1 },
       { type: "atk", value: 2 },
-      { type: "def", value: 1 },
+      { type: "def", value: 2 },
       { type: "func", effect: actor => (actor.status.retaliation += 1) },
     ]);
   }

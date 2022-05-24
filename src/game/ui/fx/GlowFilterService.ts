@@ -1,3 +1,4 @@
+import { Filter } from "@pixi/core";
 import { DisplayObject } from "@pixi/display";
 import { GlowFilter, GlowFilterOptions } from "@pixi/filter-glow";
 
@@ -5,14 +6,17 @@ export class GlowFilterService {
   public readonly filter;
   private readonly targets;
 
-  constructor(options?: Partial<GlowFilterOptions>) {
+  constructor(options?: Partial<GlowFilterOptions> | Filter) {
     this.targets = new Set<DisplayObject>();
-    this.filter = new GlowFilter({
-      outerStrength: 2.6,
-      distance: 12,
-      color: 0x00ffff,
-      ...options,
-    });
+    this.filter =
+      options instanceof Filter
+        ? options
+        : new GlowFilter({
+            outerStrength: 2.6,
+            distance: 12,
+            color: 0x00ffff,
+            ...options,
+          });
   }
 
   addFilter(sprite: DisplayObject) {
