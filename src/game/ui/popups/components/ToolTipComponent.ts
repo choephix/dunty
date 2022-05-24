@@ -1,4 +1,3 @@
-import { FontFamily } from "@game/constants/FontFamily";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { Point } from "@pixi/math";
@@ -11,11 +10,13 @@ export type ToolTipComponentVerticalAlignment = 1 | 0 | -1;
 const paddingX = 30;
 const paddingY = 10;
 
-const arrowWidth = 12;
-const arrowHeight = 12;
+const arrowWidth = 50;
+const arrowHeight = 20;
 
-const boxRadius = 10;
-const color = 0x101010;
+const boxRadius = 0;
+const boxColor = 0xf9f9f9;
+const textColor = 0x203040;
+const textStrokeColor = 0xFfFfFf;
 
 export class ToolTipComponent extends Container {
   private readonly text: Text;
@@ -30,10 +31,12 @@ export class ToolTipComponent extends Container {
     super();
 
     this.text = new Text(content, {
-      fontFamily: FontFamily.Default,
-      fill: 0xffffff,
-      stroke: 0x0,
-      strokeThickness: 4,
+      fontFamily: ` cursive`,
+      fontSize: 32,
+      fontWeight: 'bold',
+      fill: textColor,
+      // stroke: textStrokeColor,
+      // strokeThickness: 2,
     });
     this.text.anchor.set(0.5, 0.5);
 
@@ -58,7 +61,7 @@ export class ToolTipComponent extends Container {
 
   drawBox(width: number, height: number): Graphics {
     const bg = new Graphics();
-    bg.beginFill(color);
+    bg.beginFill(boxColor);
     bg.drawRoundedRect(-width / 2, -height / 2, width, height, boxRadius);
     return bg;
   }
@@ -76,7 +79,7 @@ export class ToolTipComponent extends Container {
     const w = (arrowWidth * (arrowHeight + boxRadius)) / arrowHeight;
 
     const arr = new Graphics();
-    arr.beginFill(color);
+    arr.beginFill(boxColor);
     arr.drawPolygon([
       new Point(0.0, 0.0),
       new Point(x1 * w, -(arrowHeight + boxRadius) * v),

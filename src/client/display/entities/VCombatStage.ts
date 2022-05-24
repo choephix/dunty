@@ -1,4 +1,4 @@
-import { GameSingletons } from "@client";
+import { GameSingletons } from "@client/core/GameSingletons";
 import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";

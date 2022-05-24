@@ -1,3 +1,4 @@
+import { GameSingletons } from "@client/core/GameSingletons";
 import { Card } from "@client/game/game";
 import { game } from "@client/main";
 import { __window__ } from "@debug/__window__";

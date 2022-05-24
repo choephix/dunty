@@ -1,6 +1,6 @@
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { StatusEffectBlueprints, StatusEffectExpiryType } from "./CombatantStatus";
+import { StatusEffectBlueprints, StatusEffectExpiryType } from "./StatusEffectBlueprints";
 import { Card, Combatant, CombatantStatus, CombatSide } from "./game";
 
 export module GameController {

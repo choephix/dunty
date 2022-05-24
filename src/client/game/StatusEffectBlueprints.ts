@@ -1,3 +1,5 @@
+import { map } from "@sdk/helpers/objects";
+
 export enum StatusEffectExpiryType {
   NULL,
   DECREMENT_BEFORE_TURN,
@@ -5,7 +7,7 @@ export enum StatusEffectExpiryType {
   RESET_AFTER_COMBAT,
 }
 
-export const StatusEffectBlueprints = {
+export const _StatusEffectBlueprints = {
   block: {
     emoji: "⛊",
     expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
@@ -115,3 +117,13 @@ export const StatusEffectBlueprints = {
     expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
   },
 };
+
+export const StatusEffectBlueprints = map(_StatusEffectBlueprints, (key, v) => {
+  return {
+    name: key.toUpperCase(),
+    description: key,
+    ...v,
+  }
+});
+
+export type StatusEffectKey = keyof typeof _StatusEffectBlueprints;

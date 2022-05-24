@@ -13,7 +13,7 @@ import { SocialProfileDashService } from "../social/SocialProfileDashService";
 import { HUDAvatarBadgeController } from "./HUDAvatarBadgeController";
 import { createMapToggleMenu, MapToggle } from "./MapToggleMenu";
 import { ContextMenuManager } from "./services/ContextMenuManager";
-import { TooltipManager } from "./services/TooltipManager";
+import { TooltipManager } from "../../../client/display/ui/TooltipManager";
 
 export class HUD {
   public static readonly DEFAULT_HEADER_TEXT = "The Modern Century";

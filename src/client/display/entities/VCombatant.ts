@@ -5,6 +5,7 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
+import { ToolTipFactory } from "../services/TooltipFactory";
 import { VCombatantAnimations } from "./VCombatant.animations";
 import { getIntentionEmojifiedString, getStatusEffectEmojifiedString } from "./VCombatant.emojis";
 
@@ -35,7 +36,7 @@ export class VCombatant extends Container {
 
     const statusIndicator = new Text("-", {
       fill: [0x405080, 0x202020],
-      fontFamily: "Impact, sans-serif",
+      fontFamily: "Impact, fantasy",
       fontSize: 40,
       fontWeight: `bold`,
       stroke: 0xf0f0f0,
@@ -69,7 +70,7 @@ export class VCombatant extends Container {
   private addIntentionIndicator() {
     const intentionIndicator = new Text("-", {
       fill: [0xffffff, 0xf0e010],
-      fontFamily: "Impact, sans-serif",
+      fontFamily: "Impact, fantasy",
       fontSize: 40,
       stroke: 0x202020,
       strokeThickness: 5,

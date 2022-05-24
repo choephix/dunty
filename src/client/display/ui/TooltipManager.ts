@@ -1,4 +1,4 @@
-import { GameSingletons } from "@game/app/GameSingletons";
+import { GameSingletons } from "@client/core/GameSingletons";
 import { ToolTipComponent } from "@game/ui/popups/components/ToolTipComponent";
 import { Container, DisplayObject } from "@pixi/display";
 import type { InteractionManager } from "@pixi/interaction";
@@ -12,6 +12,8 @@ type TooltipOptions = {
   delay: number;
 };
 
+const DEFAULT_DELAY = 850;
+
 export class TooltipManager {
   private currentTooltip: ToolTipComponent | null = null;
   private currentTarget: DisplayObject | null = null;
@@ -19,7 +21,7 @@ export class TooltipManager {
 
   public readonly targets = new Map<DisplayObject, Partial<TooltipOptions>>();
 
-  constructor(public readonly container: Container, private readonly interactionManager?: InteractionManager) {
+  constructor(public readonly container: Container) {
     this.handleClearOnClick();
   }
 
@@ -44,7 +46,7 @@ export class TooltipManager {
 
     this.targets.set(target, options);
 
-    const { delay = 150 } = options;
+    const { delay = DEFAULT_DELAY } = options;
 
     const clearCurrentTimeout = () => {
       if (this.timeoutHandle) {
@@ -105,15 +107,15 @@ export class TooltipManager {
       return;
     }
 
-    const { app, viewSize } = GameSingletons.getGameContext();
+    const app = GameSingletons.getPixiApplicaiton();
     const interaction = app.renderer.plugins.interaction as InteractionManager;
     const mousePosition = interaction.mouse.global;
 
     const getDefaultHorizontalAnchor = () => {
-      return (mousePosition.x / viewSize.width) * 2 - 1;
+      return (mousePosition.x / app.view.width) * 2 - 1;
     };
     const getDefaultVerticalAnchor = () => {
-      return mousePosition.y > viewSize.height * 0.9 ? -1 : 1;
+      return mousePosition.y > app.view.height * 0.9 ? -1 : 1;
     };
 
     const { horizontalAlign = getDefaultHorizontalAnchor(), verticalAlign = getDefaultVerticalAnchor() } = options;

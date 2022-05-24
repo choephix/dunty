@@ -31,18 +31,17 @@ export async function startGame(app: Application) {
   await nextFrame();
 
   game = __window__.game = new Game();
-
   game.start();
 
-  const container = new VCombatStage();
-  app.stage.addChild(container);
+  const vscene = new VCombatStage(); 
+  __window__.container = app.stage.addChild(vscene);
 
-  await container.playShowAnimation();
+  await vscene.playShowAnimation();
 
   const combatantsDictionary = new Map<Combatant, VCombatant>();
   function composeSide(state: CombatGroup, leftSide: boolean) {
     const sideMul = leftSide ? -1 : 1;
-    const centerUnitPosition = container.getFractionalPosition(0.45 + sideMul * 0.2, 0.35);
+    const centerUnitPosition = vscene.getFractionalPosition(0.45 + sideMul * 0.2, 0.35);
     for (const [index, char] of state.combatants.entries()) {
       const unit = new VCombatant(char);
       unit.setRightSide(leftSide);
@@ -52,8 +51,8 @@ export async function startGame(app: Application) {
 
       unit.scale.set(1.1 - 0.1 * index);
       unit.zIndex = 100 - index;
-      container.addChild(unit);
-      container.sortChildren();
+      vscene.addChild(unit);
+      vscene.sortChildren();
 
       combatantsDictionary.set(char, unit);
 
@@ -81,11 +80,11 @@ export async function startGame(app: Application) {
   composeSide(game.sideA, true);
   composeSide(game.sideB, false);
 
-  const handOrigin = container.getFractionalPosition(0.5, 0.8);
+  const handOrigin = vscene.getFractionalPosition(0.5, 0.8);
   const hand = new VHand();
   hand.cardList = game.sideA.hand;
   hand.position.set(handOrigin.x, handOrigin.y);
-  container.addChild(hand);
+  vscene.addChild(hand);
   __window__.hand = hand;
 
   hand.onCardClick = async card => {
@@ -257,7 +256,7 @@ export async function startGame(app: Application) {
   }
 
   async function resolveEnemyTurn() {
-    container.ln.visible = true;
+    vscene.ln.visible = true;
 
     await GameController.activateCombatantTurnStartStatusEffects(game.sideB);
     await GameController.resetCombatantsForTurnStart(game.sideB);
@@ -294,12 +293,12 @@ export async function startGame(app: Application) {
       await delay(0.4);
     }
 
-    container.ln.visible = false;
+    vscene.ln.visible = false;
   }
 
   const endTurnButton = new EndTurnButton();
-  endTurnButton.position.copyFrom(container.getFractionalPosition(0.5, 0.9));
-  container.addChild(endTurnButton);
+  endTurnButton.position.copyFrom(vscene.getFractionalPosition(0.5, 0.9));
+  vscene.addChild(endTurnButton);
   const endTurnButtonBehavior = createAnimatedButtonBehavior(
     endTurnButton,
     {
@@ -321,13 +320,13 @@ export async function startGame(app: Application) {
 
   startPlayerTurn();
 
-  const onEnterFrame = createEnchantedFrameLoop(container);
+  const onEnterFrame = createEnchantedFrameLoop(vscene);
   app.ticker.add(onEnterFrame);
   await onEnterFrame.waitUntil(() => !game.sideA.combatants.length || !game.sideB.combatants.length);
   app.ticker.remove(onEnterFrame);
 
-  await container.playHideAnimation();
-  container.destroy({ children: true });
+  await vscene.playHideAnimation();
+  vscene.destroy({ children: true });
 
   console.log("Game over");
 

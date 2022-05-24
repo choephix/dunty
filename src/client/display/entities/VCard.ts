@@ -9,6 +9,7 @@ import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import { Card, Combatant, CombatantStatus } from "../../game/game";
+import { ToolTipFactory } from "../services/TooltipFactory";
 import { statusEffectEmojis } from "./VCombatant.emojis";
 
 export class VCard extends Container {
@@ -44,6 +45,8 @@ export class VCard extends Container {
       },
       true
     );
+
+    ToolTipFactory.addToCard(this);
   }
 
   addBackground() {
@@ -151,5 +154,9 @@ export class VCard extends Container {
     sprite.scale.set(2.15);
     this.addChild(sprite);
     return sprite;
+  }
+
+  getBounds() {
+    return this.background.getBounds();
   }
 }

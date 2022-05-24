@@ -2,8 +2,9 @@ import "./index.css";
 
 import { Application } from "@pixi/app";
 
-import { boot } from "@client/boot";
+import { boot } from "@client/core/boot";
 import { main } from "@client/main";
+import { initializeGameSingletons } from "./core/GameSingletons";
 
 const __window__ = window as any;
 
@@ -19,11 +20,9 @@ if (__window__.__DUNTY_INITIALIZED__) {
     return __window__.APP as Application;
   };
 
-  main(greateApp());
-}
+  const app = greateApp();
 
-export module GameSingletons {
-  export function getPixiApplicaiton() {
-    return __window__.APP as Application;
-  }
+  initializeGameSingletons(app);
+
+  main(app);
 }
