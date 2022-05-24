@@ -36,12 +36,16 @@ export module ToolTipFactory {
     tooltips.registerTarget(sprite, tooltipHintText || `Unknown card type: ${data.type}`);
   }
 
-  export function addToStatusEffect(sprite: Sprite, statusEffect: StatusEffectKey) {
+  export function addToStatusEffect(sprite: Sprite, statusEffect: StatusEffectKey, value: number) {
     const { displayName = statusEffect.toUpperCase(), description = `Unknown status effect` } =
       StatusEffectBlueprints[statusEffect] || {};
 
-    const tooltipHintText = `${displayName.toUpperCase()}\n${description}`.trim();
+    const tooltipHintText = `${displayName.toUpperCase()}\n${description}`.trim().replace(/ X /g, ` ${value} `);
+
     const tooltips = GameSingletons.getTooltipManager();
-    tooltips.registerTarget(sprite, tooltipHintText);
+    tooltips.registerTarget(sprite, {
+      content: tooltipHintText,
+      wordWrapWidth: 300,
+    });
   }
 }

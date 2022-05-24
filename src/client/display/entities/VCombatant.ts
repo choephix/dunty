@@ -143,8 +143,7 @@ class StatusEffectIndicators extends Container {
   }
 
   private createStatusIndicator(key: StatusEffectKey, value: number) {
-    const string = getStatusEffectEmojifiedString(key, value);
-    const label = new Text(string || "?", {
+    const label = new Text(``, {
       fill: [0x405080, 0x202020],
       fontFamily: "Impact, fantasy",
       fontSize: 40,
@@ -155,18 +154,20 @@ class StatusEffectIndicators extends Container {
     });
     label.anchor.set(0.5);
 
-    label.buttonMode = true;
-    ToolTipFactory.addToStatusEffect(label, key)
+    function update(value: number) {
+      label.text = getStatusEffectEmojifiedString(key, value) || "?";
+      label.buttonMode = true;
+      ToolTipFactory.addToStatusEffect(label, key, value);
+    }
 
-    const result = Object.assign(label, {
+    update(value);
+
+    return Object.assign(label, {
       key,
       value,
       priority: StatusEffectBlueprints[key].displayPriority,
-      update(value: number) {
-        label.text = getStatusEffectEmojifiedString(key, value);
-      },
+      update,
     });
-    return result;
   }
 }
 

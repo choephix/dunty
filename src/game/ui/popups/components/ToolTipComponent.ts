@@ -26,15 +26,18 @@ export class ToolTipComponent extends Container {
   constructor(
     content: string,
     horizontalAlignment: ToolTipComponentHorizontalAlignment,
-    verticalAlignment: ToolTipComponentVerticalAlignment
+    verticalAlignment: ToolTipComponentVerticalAlignment,
+    wordWrapWidth?: number
   ) {
     super();
 
     this.text = new Text(content, {
       fontFamily: ` cursive`,
       fontSize: 32,
-      fontWeight: 'bold',
+      fontWeight: "bold",
       fill: textColor,
+      wordWrapWidth,
+      wordWrap: wordWrapWidth !== undefined,
       // stroke: textStrokeColor,
       // strokeThickness: 2,
     });

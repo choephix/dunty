@@ -10,6 +10,7 @@ type TooltipOptions = {
   verticalAlign: 1 | -1;
   position: { x: number; y: number };
   delay: number;
+  wordWrapWidth: number;
 };
 
 const DEFAULT_DELAY = 700;
@@ -129,9 +130,9 @@ export class TooltipManager {
         return { x, y: bounds.y };
       }
     };
-    const { position = getDefaultPosition() } = options;
+    const { content, wordWrapWidth, position = getDefaultPosition() } = options;
 
-    const tooltip = new ToolTipComponent(options.content, horizontalAlign, verticalAlign);
+    const tooltip = new ToolTipComponent(content, horizontalAlign, verticalAlign, wordWrapWidth);
     tooltip.position.copyFrom(position);
     tooltip.scale.set(0.6);
 

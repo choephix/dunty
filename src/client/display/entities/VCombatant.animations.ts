@@ -122,11 +122,11 @@ export module VCombatantAnimations {
 
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
-      pixi: { pivotY: 10 },
+      pixi: { pivotY: 4 },
       repeat: 1,
       yoyo: true,
       duration: 0.15,
-      ease: `power2.in`,
+      ease: `power2.out`,
     });
   }
 
