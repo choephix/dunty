@@ -181,6 +181,7 @@ export interface Card {
   value?: number;
   // effect?: (actor: Combatant, target?: Combatant) => void;
   mods?: Partial<CombatantStatus>;
+  isToken?: boolean;
 }
 
 export module Card {
