@@ -34,17 +34,17 @@ function spawnFlare1(parent: Container, tint: number) {
 
 async function blinkThought(vunit: VCombatant, thought: string) {
   vunit.thought = thought;
-  await delay(0.1);
+  await delay(0.07);
   vunit.thought = undefined;
-  await delay(0.1);
+  await delay(0.07);
   vunit.thought = thought;
-  await delay(0.1);
+  await delay(0.07);
   vunit.thought = undefined;
-  await delay(0.1);
+  await delay(0.07);
   vunit.thought = thought;
   await delay(0.2);
   vunit.thought = undefined;
-  await delay(0.1);
+  await delay(0.07);
 }
 
 export module VCombatantAnimations {
