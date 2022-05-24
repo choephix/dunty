@@ -99,6 +99,7 @@ export async function startGame(app: Application) {
 
     if (hand.length === 0) {
       endPlayerTurn();
+      await delay(0.8);
     }
   };
 
@@ -209,8 +210,8 @@ export async function startGame(app: Application) {
   }
 
   async function startPlayerTurn() {
-    GameController.activateCombatantTurnStartStatusEffects(game.sideA);
-    GameController.resetCombatantsForTurnStart(game.sideA);
+    await GameController.activateCombatantTurnStartStatusEffects(game.sideA);
+    await GameController.resetCombatantsForTurnStart(game.sideA);
 
     for (const foe of game.sideB.combatants) {
       await delay(0.15);
@@ -255,8 +256,8 @@ export async function startGame(app: Application) {
   async function resolveEnemyTurn() {
     container.ln.visible = true;
 
-    GameController.activateCombatantTurnStartStatusEffects(game.sideB);
-    GameController.resetCombatantsForTurnStart(game.sideB);
+    await GameController.activateCombatantTurnStartStatusEffects(game.sideB);
+    await GameController.resetCombatantsForTurnStart(game.sideB);
 
     const playerCombatant = game.sideA.combatants[0];
     if (playerCombatant && game.sideB.combatants.length) {

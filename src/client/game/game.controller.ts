@@ -29,10 +29,12 @@ export module GameController {
       bleeding: u => (u.status.health += u.status.bleeding),
     };
     for (const unit of side.combatants) {
-      for (const [key, value] of CombatantStatus.entries(unit.status)) {
-        if (value > 0) dict[key]?.(unit);
+      for (const [key, func] of CombatantStatus.entries(dict)) {
+        if (unit.status[key] > 0) {
+          func?.(unit);
+          await delay(0.3);
+        }
       }
-      await delay(0.3);
     }
   }
 

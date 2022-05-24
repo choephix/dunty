@@ -170,8 +170,8 @@ export class Combatant {
 
 export type CombatantStatus = Combatant["status"];
 export module CombatantStatus {
-  export function entries(obj: Partial<CombatantStatus>) {
-    return Object.entries(obj) as [keyof CombatantStatus, number][];
+  export function entries<T>(obj: Partial<Record<keyof CombatantStatus, T>>) {
+    return Object.entries(obj) as [keyof CombatantStatus, T][];
   }
 }
 

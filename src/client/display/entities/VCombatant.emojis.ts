@@ -72,19 +72,22 @@ export function getStatusEffectEmojifiedString(actor: Combatant, game: Game) {
   return col.join("\n");
 }
 
-export function getIntentionEmojifiedString(actor: Combatant, game: Game) {
+export function getIntentionEmojifiedString(actor: Combatant, game: Game): [string, number?] {
   if (actor.nextCard) {
     const { type, value } = actor.nextCard;
+
     if (type === "atk") {
       const atk = game.calculateAttackPower(actor.nextCard, actor);
-      return `⚔${atk}`;
+      return [`⚔${atk}`, 0xf02020];
     }
+
     if (type === "def") {
-      return `⛊${value || "?"}`;
+      return [`⛊${value || "?"}`, 0x70b0f0];
     }
+
     if (type === "func") {
-      return `★`;
+      return [`★`, 0x00ffff];
     }
   }
-  return "";
+  return [""];
 }

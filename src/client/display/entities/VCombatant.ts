@@ -5,6 +5,7 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
+import { Color } from "@sdk/utils/color/Color";
 import { VCombatantAnimations } from "./VCombatant.animations";
 import { getIntentionEmojifiedString, getStatusEffectEmojifiedString } from "./VCombatant.emojis";
 
@@ -77,8 +78,17 @@ export class VCombatant extends Container {
     this.addChild(intentionIndicator);
 
     this.onEnterFrame.watch(
-      () => this.thought || getIntentionEmojifiedString(this.data, game),
-      v => (intentionIndicator.text = v.toUpperCase()),
+      () => this.thought || this.data.nextCard,
+      v => {
+        if (typeof v === "string") {
+          intentionIndicator.text = v.toUpperCase();
+          intentionIndicator.style.fill = [0xFFFFFF, 0xf0e010];
+        } else {
+          const [text, color = 0xf0e010] = getIntentionEmojifiedString(this.data, game);
+          intentionIndicator.text = text.toUpperCase();
+          intentionIndicator.style.fill = color;
+        }
+      },
       true
     );
 
