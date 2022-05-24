@@ -153,7 +153,7 @@ export module VCombatantAnimations {
     await tweeener.to(unit, {
       pixi: { alpha: 0.2, pivotX: direction * 150 },
     });
-    await tweeener.to(unit.statusIndicator, { alpha: 0.0 });
+    await tweeener.to(unit.statusIndicators, { alpha: 0.0 });
   }
 
   export async function noCard(unit: VCombatant) {

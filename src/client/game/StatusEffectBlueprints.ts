@@ -124,6 +124,7 @@ const __StatusEffectBlueprints = {
 
 export const StatusEffectBlueprints = map(__StatusEffectBlueprints, (key, v) => {
   return {
+    displayPriority: Object.keys(__StatusEffectBlueprints).indexOf(key),
     name: key.toUpperCase(),
     description: key,
     ...v,

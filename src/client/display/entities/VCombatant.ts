@@ -1,17 +1,19 @@
-import { Combatant } from "@client/game/game";
+import { Combatant, CombatantStatus } from "@client/game/game";
+import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
 import { game } from "@client/main";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
+import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 import { ToolTipFactory } from "../services/TooltipFactory";
 import { VCombatantAnimations } from "./VCombatant.animations";
-import { getIntentionEmojifiedString, getStatusEffectEmojifiedString } from "./VCombatant.emojis";
+import { getIntentionEmojifiedString, getStatusEffectEmojiOnly } from "./VCombatant.emojis";
 
 export class VCombatant extends Container {
   sprite;
-  statusIndicator;
+  statusIndicators;
   intentionIndicator;
 
   thought?: string;
@@ -23,34 +25,18 @@ export class VCombatant extends Container {
     this.sprite.anchor.set(0.5);
     this.addChild(this.sprite);
 
-    this.statusIndicator = this.addStatusIndicators();
+    this.statusIndicators = this.addStatusIndicators();
     this.intentionIndicator = this.addIntentionIndicator();
+
+    this.intializeAnimationsReactor();
   }
 
   readonly onEnterFrame = createEnchantedFrameLoop(this);
 
   //// Builder Methods
 
-  private addStatusIndicators() {
+  private intializeAnimationsReactor() {
     const { status } = this.data;
-
-    const statusIndicator = new Text("-", {
-      fill: [0x405080, 0x202020],
-      fontFamily: "Impact, fantasy",
-      fontSize: 40,
-      fontWeight: `bold`,
-      stroke: 0xf0f0f0,
-      strokeThickness: 5,
-      align: "right",
-    });
-    statusIndicator.anchor.set(0.5);
-    this.addChild(statusIndicator);
-
-    this.onEnterFrame.watch.properties(
-      () => status,
-      () => (statusIndicator.text = getStatusEffectEmojifiedString(this.data, game)),
-      true
-    );
 
     this.onEnterFrame.watch.array(
       () => [status.health, status.block, status.retaliation || 0],
@@ -61,6 +47,19 @@ export class VCombatant extends Container {
         if (block > prevBlock) await Ani.buffBlock(this);
         if (retaliation > prevRetaliation) await Ani.buffRetaliation(this);
       },
+      true
+    );
+  }
+
+  private addStatusIndicators() {
+    const { status } = this.data;
+
+    const statusIndicator = new StatusEffectIndicators();
+    this.addChild(statusIndicator);
+
+    this.onEnterFrame.watch.properties(
+      () => status,
+      () => statusIndicator.update(status),
       true
     );
 
@@ -104,8 +103,7 @@ export class VCombatant extends Container {
   setRightSide(rightSide: boolean) {
     this.sprite.scale.x = rightSide ? -1 : 1;
 
-    this.statusIndicator.position.set(rightSide ? -200 : 200, 140);
-    this.statusIndicator.anchor.set(rightSide ? 0 : 1, 1.0);
+    this.statusIndicators.position.set(rightSide ? -200 : 200, 140);
 
     this.intentionIndicator.position.set(rightSide ? 200 : -200, -100);
     this.intentionIndicator.anchor.set(rightSide ? 1 : 0, 1.0);
@@ -114,4 +112,66 @@ export class VCombatant extends Container {
   waitUntilLoaded() {
     return this.onEnterFrame.waitUntil(() => this.sprite.texture.baseTexture.valid);
   }
+}
+
+class StatusEffectIndicators extends Container {
+  readonly sprites = new Map<StatusEffectKey, ReturnType<typeof this.createStatusIndicator>>();
+
+  update(status: CombatantStatus) {
+    for (const [key, value] of CombatantStatus.entries(status)) {
+      let sprite = this.sprites.get(key);
+      if (value) {
+        if (!sprite) {
+          sprite = this.createStatusIndicator(key, value);
+          this.addChild(sprite);
+          this.sprites.set(key, sprite);
+        }
+        sprite.update(value);
+      } else {
+        if (sprite) {
+          sprite.destroy();
+          this.sprites.delete(key);
+        }
+      }
+    }
+
+    const spritesArray = Array.from(this.sprites.values());
+    spritesArray.sort((a, b) => b.priority - a.priority);
+    arrangeInStraightLine(spritesArray, { vertical: true, alignment: [0.5, 1.0] });
+
+    this.pivot.y = this.height / this.scale.y;
+  }
+
+  private createStatusIndicator(key: StatusEffectKey, value: number) {
+    const string = getStatusEffectEmojifiedString(key, value);
+    const label = new Text(string || "?", {
+      fill: [0x405080, 0x202020],
+      fontFamily: "Impact, fantasy",
+      fontSize: 40,
+      fontWeight: `bold`,
+      stroke: 0xf0f0f0,
+      strokeThickness: 5,
+      align: "right",
+    });
+    label.anchor.set(0.5);
+
+    ToolTipFactory.addToStatusEffect(label, key)
+
+    const result = Object.assign(label, {
+      key,
+      value,
+      priority: StatusEffectBlueprints[key].displayPriority,
+      update(value: number) {
+        label.text = getStatusEffectEmojifiedString(key, value);
+      },
+    });
+    return result;
+  }
+}
+
+function getStatusEffectEmojifiedString(key: StatusEffectKey, value: number) {
+  const emoji = getStatusEffectEmojiOnly(key);
+  if (typeof value === "number" && value != 0) return `${emoji}${value}`;
+  if (typeof value === "boolean") return `${emoji}`;
+  return `${emoji} (${value}?)`;
 }

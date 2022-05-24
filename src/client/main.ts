@@ -70,11 +70,11 @@ export async function startGame(app: Application) {
   const activeCombatant = new CurrentSelectionHelper<Combatant>({
     onSelect: combatant => {
       const vCombatant = combatantsDictionary.get(combatant)!;
-      glow.addFilter(vCombatant.statusIndicator);
+      glow.addFilter(vCombatant.statusIndicators);
     },
     onDeselect: combatant => {
       const vCombatant = combatantsDictionary.get(combatant)!;
-      glow.removeFrom(vCombatant.statusIndicator);
+      glow.removeFrom(vCombatant.statusIndicators);
     },
   });
 
