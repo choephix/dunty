@@ -1,5 +1,5 @@
 import { VCombatant } from "@client/display/entities/VCombatant";
-import { VCombatStage } from "@client/display/entities/VCombatStage";
+import { VCombatScene } from "@client/display/entities/VCombatScene";
 import { Card, Combatant, CombatantStatus, CombatSide as CombatGroup, Game } from "@client/game/game";
 import { GameController } from "@client/game/game.controller";
 import { drawRect } from "@debug/utils/drawRect";
@@ -33,7 +33,7 @@ export async function startGame(app: Application) {
   game = __window__.game = new Game();
   game.start();
 
-  const vscene = new VCombatStage(); 
+  const vscene = new VCombatScene(); 
   __window__.container = app.stage.addChild(vscene);
 
   await vscene.playShowAnimation();

@@ -14,7 +14,7 @@ const DESIGN_SPECS = {
   height: 1920,
 };
 
-export class VCombatStage extends Container {
+export class VCombatScene extends Container {
   readonly designWidth = DESIGN_SPECS.width;
   readonly designHeight = DESIGN_SPECS.height;
 
