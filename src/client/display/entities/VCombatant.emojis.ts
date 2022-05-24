@@ -1,34 +1,36 @@
 import { Combatant, CombatantStatus, Game } from "@client/game/game";
+import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
 
-export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }> = {
-  health: { icon: `❤` },
-  block: { icon: `⛊` },
-  retaliation: { icon: `⥃` },
-  reflect: { icon: `⮎` },
-  strength: { icon: `🡅` },
-  weak: { icon: `🡇` },
-  burning: { icon: "♨︎" },
-  wet: { icon: "☂" },
-  oiled: { icon: "🌢" },
-  poisoned: { icon: "☣" },
-  stunned: { icon: "⚡︎" },
-  regeneration: { icon: "✚" },
-  doomed: { icon: "☠" },
-  haste: { icon: "♞" },
-  tactical: { icon: "♚" },
-  taunt: { icon: `⚑` },
-  fury: { icon: "⮙" },
-  rage: { icon: "⮝" },
-  warm: { icon: "🌡" },
-  bleeding: { icon: "⚕" },
-  daggers: { icon: "⚔" },
-  defensive: { icon: "⛨" },
-  protection: { icon: "☥" },
-  brittle: { icon: "✖" },
-  leech: { icon: "⤽" },
-  cold: { icon: "❅" },
-  frozen: { icon: "❆" },
-  exposed: { icon: "◎" },
+// export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }> = {
+//   health: { icon: `❤` },
+//   block: { icon: `⛊` },
+//   retaliation: { icon: `⥃` },
+//   reflect: { icon: `⮎` },
+//   strength: { icon: `🡅` },
+//   weak: { icon: `🡇` },
+//   burning: { icon: "♨︎" },
+//   wet: { icon: "☂" },
+//   oiled: { icon: "🌢" },
+//   poisoned: { icon: "☣" },
+//   stunned: { icon: "⚡︎" },
+//   regeneration: { icon: "✚" },
+//   doomed: { icon: "☠" },
+//   haste: { icon: "♞" },
+//   tactical: { icon: "♚" },
+//   taunt: { icon: `⚑` },
+//   fury: { icon: "⮙" },
+//   rage: { icon: "⮝" },
+//   warm: { icon: "🌡" },
+//   bleeding: { icon: "⚕" },
+//   daggers: { icon: "⚔" },
+//   defensive: { icon: "⛨" },
+//   protection: { icon: "☥" },
+//   brittle: { icon: "✖" },
+//   leech: { icon: "⤽" },
+//   cold: { icon: "❅" },
+//   frozen: { icon: "❆" },
+//   exposed: { icon: "◎" },
+
   // exposed: { icon: "⍟" },
   // inspiring: { icon: "♫" },
   // resurrected: { icon: "✟" },
@@ -59,15 +61,19 @@ export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }>
   // sun: { icon: "☀" },
   // lucky: { icon: "☘" },
   // shogi: { icon: "☗" },
-};
+// };
+
+export function getStatusEffectEmojiOnly(statusEffect: StatusEffectKey) {
+  return StatusEffectBlueprints[statusEffect].emoji;
+}
 
 export function getStatusEffectEmojifiedString(actor: Combatant, game: Game) {
   const { health, ...props } = actor.status;
   const col = [`❤${health}`];
-  for (const [k, v] of Object.entries(props) as [keyof CombatantStatus, number][]) {
-    const { icon = "?" } = statusEffectEmojis[k] || {};
-    if (typeof v === "number" && v != 0) col.unshift(`${icon}${v}`);
-    if (typeof v === "boolean") col.unshift(`${icon}`);
+  for (const [k, v] of Object.entries(props) as [keyof typeof props, number][]) {
+    const emoji = getStatusEffectEmojiOnly(k);
+    if (typeof v === "number" && v != 0) col.unshift(`${emoji}${v}`);
+    if (typeof v === "boolean") col.unshift(`${emoji}`);
   }
   return col.join("\n");
 }

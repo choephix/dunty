@@ -13,8 +13,9 @@ import { lerp } from "@sdk/utils/math";
 import { delay, nextFrame } from "@sdk/utils/promises";
 import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
-import { statusEffectEmojis } from "./display/entities/VCombatant.emojis";
+import { getStatusEffectEmojiOnly } from "./display/entities/VCombatant.emojis";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
+import { StatusEffectBlueprints } from "./game/StatusEffectBlueprints";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 
 export let game: Game;
@@ -33,7 +34,7 @@ export async function startGame(app: Application) {
   game = __window__.game = new Game();
   game.start();
 
-  const vscene = new VCombatScene(); 
+  const vscene = new VCombatScene();
   __window__.container = app.stage.addChild(vscene);
 
   await vscene.playShowAnimation();
@@ -134,7 +135,8 @@ export async function startGame(app: Application) {
           }
 
           if (noFloatyTextKeys.indexOf(key) === -1) {
-            VCombatantAnimations.spawnFloatyText(vact, `${statusEffectEmojis[key].icon}${mod}`, 0xa0c0f0);
+            const emoji = getStatusEffectEmojiOnly(key);
+            VCombatantAnimations.spawnFloatyText(vact, `${emoji}${mod}`, 0xa0c0f0);
           }
           await delay(0.45);
         }
@@ -221,10 +223,10 @@ export async function startGame(app: Application) {
       const vunit = combatantsDictionary.get(foe)!;
       if (foe.status.frozen) {
         foe.nextCard = null;
-        vunit.thought = statusEffectEmojis.frozen.icon;
+        vunit.thought = StatusEffectBlueprints.frozen.emoji;
       } else if (foe.status.stunned) {
         foe.nextCard = null;
-        vunit.thought = statusEffectEmojis.stunned.icon;
+        vunit.thought = StatusEffectBlueprints.stunned.emoji;
       } else {
         foe.nextCard = Card.generateRandomEnemyCard();
       }

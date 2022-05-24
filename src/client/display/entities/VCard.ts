@@ -1,3 +1,4 @@
+import { StatusEffectBlueprints } from "@client/game/StatusEffectBlueprints";
 import { game } from "@client/main";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
@@ -10,7 +11,6 @@ import { Text } from "@pixi/text";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import { Card, Combatant, CombatantStatus } from "../../game/game";
 import { ToolTipFactory } from "../services/TooltipFactory";
-import { statusEffectEmojis } from "./VCombatant.emojis";
 
 export class VCard extends Container {
   background;
@@ -129,7 +129,9 @@ export class VCard extends Container {
     }
     if (this.data.type === "func") {
       if (this.data.mods) {
-        const emojis = Object.keys(this.data.mods).map((k: any) => statusEffectEmojis[k as keyof CombatantStatus].icon);
+        const emojis = Object.keys(this.data.mods).map(
+          (k: any) => StatusEffectBlueprints[k as keyof CombatantStatus].emoji
+        );
         const label = new Text(emojis.join(""), {
           fill: [0xf0f0f0, 0xc0f0f0],
           fontFamily: "Impact, sans-serif",

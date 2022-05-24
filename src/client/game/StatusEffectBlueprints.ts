@@ -7,7 +7,11 @@ export enum StatusEffectExpiryType {
   RESET_AFTER_COMBAT,
 }
 
-export const _StatusEffectBlueprints = {
+const __StatusEffectBlueprints = {
+  health: {
+    emoji: "❤",
+    expiryType: StatusEffectExpiryType.NULL,
+  }, //
   block: {
     emoji: "⛊",
     expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
@@ -118,12 +122,12 @@ export const _StatusEffectBlueprints = {
   },
 };
 
-export const StatusEffectBlueprints = map(_StatusEffectBlueprints, (key, v) => {
+export const StatusEffectBlueprints = map(__StatusEffectBlueprints, (key, v) => {
   return {
     name: key.toUpperCase(),
     description: key,
     ...v,
-  }
+  };
 });
 
-export type StatusEffectKey = keyof typeof _StatusEffectBlueprints;
+export type StatusEffectKey = keyof typeof __StatusEffectBlueprints;

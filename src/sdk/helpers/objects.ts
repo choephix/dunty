@@ -92,12 +92,12 @@ export function deleteUndefinedObjectProperties<T extends {}>(obj: T) {
   return obj;
 }
 
-export function map<T extends {}>(obj: T, fn: <K extends keyof T>(key: K, value: T[K], obj: T) => any) {
+export function map<T extends {}, R>(obj: T, fn: <K extends keyof T>(key: K, value: T[K], obj: T) => R) {
   const result = {} as Partial<{ readonly [K in keyof T]: any }>;
   for (const [key, value] of Object.entries(obj)) {
     (result as any)[key] = fn(key as keyof T, value as T[keyof T], obj);
   }
-  return result;
+  return result as { readonly [K in keyof T]: R };
 }
 
 export function* iterateObjectProperties<T extends {}>(obj: T) {
