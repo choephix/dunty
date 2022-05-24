@@ -28,7 +28,8 @@ export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }>
   leech: { icon: "⤽" },
   cold: { icon: "❅" },
   frozen: { icon: "❆" },
-  exposed: { icon: "⍟" },
+  exposed: { icon: "◎" },
+  // exposed: { icon: "⍟" },
   // inspiring: { icon: "♫" },
   // resurrected: { icon: "✟" },
   // ranged: { icon: "➳" },
@@ -58,7 +59,6 @@ export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }>
   // sun: { icon: "☀" },
   // lucky: { icon: "☘" },
   // shogi: { icon: "☗" },
-  // bullseye: { icon: "◎" },
 };
 
 export function getStatusEffectEmojifiedString(actor: Combatant, game: Game) {

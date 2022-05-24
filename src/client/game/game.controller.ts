@@ -1,5 +1,6 @@
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
+import { StatusEffectBlueprints, StatusEffectExpiryType } from "./CombatantStatus";
 import { Card, Combatant, CombatantStatus, CombatSide } from "./game";
 
 export module GameController {
@@ -39,48 +40,16 @@ export module GameController {
   }
 
   export async function resetCombatantsForTurnStart(side: CombatSide) {
-    enum Action {
-      Reset,
-      Decrement,
-    }
-    const dict: Record<keyof CombatantStatus, Action | null> = {
-      health: null,
-      strength: null,
-      defensive: null,
-      block: Action.Reset, //
-      retaliation: Action.Reset,
-      reflect: Action.Reset,
-      fury: Action.Reset,
-      tactical: Action.Reset,
-      protection: Action.Reset, //
-      exposed: Action.Reset, // + to dmg received
-      regeneration: Action.Decrement,
-      taunt: Action.Decrement,
-      leech: Action.Decrement,
-      rage: Action.Decrement,
-      haste: Action.Decrement,
-      daggers: Action.Decrement,
-      weak: Action.Decrement,
-      brittle: Action.Decrement, // + to dmg received
-      doomed: Action.Decrement,
-      burning: Action.Decrement,
-      poisoned: Action.Decrement,
-      bleeding: Action.Decrement,
-      stunned: Action.Decrement,
-      frozen: Action.Decrement,
-      wet: Action.Decrement,
-      warm: Action.Decrement,
-      oiled: Action.Decrement,
-      cold: Action.Decrement,
-    };
     for (const unit of side.combatants) {
       for (const [key] of CombatantStatus.entries(unit.status)) {
-        switch (dict[key]) {
-          case Action.Reset: {
+        if (key === "health") continue;
+        const expiryType = StatusEffectBlueprints[key].expiryType;
+        switch (expiryType) {
+          case StatusEffectExpiryType.RESET_BEFORE_TURN: {
             unit.status[key] = 0;
             break;
           }
-          case Action.Decrement: {
+          case StatusEffectExpiryType.DECREMENT_BEFORE_TURN: {
             unit.status[key] = Math.max(0, unit.status[key] - 1);
             break;
           }
