@@ -98,8 +98,8 @@ export async function startGame(app: Application) {
     await playCard(card, actor, target);
 
     if (hand.length === 0) {
-      endPlayerTurn();
       await delay(0.8);
+      endPlayerTurn();
     }
   };
 
@@ -136,7 +136,7 @@ export async function startGame(app: Application) {
           }
 
           if (noFloatyTextKeys.indexOf(key) === -1) {
-            VCombatantAnimations.spawnFloatyText(vact, `${statusEffectEmojis[key].icon}${mod}`, 0x607090);
+            VCombatantAnimations.spawnFloatyText(vact, `${statusEffectEmojis[key].icon}${mod}`, 0xa0c0f0);
           }
           await delay(0.45);
         }
