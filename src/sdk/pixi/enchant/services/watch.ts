@@ -91,13 +91,13 @@ export function makeWatchService(ticker: ITicker) {
     onChange: (newValues: Readonly<T>, oldValues: Readonly<T>) => any,
     shouldMakeInitialCall = false
   ) {
-    const prevValues = { ...getValues() };
+    let prevValues = { ...getValues() };
     shouldMakeInitialCall && onChange(prevValues, prevValues);
     return ticker.add(function observePropertiesFunc() {
       const newValues = getValues();
       if (Object.entries(newValues).some(([key, value]) => value !== prevValues[key as keyof T])) {
         onChange(newValues, prevValues);
-        Object.assign(prevValues, newValues);
+        prevValues = { ...newValues };
       }
     });
   }

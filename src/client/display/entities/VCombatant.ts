@@ -1,4 +1,4 @@
-import { Combatant } from "@client/game/game";
+import { Combatant, CombatantStatus } from "@client/game/game";
 import { game } from "@client/main";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Texture } from "@pixi/core";
@@ -44,12 +44,22 @@ export class VCombatant extends Container {
     statusIndicator.anchor.set(0.5);
     this.addChild(statusIndicator);
 
-    this.onEnterFrame.watch.array(
-      () => [status.health, status.block, status.retaliation],
-      ([health, block, retaliation]) => {
+    const cfg: Record<keyof CombatantStatus, { icon: string }> = {
+      health: { icon: `❤` },
+      block: { icon: `⛨` },
+      retaliation: { icon: `☇` },
+      // dead: "☠",
+    };
+
+    this.onEnterFrame.watch.properties(
+      () => status,
+      ({ health, ...props }) => {
         const col = [`❤${health}`];
-        if (block > 0) col.unshift(`⛨${block}`);
-        if (retaliation > 0) col.unshift(`☇${retaliation}`);
+        for (const [k, v] of Object.entries(props) as [keyof CombatantStatus, number][]) {
+          const { icon = '?' } = cfg[k] || {};
+          if (typeof v === "number" && v != 0) col.unshift(`${icon}${v}`);
+          if (typeof v === "boolean") col.unshift(`${icon}`);
+        }
         statusIndicator.text = col.join("\n");
       },
       true
