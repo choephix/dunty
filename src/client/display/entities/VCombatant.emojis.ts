@@ -80,7 +80,7 @@ export function getIntentionEmojifiedString(actor: Combatant, game: Game) {
       return `⚔${atk}`;
     }
     if (type === "def") {
-      return `⛨${value || "?"}`;
+      return `⛊${value || "?"}`;
     }
     if (type === "func") {
       return `★`;

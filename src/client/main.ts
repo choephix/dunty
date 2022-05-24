@@ -130,7 +130,7 @@ export async function startGame(app: Application) {
         for (const [key, mod] of CombatantStatus.entries(mods)) {
           target.status[key] += mod;
 
-          if (target.status.stunned || target.status.frozen) {
+          if (target.status.stunned > 0 || target.status.frozen > 0) {
             target.nextCard = null;
           }
 
@@ -214,16 +214,29 @@ export async function startGame(app: Application) {
 
     for (const foe of game.sideB.combatants) {
       await delay(0.15);
-      foe.nextCard = Card.generateRandomEnemyCard();
+
+      const vunit = combatantsDictionary.get(foe)!;
+      if (foe.status.frozen) {
+        foe.nextCard = null;
+        vunit.thought = statusEffectEmojis.frozen.icon;
+      } else if (foe.status.stunned) {
+        foe.nextCard = null;
+        vunit.thought = statusEffectEmojis.stunned.icon;
+      } else {
+        foe.nextCard = Card.generateRandomEnemyCard();
+      }
     }
+
+    const combatant = game.sideA.combatants[0];
 
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
-    await GameController.drawCards(4, game.sideA);
+    const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(combatant);
+    await GameController.drawCards(cardsToDrawCount, game.sideA);
     await delay(0.3);
     endTurnButtonBehavior.isDisabled.value = false;
 
-    activeCombatant.setCurrent(game.sideA.combatants[0]);
+    activeCombatant.setCurrent(combatant);
   }
 
   async function endPlayerTurn() {
