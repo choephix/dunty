@@ -1,4 +1,4 @@
-import { Combatant, CombatantStatus } from "@client/game/game";
+import { Combatant } from "@client/game/game";
 import { game } from "@client/main";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Texture } from "@pixi/core";
@@ -6,6 +6,7 @@ import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { VCombatantAnimations } from "./VCombatant.animations";
+import { getIntentionEmojifiedString, getStatusEffectEmojifiedString } from "./VCombatant.emojis";
 
 export class VCombatant extends Container {
   sprite;
@@ -33,8 +34,7 @@ export class VCombatant extends Container {
     const { status } = this.data;
 
     const statusIndicator = new Text("-", {
-      // fill: 0xdd1010,
-      fill: 0x202020,
+      fill: [0x405080, 0x202020],
       fontFamily: "Impact, sans-serif",
       fontSize: 40,
       fontWeight: `bold`,
@@ -44,78 +44,9 @@ export class VCombatant extends Container {
     statusIndicator.anchor.set(0.5);
     this.addChild(statusIndicator);
 
-    const cfg: Record<keyof CombatantStatus, { icon: string }> = {
-      health: { icon: `❤` },
-      block: { icon: `⛊` },
-      retaliation: { icon: `⥃` },
-      reflect: { icon: `⮎` },
-      strength: { icon: `🡅` },
-      weak: { icon: `🡇` },
-      burning: { icon: "♨︎" },
-      wet: { icon: "☂" },
-      oiled: { icon: "🌢" },
-      poisoned: { icon: "☣" },
-      stunned: { icon: "⚡︎" },
-      regeneration: { icon: "✚" },
-      doomed: { icon: "☠" },
-      haste: { icon: "♞" },
-      tactical: { icon: "♚" },
-      taunt: { icon: `♫` },
-      fury: { icon: "⮙" },
-      rage: { icon: "⮝" },
-      warm: { icon: "🌡" },
-      bleeding: { icon: "⚕" },
-      inspiring: { icon: "⚑" },
-      daggers: { icon: "⚔" },
-      defensive: { icon: "⛨" },
-      protection: { icon: "☥" },
-      brittle: { icon: "✖" },
-      leech: { icon: "⤽" },
-      cold: { icon: "❅" },
-      frozen: { icon: "❆" },
-      // resurrected: { icon: "✟" },
-      // ranged: { icon: "➳" },
-      // a: { icon: "⛯" },
-      // a: { icon: "⛒" },
-      // a: { icon: "⛏" },
-      // a: { icon: "⛬" },
-      // a: { icon: "⛸" },
-      // a: { icon: "⛆" },
-      // a: { icon: "⚠" },
-      // a: { icon: "⚖" },
-      // a: { icon: "♦" },
-      // a: { icon: "⚉" },
-      // a: { icon: "♻" },
-      // a: { icon: "⚒" },
-      // a: { icon: "✺" },
-      // a: { icon: "✷" },
-      // a: { icon: "✶" },
-      // a: { icon: "⍟" },
-      // a: { icon: "✦" },
-      // a: { icon: "❀" },
-      // a: { icon: "✿" },
-      // a: { icon: "⚘" },
-      // a: { icon: "❦" },
-      // a: { icon: "☁" },
-      // a: { icon: "⚫︎" },
-      // a: { icon: "⛺︎" },
-      // sun: { icon: "☀" },
-      // lucky: { icon: "☘" },
-      // shogi: { icon: "☗" },
-      // bullseye: { icon: "◎" },
-    };
-
     this.onEnterFrame.watch.properties(
       () => status,
-      ({ health, ...props }) => {
-        const col = [`❤${health}`];
-        for (const [k, v] of Object.entries(props) as [keyof CombatantStatus, number][]) {
-          const { icon = '?' } = cfg[k] || {};
-          if (typeof v === "number" && v != 0) col.unshift(`${icon}${v}`);
-          if (typeof v === "boolean") col.unshift(`${icon}`);
-        }
-        statusIndicator.text = col.join("\n");
-      },
+      () => (statusIndicator.text = getStatusEffectEmojifiedString(this.data, game)),
       true
     );
 
@@ -134,10 +65,8 @@ export class VCombatant extends Container {
   }
 
   private addIntentionIndicator() {
-    const data = this.data;
-
     const intentionIndicator = new Text("-", {
-      fill: 0xf0e010,
+      fill: [0xFFFFFF, 0xf0e010],
       fontFamily: "Impact, sans-serif",
       fontSize: 40,
       stroke: 0x202020,
@@ -146,27 +75,9 @@ export class VCombatant extends Container {
     intentionIndicator.anchor.set(0.5);
     this.addChild(intentionIndicator);
 
-    const getIntention = () => {
-      if (data.nextCard) {
-        const { type, value } = data.nextCard;
-        if (type === "atk") {
-          const atk = game.calculateAttackPower(data.nextCard, data);
-          return `⚔${atk}`;
-        }
-        if (type === "def") {
-          return `⛨${value || "?"}`;
-        }
-        if (type === "func") {
-          return `★`;
-        }
-      }
-      return "";
-    };
     this.onEnterFrame.watch(
-      () => this.thought || getIntention(),
-      v => {
-        intentionIndicator.text = v.toUpperCase();
-      },
+      () => this.thought || getIntentionEmojifiedString(this.data, game),
+      v => (intentionIndicator.text = v.toUpperCase()),
       true
     );
 

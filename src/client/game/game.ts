@@ -25,7 +25,7 @@ export class Game {
 
     let value = card.value || 0;
     if (attacker) {
-      value += attacker.strength || 0;
+      value += attacker.status.strength || 0;
     }
 
     return value;
@@ -76,11 +76,42 @@ export class Combatant {
 
   nextCard: Card | null = null;
 
-  strength: number = 1;
   status = {
+    // ❤
     health: 1,
+
+    // Positive
     block: 0,
+    protection: 0,
     retaliation: 0,
+    reflect: 0,
+    leech: 0,
+    regeneration: 0,
+    strength: 0,
+    rage: 0,
+    fury: 0,
+    haste: 0,
+    taunt: 0,
+    tactical: 0,
+    inspiring: 0,
+    daggers: 0,
+    defensive: 0,
+
+    // Negative
+    weak: 0,
+    brittle: 0,
+    doomed: 0,
+    burning: 0,
+    poisoned: 0,
+    bleeding: 0,
+    stunned: 0,
+    frozen: 0,
+
+    // Neutral
+    wet: 0,
+    warm: 0,
+    oiled: 0,
+    cold: 0,
   };
 
   get alive() {
@@ -110,14 +141,22 @@ export module Card {
       { type: "def", value: 2 },
       { type: "func", effect: actor => (actor.status.health += 2) },
       { type: "func", effect: actor => (actor.status.retaliation += 1) },
+      generateRandomStatusEffectCard(),
     ]);
   }
+
   export function generateRandomEnemyCard(): Card {
     return getRandomItemFrom<Card>([
       { type: "atk", value: 1 },
       { type: "atk", value: 2 },
       { type: "def", value: 2 },
-      { type: "func", effect: actor => (actor.status.retaliation += 1) },
+      generateRandomStatusEffectCard(),
     ]);
+  }
+
+  function generateRandomStatusEffectCard(): Card {
+    const sampleCombatant = new Combatant();
+    const key = getRandomItemFrom(Object.keys(sampleCombatant.status)) as keyof CombatantStatus;
+    return { type: "func", effect: actor => (actor.status[key] += 1) };
   }
 }
