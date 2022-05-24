@@ -8,7 +8,8 @@ import { Rectangle } from "@pixi/math";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
-import { Card, Combatant } from "../../game/game";
+import { Card, Combatant, CombatantStatus } from "../../game/game";
+import { statusEffectEmojis } from "./VCombatant.emojis";
 
 export class VCard extends Container {
   background;
@@ -83,7 +84,7 @@ export class VCard extends Container {
       // atk: "bol-laba",
       // atk: "slot-purple",
       // atk: { file: "slot-spike (1)", color: 0xe04040, scale: 1.8 },
-      func: { file: "starc", color: 0xf0f0f0, scale: 0.7 },
+      func: { file: "starc", color: 0xf0f0f0, scale: 0.8 },
       atk: { file: "slot-sword", color: 0xe04040, scale: 1.1 },
       def: { file: "slot-shield (1)", color: 0x70b0f0, scale: 1.8 },
     }[this.data.type];
@@ -100,7 +101,7 @@ export class VCard extends Container {
 
     if (this.data.type === "atk" || this.data.type === "def") {
       const label = new Text(``, {
-        fill: 0xf0f0f0,
+        fill: [0xf0f0f0, 0xc0c0c0],
         fontFamily: "Impact, sans-serif",
         fontSize: 60,
         fontWeight: `bold`,
@@ -110,7 +111,7 @@ export class VCard extends Container {
       label.anchor.set(0.5);
       label.scale.set(2 / cfg.scale);
       pad.addChild(label);
-  
+
       const getCurrentValue =
         this.data.type == "atk" ? () => game.calculateAttackPower(this.data, this.actor) : () => this.data.value || 0;
       const onEnterFrame = createEnchantedFrameLoop(pad);
@@ -122,6 +123,22 @@ export class VCard extends Container {
         true
       );
       Object.assign(pad, { onEnterFrame });
+    }
+    if (this.data.type === "func") {
+      if (this.data.mods) {
+        const emojis = Object.keys(this.data.mods).map((k: any) => statusEffectEmojis[k as keyof CombatantStatus].icon);
+        const label = new Text(emojis.join(""), {
+          fill: [0xf0f0f0, 0xc0f0f0],
+          fontFamily: "Impact, sans-serif",
+          fontSize: 70,
+          fontWeight: `bold`,
+          stroke: 0x104050,
+          strokeThickness: 8,
+        });
+        label.anchor.set(0.5, 0.6);
+        label.scale.set(2 / cfg.scale);
+        pad.addChild(label);
+      }
     }
 
     return pad;

@@ -166,7 +166,7 @@ export module VCombatantAnimations {
       fontFamily: "Impact, sans-serif",
       fontSize: 80,
       fontWeight: `bold`,
-      stroke: 0xf0f0f0,
+      stroke: 0x102030,
       strokeThickness: 5,
       align: "right",
     });

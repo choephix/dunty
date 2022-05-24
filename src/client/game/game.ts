@@ -210,7 +210,7 @@ export module Card {
   function generateRandomStatusEffectCard(): Card {
     const sampleCombatant = new Combatant();
     const key = getRandomItemFrom(Object.keys(sampleCombatant.status)) as keyof CombatantStatus;
-    return { cost: 1, type: "func", mods: { [key]: 1 } };
+    return { cost: 1, type: "func", mods: { [key]: 2 } };
     // return { type: "func", effect: actor => (actor.status[key] += 1) };
   }
 }
