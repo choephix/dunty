@@ -5,7 +5,6 @@ import { Sprite } from "@pixi/sprite";
 import { VCard } from "../entities/VCard";
 
 export module ToolTipFactory {
-
   export function addToCard(card: VCard) {
     const { data } = card;
     const tooltipHintText = {
@@ -38,8 +37,11 @@ export module ToolTipFactory {
   }
 
   export function addToStatusEffect(sprite: Sprite, statusEffect: StatusEffectKey) {
-    const { description = `Unknown status effect "${statusEffect.toUpperCase()}|` } = StatusEffectBlueprints[statusEffect] || {};
+    const { displayName = statusEffect.toUpperCase(), description = `Unknown status effect` } =
+      StatusEffectBlueprints[statusEffect] || {};
+
+    const tooltipHintText = `${displayName.toUpperCase()}\n${description}`;
     const tooltips = GameSingletons.getTooltipManager();
-    tooltips.registerTarget(sprite, description);
+    tooltips.registerTarget(sprite, tooltipHintText);
   }
 }

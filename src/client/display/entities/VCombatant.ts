@@ -155,6 +155,7 @@ class StatusEffectIndicators extends Container {
     });
     label.anchor.set(0.5);
 
+    label.buttonMode = true;
     ToolTipFactory.addToStatusEffect(label, key)
 
     const result = Object.assign(label, {
