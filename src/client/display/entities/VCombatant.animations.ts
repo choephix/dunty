@@ -114,8 +114,8 @@ export module VCombatantAnimations {
 
     const fx = spawnSpriteWave(
       "https://public.cx/dunty/asorted/shield.png",
-      { pixi: { scale: 1.2 } },
-      { tint: 0x5090f0, blendMode: BLEND_MODES.ADD }
+      { pixi: { scale: 1.15 } },
+      { tint: 0x3060a0, blendMode: BLEND_MODES.SCREEN }
     );
     unit.addChild(fx);
 

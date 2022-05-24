@@ -218,7 +218,7 @@ export async function startGame(app: Application) {
       for (const foe of game.sideB.combatants) {
         activeCombatant.setCurrent(foe);
 
-        await delay(0.35);
+        await delay(0.15);
 
         const card = foe.nextCard;
         foe.nextCard = null;
@@ -231,7 +231,11 @@ export async function startGame(app: Application) {
           await playCard(card, foe, target);
         }
 
+        await delay(0.10);
+
         activeCombatant.setCurrent(null);
+
+        await delay(0.10);
 
         if (!playerCombatant.alive) break;
       }
