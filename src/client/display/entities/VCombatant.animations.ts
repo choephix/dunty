@@ -3,6 +3,7 @@ import { VCombatant } from "@client/display/entities/VCombatant";
 import { spawnSpriteWave } from "@game/asorted/animations/spawnSpriteWave";
 import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";
+import { Text } from "@pixi/text";
 import { delay } from "@sdk/utils/promises";
 
 function spawnBlobOfLight(parent: Container, tint: number) {
@@ -157,5 +158,25 @@ export module VCombatantAnimations {
 
   export async function noCard(unit: VCombatant) {
     await blinkThought(unit, "?");
+  }
+
+  export async function spawnFloatyText(unit: VCombatant, value: string, color: number) {
+    const fx = new Text(value, {
+      fill: [0xd0e0f0, color],
+      fontFamily: "Impact, sans-serif",
+      fontSize: 80,
+      fontWeight: `bold`,
+      stroke: 0xf0f0f0,
+      strokeThickness: 5,
+      align: "right",
+    });
+    fx.anchor.set(0.5, 0.5);
+    unit.addChild(fx);
+    const tweeener = new TemporaryTweeener(fx);
+    await tweeener.to(fx, {
+      pixi: { y: fx.y - 50, alpha: 0.0 },
+      duration: 1.5,
+    });
+    fx.destroy();
   }
 }

@@ -2,6 +2,8 @@ import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VComb
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
 
+const BASE_DRAW_COUNT_ON_TURN_START = 4;
+
 export class Game {
   sideA = new CombatSide();
   sideB = new CombatSide();
@@ -20,6 +22,26 @@ export class Game {
     }
   }
 
+  calculateCardsToDrawOnTurnStart(target: Combatant) {
+    return BASE_DRAW_COUNT_ON_TURN_START + target.status.tactical;
+  }
+
+  calculateEnergyToAddOnTurnStart(target: Combatant) {
+    return BASE_DRAW_COUNT_ON_TURN_START + target.status.haste;
+  }
+
+  calculateBlockPointsToAdd(card: Card, target?: Combatant) {
+    if (card.type !== "def") return 0;
+
+    let value = card.value || 0;
+
+    if (target) {
+      value += target.status.defensive || 0;
+    }
+
+    return value;
+  }
+
   calculateAttackPower(card: Card, attacker?: Combatant, target?: Combatant) {
     if (card.type !== "atk") return 0;
 
@@ -33,8 +55,8 @@ export class Game {
 
     if (target) {
       value += target.status.brittle || 0;
-      value *= target.status.exposed ? 2.0 : 1;
-      value *= target.status.doomed ? 2.0 : 1;
+      value *= target.status.exposed > 0 ? 2.0 : 1;
+      value *= target.status.doomed > 0 ? 2.0 : 1;
     }
 
     return value;
@@ -42,21 +64,35 @@ export class Game {
 
   calculateDamage(damage: number, target: Combatant) {
     let blockedDamage = 0;
+    let reflectedDamage = 0;
     let directDamage = 0;
+    let healingDamage = 0;
 
-    let block = target.status.block || 0;
+    const { block = 0, retaliation = 0, reflect = 0, leech = 0 } = target.status;
 
-    if (damage <= block) {
-      blockedDamage = damage;
-      directDamage = 0;
-    } else {
+    directDamage = damage;
+
+    if (target.status.block > 0) {
       blockedDamage = Math.min(block, damage);
-      directDamage = damage - block;
+      directDamage -= blockedDamage;
     }
 
-    console.log({ damage, block, directDamage, blockedDamage, target });
+    if (reflect > 0) {
+      reflectedDamage = Math.min(reflect, damage);
+      directDamage -= reflectedDamage;
+    }
 
-    return { directDamage, blockedDamage };
+    reflectedDamage += retaliation; // TODO: reflected damage is not implemented yet
+
+    if (directDamage < 0) {
+      directDamage = 0;
+    }
+
+    healingDamage = Math.min(directDamage, leech); // TODO: leech is not implemented yet
+
+    console.log({ damage, block, directDamage, blockedDamage, reflectedDamage, target });
+
+    return { directDamage, blockedDamage, reflectedDamage, healingDamage };
   }
 }
 
@@ -87,11 +123,11 @@ export class Combatant {
 
   status = {
     // ❤
-    health: 1,
+    health: 1, //
 
     // Positive
-    block: 0,
-    protection: 0,
+    block: 0, //
+    protection: 0, //
     retaliation: 0,
     reflect: 0,
     leech: 0,
@@ -102,7 +138,6 @@ export class Combatant {
     haste: 0,
     taunt: 0,
     tactical: 0,
-    inspiring: 0,
     daggers: 0,
     defensive: 0,
 
@@ -134,32 +169,37 @@ export class Combatant {
 }
 
 export type CombatantStatus = Combatant["status"];
+export module CombatantStatus {
+  export function entries(obj: Partial<CombatantStatus>) {
+    return Object.entries(obj) as [keyof CombatantStatus, number][];
+  }
+}
 
 export interface Card {
+  cost: number;
   type: string;
   value?: number;
-  effect?: (actor: Combatant, target?: Combatant) => void;
+  // effect?: (actor: Combatant, target?: Combatant) => void;
+  mods?: Partial<CombatantStatus>;
 }
 
 export module Card {
   export function generateRandomCard(): Card {
     return getRandomItemFrom<Card>([
-      { type: "atk", value: 0 },
-      { type: "atk", value: 1 },
-      { type: "atk", value: 2 },
-      { type: "def", value: 1 },
-      { type: "def", value: 2 },
-      { type: "func", effect: actor => (actor.status.health += 2) },
-      { type: "func", effect: actor => (actor.status.retaliation += 1) },
+      { cost: 1, type: "atk", value: 1 },
+      { cost: 1, type: "atk", value: 2 },
+      { cost: 1, type: "def", value: 1 },
+      { cost: 1, type: "def", value: 2 },
+      { cost: 1, type: "func", mods: { health: 2 } },
       generateRandomStatusEffectCard(),
     ]);
   }
 
   export function generateRandomEnemyCard(): Card {
     return getRandomItemFrom<Card>([
-      { type: "atk", value: 1 },
-      { type: "atk", value: 2 },
-      { type: "def", value: 2 },
+      { cost: 1, type: "atk", value: 1 },
+      { cost: 1, type: "atk", value: 2 },
+      { cost: 1, type: "def", value: 2 },
       generateRandomStatusEffectCard(),
       generateRandomStatusEffectCard(),
       generateRandomStatusEffectCard(),
@@ -170,6 +210,7 @@ export module Card {
   function generateRandomStatusEffectCard(): Card {
     const sampleCombatant = new Combatant();
     const key = getRandomItemFrom(Object.keys(sampleCombatant.status)) as keyof CombatantStatus;
-    return { type: "func", effect: actor => (actor.status[key] += 1) };
+    return { cost: 1, type: "func", mods: { [key]: 1 } };
+    // return { type: "func", effect: actor => (actor.status[key] += 1) };
   }
 }

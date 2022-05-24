@@ -1,6 +1,6 @@
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatStage } from "@client/display/entities/VCombatStage";
-import { Card, Combatant, CombatSide as CombatGroup, Game } from "@client/game/game";
+import { Card, Combatant, CombatantStatus, CombatSide as CombatGroup, Game } from "@client/game/game";
 import { GameController } from "@client/game/game.controller";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
@@ -16,6 +16,7 @@ import { EndTurnButton } from "./display/ui/EndTurnButton";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 import { AdjustmentFilter } from "@pixi/filter-adjustment";
 import { Color } from "@sdk/utils/color/Color";
+import { statusEffectEmojis } from "./display/entities/VCombatant.emojis";
 
 export let game: Game;
 
@@ -42,11 +43,14 @@ export async function startGame(app: Application) {
   const combatantsDictionary = new Map<Combatant, VCombatant>();
   function composeSide(state: CombatGroup, leftSide: boolean) {
     const sideMul = leftSide ? -1 : 1;
-    const firstUnitPosition = container.getFractionalPosition(0.5 + sideMul * 0.2, 0.55);
+    const centerUnitPosition = container.getFractionalPosition(0.45 + sideMul * 0.2, 0.35);
     for (const [index, char] of state.combatants.entries()) {
       const unit = new VCombatant(char);
       unit.setRightSide(leftSide);
-      unit.position.set(firstUnitPosition.x + sideMul * index * 60, firstUnitPosition.y - index * 240);
+
+      const ymul = index - (state.combatants.length - 1) / 2;
+      unit.position.set(centerUnitPosition.x + sideMul * index * 60, centerUnitPosition.y - ymul * 280);
+
       unit.scale.set(1.1 - 0.1 * index);
       unit.zIndex = 100 - index;
       container.addChild(unit);
@@ -62,15 +66,8 @@ export async function startGame(app: Application) {
     }
   }
 
-  const glow = new GlowFilterService({
-    color: 0x30ffff,
-    distance: 30,
-    outerStrength: 1.99,
-    innerStrength: 0.09,
-  });
-  // const glow = new FilterService(new AdjustmentFilter({
-  //   brightness: 1.2,
-  // }));
+  const glow = new GlowFilterService({ color: 0x30ffff, distance: 30, outerStrength: 1.99, innerStrength: 0.09 });
+  // const glow = new FilterService(new AdjustmentFilter({ brightness: 1.2 }));
   const activeCombatant = new CurrentSelectionHelper<Combatant>({
     onSelect: combatant => {
       const vCombatant = combatantsDictionary.get(combatant)!;
@@ -93,15 +90,22 @@ export async function startGame(app: Application) {
   __window__.hand = hand;
 
   hand.onCardClick = async card => {
-    game.sideA.hand.splice(game.sideA.hand.indexOf(card), 1);
+    const { hand, combatants } = game.sideA;
+    hand.splice(hand.indexOf(card), 1);
 
-    const actor = game.sideA.combatants[0];
-    const target = card.type === "atk" ? await selectAttackTarget() : game.sideA.combatants[0];
+    const actor = combatants[0];
+    const target = card.type === "atk" ? await selectAttackTarget() : actor;
     await playCard(card, actor, target);
+
+    if (hand.length === 0) {
+      endPlayerTurn();
+    }
   };
 
   async function playCard(card: Card, actor: Combatant, target: Combatant = actor) {
-    if (card.type === "atk") {
+    const { type, mods } = card;
+
+    if (type === "atk") {
       await performAttack(target, actor, card);
 
       if (!actor.alive) actor.side.combatants.splice(actor.side.combatants.indexOf(target), 1);
@@ -110,17 +114,34 @@ export async function startGame(app: Application) {
       return;
     }
 
-    if (card.type === "def") {
-      target.status.block += card.value || 0;
+    if (type === "def") {
+      const amountToAdd = game.calculateBlockPointsToAdd(card, actor);
+      target.status.block += amountToAdd;
 
       await delay(0.35);
     }
 
-    if (card.type === "func") {
+    if (type === "func") {
       const vact = combatantsDictionary.get(actor)!;
       await VCombatantAnimations.spellBegin(vact);
 
-      await Promise.resolve(card.effect?.(actor, target));
+      if (mods) {
+        const noFloatyTextKeys = ["health"];
+        for (const [key, mod] of CombatantStatus.entries(mods)) {
+          target.status[key] += mod;
+
+          if (target.status.stunned || target.status.frozen) {
+            target.nextCard = null;
+          }
+
+          if (noFloatyTextKeys.indexOf(key) === -1) {
+            VCombatantAnimations.spawnFloatyText(vact, `${statusEffectEmojis[key].icon}${mod}`, 0x607090);
+          }
+          await delay(0.45);
+        }
+      }
+
+      // await Promise.resolve(card.effect?.(actor, target));
     }
   }
 
@@ -135,12 +156,7 @@ export async function startGame(app: Application) {
       for (const candidate of candidates) {
         const vCombatant = combatantsDictionary.get(candidate)!;
 
-        const glow = new GlowFilterService({
-          color: 0xff0000,
-          distance: 8,
-          outerStrength: 0.99,
-          innerStrength: 0.99,
-        });
+        const glow = new GlowFilterService({ color: 0xff0000, distance: 8, outerStrength: 0.99, innerStrength: 0.99 });
         glow.addFilter(vCombatant.sprite);
         cleanUp.push(() => glow.removeFrom(vCombatant.sprite));
 
@@ -193,6 +209,7 @@ export async function startGame(app: Application) {
   }
 
   async function startPlayerTurn() {
+    GameController.activateCombatantTurnStartStatusEffects(game.sideA);
     GameController.resetCombatantsForTurnStart(game.sideA);
 
     for (const foe of game.sideB.combatants) {
@@ -225,6 +242,7 @@ export async function startGame(app: Application) {
   async function resolveEnemyTurn() {
     container.ln.visible = true;
 
+    GameController.activateCombatantTurnStartStatusEffects(game.sideB);
     GameController.resetCombatantsForTurnStart(game.sideB);
 
     const playerCombatant = game.sideA.combatants[0];
