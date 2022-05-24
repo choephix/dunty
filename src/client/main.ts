@@ -192,7 +192,7 @@ export async function startGame(app: Application) {
 
   async function performAttack(target: Combatant, attacker: Combatant, card: Card) {
     const atkPwr = game.calculateAttackPower(card, attacker, target);
-    const { directDamage, blockedDamage } = game.calculateDamage(atkPwr, target);
+    const { directDamage, blockedDamage, reflectedDamage, healingDamage } = game.calculateDamage(atkPwr, target);
 
     dealDamage(target, directDamage, blockedDamage);
 
@@ -200,12 +200,15 @@ export async function startGame(app: Application) {
     const vdef = combatantsDictionary.get(target)!;
     await VCombatantAnimations.attack(vatk, vdef);
 
-    if (target.alive) {
-      if (target.status.retaliation) {
-        const { directDamage, blockedDamage } = game.calculateDamage(target.status.retaliation || 0, target);
-        dealDamage(attacker, directDamage, blockedDamage);
-        await VCombatantAnimations.attack(vdef, vatk);
-      }
+    if (target.alive && reflectedDamage > 0) {
+      const { directDamage, blockedDamage } = game.calculateDamage(reflectedDamage, target);
+      dealDamage(attacker, directDamage, blockedDamage);
+      await VCombatantAnimations.attack(vdef, vatk);
+    }
+
+    if (healingDamage > 0) {
+      attacker.status.health += healingDamage;
+      await VCombatantAnimations.buffHealth(vatk);
     }
   }
 
