@@ -24,7 +24,7 @@ export module ToolTipFactory {
   export function addIntentionIndicator(sprite: Sprite, data: Card) {
     const tooltipHintText = {
       atk: `Enemy intends to\nATTACK you for ${data.value} damage next turn.`,
-      def: `Enemy intends to play\n${data.value} BLOCK next turn.`,
+      def: `Enemy intends to apply\n${data.value}x BLOCK to self next turn.`,
       func: data.mods
         ? `Enemy intends to apply\n${Object.entries(data.mods)
             .map(([k, v]) => `${v}x ${k.toUpperCase()}`)
@@ -40,7 +40,7 @@ export module ToolTipFactory {
     const { displayName = statusEffect.toUpperCase(), description = `Unknown status effect` } =
       StatusEffectBlueprints[statusEffect] || {};
 
-    const tooltipHintText = `${displayName.toUpperCase()}\n${description}`;
+    const tooltipHintText = `${displayName.toUpperCase()}\n${description}`.trim();
     const tooltips = GameSingletons.getTooltipManager();
     tooltips.registerTarget(sprite, tooltipHintText);
   }

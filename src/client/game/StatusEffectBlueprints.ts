@@ -5,7 +5,7 @@ export enum StatusEffectExpiryType {
   DECREMENT_BEFORE_TURN,
   RESET_BEFORE_TURN,
   RESET_AFTER_ENCOUNTER,
-  RESET_AFTER_HURT,
+  DECREMENT_AFTER_HURT,
 }
 
 const __StatusEffectBlueprints = {
@@ -21,12 +21,6 @@ const __StatusEffectBlueprints = {
     description: "Blocks up to X damage until next turn.\nDecreases for each damage point blocked.",
     displayName: "Block",
   },
-  protection: {
-    emoji: "☥",
-    expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
-    description: "Next damage received is nullified.",
-    displayName: "Protection",
-  },
   retaliation: {
     emoji: "⥃",
     expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
@@ -39,6 +33,30 @@ const __StatusEffectBlueprints = {
     description: "Blocks up to X damage and\ndeals it back until next turn.",
     displayName: "Reflect",
   },
+  protection: {
+    emoji: "☥",
+    expiryType: StatusEffectExpiryType.DECREMENT_AFTER_HURT,
+    description: "Damage from next X attack(s)\nis nullified",
+    displayName: "Protection",
+  },
+  brittle: {
+    emoji: "✖",
+    expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
+    description: "Increases damage received by X\nfor X turns.",
+    displayName: "Brittle",
+  }, // + to dmg received
+  exposed: {
+    emoji: "◎",
+    expiryType: StatusEffectExpiryType.DECREMENT_AFTER_HURT,
+    description: "Damage from next X attack(s)\nis doubled",
+    displayName: "Exposed",
+  }, // x2 to dmg received
+  doomed: {
+    emoji: "☠",
+    expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
+    description: "Receive double damage\nfor X turns.",
+    displayName: "Doomed",
+  }, // x2 to dmg received
   leech: {
     emoji: "⤽",
     expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
@@ -104,24 +122,6 @@ const __StatusEffectBlueprints = {
     expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
     description: "Decreases damage dealt by X\nfor X turns.",
     displayName: "Weak",
-  },
-  brittle: {
-    emoji: "✖",
-    expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
-    description: "Increases damage received by X\nfor X turns.",
-    displayName: "Brittle",
-  }, // + to dmg received
-  exposed: {
-    emoji: "◎",
-    expiryType: StatusEffectExpiryType.RESET_AFTER_HURT,
-    description: "Receive double damage from\nthe next X attack(s).",
-    displayName: "Exposed",
-  }, // x2 to dmg received
-  doomed: {
-    emoji: "☠",
-    expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
-    description: "Receive double damage\nfor X turns.",
-    displayName: "Doomed",
   },
   burning: {
     emoji: "♨︎",
