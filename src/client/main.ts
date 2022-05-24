@@ -41,7 +41,7 @@ export async function startGame(app: Application) {
   const combatantsDictionary = new Map<Combatant, VCombatant>();
   function composeSide(state: CombatGroup, leftSide: boolean) {
     const sideMul = leftSide ? -1 : 1;
-    const centerUnitPosition = vscene.getFractionalPosition(0.45 + sideMul * 0.14, 0.3);
+    const centerUnitPosition = vscene.getFractionalPosition(0.43 + sideMul * 0.17, 0.3);
     for (const [index, char] of state.combatants.entries()) {
       const unit = new VCombatant(char);
       unit.setRightSide(leftSide);

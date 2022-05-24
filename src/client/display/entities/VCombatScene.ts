@@ -9,8 +9,8 @@ import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 // const T_BACKDROP = `https://public.cx/dunty/bg-1080x1920/gb60.jpg`;
 
 const BACKDROP_PRESETS = [
-  [`https://public.cx/dunty/bg-1920x1920/4.jpg`, 0xc0d0f0, true, BLEND_MODES.SUBTRACT, 0xffffff] as const, // Slope
-  [`https://public.cx/3/bg/grid2.webp`, 0x404050, true, BLEND_MODES.ADD, 0xf03030] as const, // Grid
+  [`https://public.cx/dunty/bg-1920x1920/4.jpg`, 0xc0d0f0, true, BLEND_MODES.SUBTRACT, 0xffffff, 0.2] as const, // Slope
+  [`https://public.cx/3/bg/grid2.webp`, 0x404050, true, BLEND_MODES.ADD, 0xf03030, 0.3] as const, // Grid
 ];
 
 const DESIGN_SPECS = {
@@ -30,10 +30,10 @@ export class VCombatScene extends Container {
   constructor() {
     super();
 
-    const BACKDROP_PRESET_INDEX = 1;
+    const BACKDROP_PRESET_INDEX = 0;
 
     {
-      const [backdropTextureId, backdropTint, backdropStretch, lnBlendMode, lnTint] =
+      const [backdropTextureId, backdropTint, backdropStretch, lnBlendMode, lnTint, lnAlpha] =
         BACKDROP_PRESETS[BACKDROP_PRESET_INDEX];
       this.backdrop = Sprite.from(backdropTextureId);
       this.backdrop.anchor.set(0.5);
@@ -60,7 +60,7 @@ export class VCombatScene extends Container {
       this.ln.tint = lnTint;
       this.ln.scale.y = 2;
       this.ln.tileScale.y = 4;
-      this.ln.alpha = 0.2;
+      this.ln.alpha = lnAlpha;
       this.addChild(this.ln);
     }
 

@@ -12,7 +12,7 @@ type TooltipOptions = {
   delay: number;
 };
 
-const DEFAULT_DELAY = 850;
+const DEFAULT_DELAY = 700;
 
 export class TooltipManager {
   private currentTooltip: ToolTipComponent | null = null;

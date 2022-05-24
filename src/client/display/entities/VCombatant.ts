@@ -88,6 +88,9 @@ export class VCombatant extends Container {
           const [text, color = 0xf0e010] = getIntentionEmojifiedString(this.data, game);
           intentionIndicator.text = text.toUpperCase();
           intentionIndicator.style.fill = color;
+
+          intentionIndicator.buttonMode = true;
+          v && ToolTipFactory.addIntentionIndicator(intentionIndicator, v);
         }
       },
       true
