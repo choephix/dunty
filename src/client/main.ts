@@ -15,6 +15,7 @@ import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 import { AdjustmentFilter } from "@pixi/filter-adjustment";
+import { Color } from "@sdk/utils/color/Color";
 
 export let game: Game;
 
@@ -62,22 +63,22 @@ export async function startGame(app: Application) {
   }
 
   const glow = new GlowFilterService({
-    color: 0xffffff,
-    distance: 40,
-    outerStrength: 0.59,
+    color: 0x30ffff,
+    distance: 30,
+    outerStrength: 1.99,
     innerStrength: 0.09,
   });
-  // const glow = new GlowFilterService(new AdjustmentFilter({
+  // const glow = new FilterService(new AdjustmentFilter({
   //   brightness: 1.2,
   // }));
   const activeCombatant = new CurrentSelectionHelper<Combatant>({
     onSelect: combatant => {
       const vCombatant = combatantsDictionary.get(combatant)!;
-      glow.addFilter(vCombatant.sprite);
+      glow.addFilter(vCombatant.healthIndicator);
     },
     onDeselect: combatant => {
       const vCombatant = combatantsDictionary.get(combatant)!;
-      glow.removeFrom(vCombatant.sprite);
+      glow.removeFrom(vCombatant.healthIndicator);
     },
   });
 
@@ -129,27 +130,36 @@ export async function startGame(app: Application) {
 
     if (candidates.length === 1) return candidates[0];
 
-    const glow = new GlowFilterService({
-      color: 0xff0000,
-      distance: 8,
-      outerStrength: 0.99,
-      innerStrength: 0.99,
-    });
-
     const cleanUp = new Array<Function>();
     const chosen = await new Promise<Combatant>(resolve => {
       for (const candidate of candidates) {
         const vCombatant = combatantsDictionary.get(candidate)!;
 
+        const glow = new GlowFilterService({
+          color: 0xff0000,
+          distance: 8,
+          outerStrength: 0.99,
+          innerStrength: 0.99,
+        });
         glow.addFilter(vCombatant.sprite);
         cleanUp.push(() => glow.removeFrom(vCombatant.sprite));
 
         const rect = drawRect(vCombatant, { x: -150, y: -150, width: 300, height: 300 });
         rect.alpha = 0.5;
-        rect.interactive = true;
-        rect.buttonMode = true;
         rect.renderable = false;
-        rect.on("click", () => resolve(candidate));
+        createAnimatedButtonBehavior(
+          rect,
+          {
+            onUpdate({ hoverProgress }) {
+              glow.filter.outerStrength = 1 + hoverProgress;
+              glow.filter.color = Color.lerp(0xff7050, 0xff0000, hoverProgress).toInt();
+            },
+            onClick() {
+              resolve(candidate);
+            },
+          },
+          true
+        );
         cleanUp.push(() => rect.destroy());
       }
     });

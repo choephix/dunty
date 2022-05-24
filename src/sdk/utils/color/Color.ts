@@ -1,5 +1,3 @@
-import { __window__ } from "@debug/__";
-
 export class Color {
   public static readonly BLACK = Object.freeze(new Color(0x000000));
   public static readonly WHITE = Object.freeze(new Color(0x000000));
@@ -88,5 +86,3 @@ export function lerpColor(a: number | Color, b: number | Color, amount: number):
   result.b = Math.round(a.b + amount * (b.b - a.b));
   return result;
 }
-
-__window__.lerpColor = lerpColor;
