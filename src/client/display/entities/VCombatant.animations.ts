@@ -5,6 +5,7 @@ import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";
 import { Text } from "@pixi/text";
 import { delay } from "@sdk/utils/promises";
+import { AdjustmentFilter } from "@pixi/filter-adjustment";
 
 function spawnBlobOfLight(parent: Container, tint: number) {
   const fx = spawnSpriteWave(
@@ -115,7 +116,7 @@ export module VCombatantAnimations {
 
     const fx = spawnSpriteWave(
       "https://public.cx/dunty/asorted/shield-blur.png",
-      { pixi: { scale: 0.95 }, duration: 1.2, ease: 'power5.out' },
+      { pixi: { scale: 0.95 }, duration: 1.2, ease: "power5.out" },
       { tint: 0x3060a0, blendMode: BLEND_MODES.SCREEN }
     );
     unit.addChild(fx);
@@ -148,11 +149,14 @@ export module VCombatantAnimations {
   export async function die(unit: VCombatant) {
     console.log(`${unit.name} is dying`);
 
-    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
-    await tweeener.to(unit, {
-      pixi: { alpha: 0.2, pivotX: direction * 150 },
-    });
+
+    const filter = new AdjustmentFilter();
+    unit.sprite.filters = [filter];
+    tweeener.to(filter, { brightness: 0.2, saturation: 0.1, duration: 1 });
+
+    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
+    await tweeener.to(unit, { pixi: { alpha: 0.8, pivotX: direction * 150 } });
     await tweeener.to(unit.statusIndicators, { alpha: 0.0 });
   }
 
