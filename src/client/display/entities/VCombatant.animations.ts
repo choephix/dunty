@@ -163,7 +163,7 @@ export module VCombatantAnimations {
   export async function spawnFloatyText(unit: VCombatant, value: string, color: number) {
     const fx = new Text(value, {
       fill: [0xd0e0f0, color],
-      fontFamily: "Impact, sans-serif",
+      fontFamily: "Impact, fantasy",
       fontSize: 80,
       fontWeight: `bold`,
       stroke: 0x102030,

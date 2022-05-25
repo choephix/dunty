@@ -16,6 +16,7 @@ export class VCard extends Container {
   background;
   art;
   valueIndicator;
+  costIndicator;
 
   glow;
 
@@ -26,6 +27,7 @@ export class VCard extends Container {
 
     this.background = this.addBackground();
     this.valueIndicator = this.addValueIndicator();
+    this.costIndicator = this.addCostIndicator();
     this.art = this.addArt();
 
     this.glow = this.addGlow();
@@ -51,9 +53,7 @@ export class VCard extends Container {
 
   addBackground() {
     const { type, isToken } = this.data;
-    const filename = isToken
-      ? "front-trap"
-      : { atk: "front-red", def: "front-grand", func: "front-pink" }[type];
+    const filename = isToken ? "front-trap" : { atk: "front-red", def: "front-grand", func: "front-pink" }[type];
     const sprite = Sprite.from(`https://public.cx/mock/cards/${filename}.png`);
     sprite.anchor.set(0.5);
     this.addChild(sprite);
@@ -81,6 +81,28 @@ export class VCard extends Container {
     // sprite.scale.set(4);
     // this.addChild(sprite);
     // return sprite;
+  }
+
+  addCostIndicator() {
+    const label = new Text(``, {
+      // fill: [0xf0f0f0, 0xe0a060],
+      fill: [0x404060, 0x202030],
+      fontFamily: "Impact, fantasy",
+      fontSize: 32,
+      fontWeight: `bold`,
+      // stroke: 0xf0f0f0,
+      // strokeThickness: 8,
+    });
+    label.anchor.set(0.5, 0.5);
+    label.position.set(-200, -290);
+
+    const onEnterFrame = createEnchantedFrameLoop(label);
+    onEnterFrame.watch(() => this.data.cost, v => (label.text = String(v || 0)), true);
+    Object.assign(label, { onEnterFrame });
+
+    label.scale.set(2);
+    this.addChild(label);
+    return label;
   }
 
   addValueIndicator() {
@@ -112,7 +134,7 @@ export class VCard extends Container {
     if (this.data.type === "atk" || this.data.type === "def") {
       const label = new Text(``, {
         fill: [0xf0f0f0, 0xc0c0c0],
-        fontFamily: "Impact, sans-serif",
+        fontFamily: "Impact, fantasy",
         fontSize: 60,
         fontWeight: `bold`,
         stroke: 0x0,
@@ -141,7 +163,7 @@ export class VCard extends Container {
         );
         const label = new Text(emojis.join(""), {
           fill: [0xf0f0f0, 0xc0f0f0],
-          fontFamily: "Impact, sans-serif",
+          fontFamily: "Impact, fantasy",
           fontSize: 70,
           fontWeight: `bold`,
           stroke: 0x104050,

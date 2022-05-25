@@ -9,7 +9,7 @@ export class EndTurnButton extends Container {
 
     this.label = new Text("End Turn".toUpperCase(), {
       fill: 0xffffff,
-      fontFamily: "Impact, sans-serif",
+      fontFamily: "Impact, fantasy",
       fontSize: 60,
       stroke: 0x0,
       strokeThickness: 8,
