@@ -2,6 +2,7 @@ import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "./StatusEffectBlueprints";
 import { Card, Combatant, CombatantStatus, CombatSide } from "./game";
+import { CardFactory } from "./card";
 
 export module GameController {
   export async function drawCards(count: number, actor: { hand: Card[]; drawPile: Card[] }) {
@@ -24,7 +25,7 @@ export module GameController {
     const dict: Partial<Record<keyof CombatantStatus, (unit: Combatant) => void>> = {
       regeneration: u => (u.status.health += u.status.regeneration),
       tactical: u => drawCards(u.status.tactical, side),
-      daggers: u => range(u.status.daggers).forEach(() => side.hand.push({ cost: 0, type: "atk", value: 1 })),
+      daggers: u => range(u.status.daggers).forEach(() => side.hand.push(CardFactory.generateDaggerCard())),
       burning: u => (u.status.health -= u.status.burning),
       poisoned: u => (u.status.health -= u.status.poisoned),
       bleeding: u => (u.status.health -= u.status.bleeding),

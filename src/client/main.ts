@@ -15,6 +15,7 @@ import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { getStatusEffectEmojiOnly } from "./display/entities/VCombatant.emojis";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
+import { CardFactory } from "./game/card";
 import { StatusEffectBlueprints } from "./game/StatusEffectBlueprints";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 
@@ -228,7 +229,7 @@ export async function startGame(app: Application) {
         foe.nextCard = null;
         vunit.thought = StatusEffectBlueprints.stunned.emoji;
       } else {
-        foe.nextCard = Card.generateRandomEnemyCard();
+        foe.nextCard = CardFactory.generateRandomEnemyCard();
       }
     }
 
