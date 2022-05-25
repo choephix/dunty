@@ -6,3 +6,4 @@
   - [ ] Implement DAMAGE types
   - [ ] Implement ENERGY costs
   - [ ] Refactor HAND into Combatant and replace `nextCard`
+  - [ ] Refactor STUNNED / FROZEN — add card to top of deck

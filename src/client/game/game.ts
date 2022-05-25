@@ -152,6 +152,8 @@ export class Combatant {
     bleeding: 0,
     stunned: 0,
     frozen: 0,
+    // silenced: 0,
+    // disarmed: 0,
 
     // Neutral
     wet: 0,

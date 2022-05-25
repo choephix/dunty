@@ -83,13 +83,26 @@ export class VCombatant extends Container {
         if (typeof v === "string") {
           intentionIndicator.text = v.toUpperCase();
           intentionIndicator.style.fill = [0xffffff, 0xf0e010];
+          
+          ToolTipFactory.addIntentionIndicator(
+            intentionIndicator,
+            this.data.status.stunned
+              ? `STUNNED for ${this.data.status.stunned} turns`
+              : this.data.status.frozen
+              ? `FROZEN for ${this.data.status.frozen} turns`
+              : // this.data.status.silenced ? `SILENCED for ${this.data.status.silenced} turns` :
+                // this.data.status.disarmed ? `DISARMED for ${this.data.status.disarmed} turns` :
+                v.toUpperCase()
+          );
         } else {
           const [text, color = 0xf0e010] = getIntentionEmojifiedString(this.data, game);
           intentionIndicator.text = text.toUpperCase();
           intentionIndicator.style.fill = color;
 
           intentionIndicator.buttonMode = true;
-          v && ToolTipFactory.addIntentionIndicator(intentionIndicator, v);
+          if (v) {
+            ToolTipFactory.addIntentionIndicator(intentionIndicator, v);
+          }
         }
       },
       true
