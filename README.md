@@ -7,3 +7,4 @@
   - [ ] Implement ENERGY costs
   - [ ] Refactor HAND into Combatant and replace `nextCard`
   - [ ] Refactor STUNNED / FROZEN — add card to top of deck
+  - [ ] Refactor CARD-SPRITES into persistent object, not managed by only the hand

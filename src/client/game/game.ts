@@ -1,6 +1,8 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
+import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import { range } from "@sdk/utils/range";
+import { StatusEffectBlueprints, StatusEffectImpactAlignment } from "./StatusEffectBlueprints";
 
 const BASE_DRAW_COUNT_ON_TURN_START = 4;
 
@@ -121,6 +123,7 @@ export class Combatant {
 
   nextCard: Card | null = null;
 
+  energy = 0;
   status = {
     // ❤
     health: 1,
@@ -171,7 +174,7 @@ export class Combatant {
   }
 }
 
-export type CombatantStatus = Combatant["status"];
+export type CombatantStatus = Omit<Combatant["status"], "energy">;
 export module CombatantStatus {
   export function entries<T>(obj: Partial<Record<keyof CombatantStatus, T>>) {
     return Object.entries(obj) as [keyof CombatantStatus, T][];
@@ -185,16 +188,25 @@ export interface Card {
   // effect?: (actor: Combatant, target?: Combatant) => void;
   mods?: Partial<CombatantStatus>;
   isToken?: boolean;
+  target?: CardTarget;
+}
+
+export enum CardTarget {
+  SELF = "self",
+  TARGET_ENEMY = "target-enemy",
+  FRONT_ENEMY = "front-enemy",
+  ALL_ENEMIES = "all-enemies",
+  ALL = "all",
 }
 
 export module Card {
   export function generateRandomCard(): Card {
     return getRandomItemFrom<Card>([
-      { cost: 1, type: "atk", value: 1 },
-      { cost: 1, type: "atk", value: 2 },
-      { cost: 1, type: "def", value: 1 },
-      { cost: 1, type: "def", value: 2 },
-      { cost: 1, type: "func", mods: { health: 2 } },
+      { cost: randomIntBetweenIncluding(0, 3, 2), type: "atk", value: 1 },
+      { cost: randomIntBetweenIncluding(0, 3, 2), type: "atk", value: 2 },
+      { cost: randomIntBetweenIncluding(0, 3, 2), type: "def", value: 1 },
+      { cost: randomIntBetweenIncluding(0, 3, 2), type: "def", value: 2 },
+      { cost: randomIntBetweenIncluding(0, 3, 2), type: "func", mods: { health: 2 } },
       generateStatusEffectCard(),
     ]);
   }
@@ -216,6 +228,18 @@ export module Card {
   function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card {
     const sampleCombatant = new Combatant();
     const key = statusProperty || (getRandomItemFrom(Object.keys(sampleCombatant.status)) as keyof CombatantStatus);
-    return { cost: 1, type: "func", mods: { [key]: 2 } };
+    const { impactAlignment } = StatusEffectBlueprints[key];
+
+    const MAP = {
+      [StatusEffectImpactAlignment.POSITIVE]: getRandomItemFrom([CardTarget.SELF]),
+      [StatusEffectImpactAlignment.NEUTRAL]: getRandomItemFrom([CardTarget.ALL]),
+      [StatusEffectImpactAlignment.NEGATIVE]: getRandomItemFrom([
+        CardTarget.TARGET_ENEMY,
+        CardTarget.FRONT_ENEMY,
+        CardTarget.ALL_ENEMIES,
+      ]),
+    };
+
+    return { cost: 1, type: "func", mods: { [key]: 2 }, target: MAP[impactAlignment] || CardTarget.ALL };
   }
 }

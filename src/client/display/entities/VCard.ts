@@ -26,14 +26,15 @@ export class VCard extends Container {
     super();
 
     this.background = this.addBackground();
+    this.art = this.addArt();
+
     this.valueIndicator = this.addValueIndicator();
     this.costIndicator = this.addCostIndicator();
-    this.art = this.addArt();
 
     this.glow = this.addGlow();
 
     this.hitArea = new Rectangle(-250, -350, 500, 700);
-
+    
     createAnimatedButtonBehavior(
       this,
       {
@@ -71,7 +72,7 @@ export class VCard extends Container {
     const sprite = Sprite.from(textureId);
     sprite.anchor.set(0.5);
     sprite.scale.set(cfg.scale);
-    sprite.position.set(0, -100);
+    sprite.position.set(0, -40);
     this.addChild(sprite);
     return sprite;
 
@@ -88,19 +89,28 @@ export class VCard extends Container {
       // fill: [0xf0f0f0, 0xe0a060],
       fill: [0x404060, 0x202030],
       fontFamily: "Impact, fantasy",
-      fontSize: 32,
+      fontSize: 16,
       fontWeight: `bold`,
-      // stroke: 0xf0f0f0,
-      // strokeThickness: 8,
+      stroke: 0xf0f0f0,
+      strokeThickness: 2,
     });
-    label.anchor.set(0.5, 0.5);
-    label.position.set(-200, -290);
+    label.scale.set(3);
+    label.anchor.set(0);
+    label.position.set(-210, -315);
 
+    // const formatCost = (cost: number) => String(cost || 0);
+    const formatCost = (cost: number) => (cost ? new Array(cost).fill("⦿").join("") : "FREE");
     const onEnterFrame = createEnchantedFrameLoop(label);
-    onEnterFrame.watch(() => this.data.cost, v => (label.text = String(v || 0)), true);
+    onEnterFrame.watch(
+      () => this.data.cost,
+      v => {
+        label.text = formatCost(v);
+        label.style.fill = v > 0 ? [0x404060, 0x202030] : [0x1050d0, 0x109010];
+      },
+      true
+    );
     Object.assign(label, { onEnterFrame });
 
-    label.scale.set(2);
     this.addChild(label);
     return label;
   }
