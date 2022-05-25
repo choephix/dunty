@@ -12,7 +12,6 @@ export module CardFactory {
     return getRandomItemFrom<Card>([
       { cost: randomIntBetweenIncluding(0, 3, 2), type: "atk", value: 1, target: CardTarget.ALL_ENEMIES },
       { cost: randomIntBetweenIncluding(0, 3, 2), type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
-      { cost: randomIntBetweenIncluding(0, 3, 2), type: "def", value: 1, target: CardTarget.SELF },
       { cost: randomIntBetweenIncluding(0, 3, 2), type: "def", value: 2, target: CardTarget.SELF },
       { cost: randomIntBetweenIncluding(0, 3, 2), type: "func", mods: { health: 2 }, target: CardTarget.SELF },
       generateStatusEffectCard(),

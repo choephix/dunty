@@ -7,6 +7,7 @@ import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
+import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 import { ToolTipFactory } from "../services/TooltipFactory";
 import { VCombatantAnimations } from "./VCombatant.animations";
 import { getIntentionEmojifiedString, getStatusEffectEmojiOnly } from "./VCombatant.emojis";
@@ -23,8 +24,20 @@ export class VCombatant extends Container {
     super();
 
     this.sprite = new Sprite(Texture.from(data.textureId));
-    this.sprite.anchor.set(0.5);
+    this.sprite.anchor.set(0.5, 0.95);
     this.addChild(this.sprite);
+
+    const breathStart = Math.random();
+    Object.assign(this.sprite, {
+      onEnterFrame: () => {
+        if (this.data.alive) {
+          this.sprite.position.y = this.sprite.texture.height * 0.45;
+          this.sprite.scale.y = 1.0 + 0.01255 * Math.sin(breathStart + .01 * EnchantmentGlobals.framesTotal);
+        } else {
+          this.sprite.scale.y = 0.9;
+        }
+      },
+    });
 
     this.statusIndicators = this.addStatusIndicators();
     this.intentionIndicator = this.addIntentionIndicator();
