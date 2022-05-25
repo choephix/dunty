@@ -11,6 +11,7 @@ import { Application } from "@pixi/app";
 import { Color } from "@sdk/utils/color/Color";
 import { lerp } from "@sdk/utils/math";
 import { delay, nextFrame } from "@sdk/utils/promises";
+import { range } from "@sdk/utils/range";
 import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { getStatusEffectEmojiOnly } from "./display/entities/VCombatant.emojis";
@@ -95,6 +96,9 @@ export async function startGame(app: Application) {
 
     const actor = combatants[0];
     const target = card.type === "atk" ? await selectAttackTarget() : actor;
+
+    actor.energy -= card.cost;
+
     await playCard(card, actor, target);
 
     if (hand.length === 0) {
@@ -239,6 +243,13 @@ export async function startGame(app: Application) {
     await delay(0.3);
     const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(combatant);
     await GameController.drawCards(cardsToDrawCount, game.sideA);
+    
+    const energyToAdd = game.calculateEnergyToAddOnTurnStart(combatant);
+    for (const _ of range(energyToAdd)) {
+      await delay(0.033);
+      combatant.energy++;
+    }
+
     await delay(0.3);
     endTurnButtonBehavior.isDisabled.value = false;
 
@@ -248,6 +259,9 @@ export async function startGame(app: Application) {
   async function endPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
     await GameController.discardHand(game.sideA);
+    
+    const combatant = game.sideA.combatants[0];
+    combatant.energy = 0;
 
     activeCombatant.setCurrent(null);
 

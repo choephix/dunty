@@ -15,6 +15,7 @@ export class VCombatant extends Container {
   sprite;
   statusIndicators;
   intentionIndicator;
+  energyIndicator;
 
   thought?: string;
 
@@ -27,6 +28,7 @@ export class VCombatant extends Container {
 
     this.statusIndicators = this.addStatusIndicators();
     this.intentionIndicator = this.addIntentionIndicator();
+    this.energyIndicator = this.addEnergyIndicator();
 
     this.intializeAnimationsReactor();
   }
@@ -83,7 +85,7 @@ export class VCombatant extends Container {
         if (typeof v === "string") {
           intentionIndicator.text = v.toUpperCase();
           intentionIndicator.style.fill = [0xffffff, 0xf0e010];
-          
+
           ToolTipFactory.addIntentionIndicator(
             intentionIndicator,
             this.data.status.stunned
@@ -111,15 +113,40 @@ export class VCombatant extends Container {
     return intentionIndicator;
   }
 
+  private addEnergyIndicator() {
+    const intentionIndicator = new Text("-", {
+      fill: [0xffffff, 0xf0e010],
+      fontFamily: "Impact, fantasy",
+      fontSize: 24,
+      stroke: 0x202020,
+      strokeThickness: 5,
+    });
+    this.addChild(intentionIndicator);
+
+    this.onEnterFrame.watch(
+      () => this.data.energy,
+      v => (intentionIndicator.text = v > 0 ? new Array(v).fill("⦿").join("") : ""),
+      true
+    );
+
+    ToolTipFactory.addToEnergyIndicator(intentionIndicator, this.data.energy);
+
+    return intentionIndicator;
+  }
+
   //// Operation Methods
 
   setRightSide(rightSide: boolean) {
-    this.sprite.scale.x = rightSide ? -1 : 1;
+    const sign = rightSide ? -1 : 1;
 
-    this.statusIndicators.position.set(rightSide ? -200 : 200, 140);
+    this.sprite.scale.x = sign;
 
-    this.intentionIndicator.position.set(rightSide ? 200 : -200, -100);
+    this.statusIndicators.position.set(sign * 200, 140);
+
+    this.intentionIndicator.position.set(sign * -200, -100);
     this.intentionIndicator.anchor.set(rightSide ? 1 : 0, 1.0);
+
+    this.energyIndicator.position.set(sign * 190, 160);
   }
 
   waitUntilLoaded() {

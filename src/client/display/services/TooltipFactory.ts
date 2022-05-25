@@ -51,4 +51,13 @@ export module ToolTipFactory {
       wordWrapWidth: 300,
     });
   }
+
+  export function addToEnergyIndicator(sprite: Sprite, value: number) {
+    const tooltipHintText = `Energy is used to play cards.\nYou have ${value} energy.`;
+    const tooltips = GameSingletons.getTooltipManager();
+    tooltips.registerTarget(sprite, {
+      content: tooltipHintText,
+      wordWrapWidth: 300,
+    });
+  }
 }

@@ -99,12 +99,11 @@ export class VCard extends Container {
     label.position.set(-210, -315);
 
     // const formatCost = (cost: number) => String(cost || 0);
-    const formatCost = (cost: number) => (cost ? new Array(cost).fill("⦿").join("") : "FREE");
     const onEnterFrame = createEnchantedFrameLoop(label);
     onEnterFrame.watch(
       () => this.data.cost,
       v => {
-        label.text = formatCost(v);
+        label.text = formatEnergyCost(v);
         label.style.fill = v > 0 ? [0x404060, 0x202030] : [0x1050d0, 0x109010];
       },
       true
@@ -200,4 +199,8 @@ export class VCard extends Container {
   getBounds() {
     return this.background.getBounds();
   }
+}
+
+export function formatEnergyCost(cost: number) {
+  return cost ? new Array(cost).fill("⦿").join("") : "FREE";
 }
