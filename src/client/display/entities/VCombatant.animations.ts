@@ -114,7 +114,7 @@ export module VCombatantAnimations {
     console.log(`${unit.name} is buffing block`);
 
     const fx = spawnSpriteWave(
-      "https://public.cx/dunty/asorted/shield.png",
+      "https://public.cx/dunty/asorted/shield-blur.png",
       { pixi: { scale: 0.95 }, duration: 1.2, ease: 'power5.out' },
       { tint: 0x3060a0, blendMode: BLEND_MODES.SCREEN }
     );

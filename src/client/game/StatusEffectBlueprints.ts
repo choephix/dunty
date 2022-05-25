@@ -20,18 +20,25 @@ const __StatusEffectBlueprints = {
     expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
     description: "Blocks up to X damage until next turn. Decreases for each damage point blocked.",
     displayName: "Block",
+    reducesWithDamage: true,
+  },
+  parry: {
+    emoji: "⚔",
+    expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
+    description: "Blocks up to X damage and deals it back until next turn.",
+    displayName: "Parry",
+  },
+  reflect: {
+    emoji: "⮎",
+    expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
+    description: "Reflect up to X blocked damage back to attacker.",
+    displayName: "Reflect",
   },
   retaliation: {
     emoji: "⥃",
     expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
     description: "When attacked (unless killed) deals X damage back until next turn.",
     displayName: "Retaliation",
-  },
-  reflect: {
-    emoji: "⮎",
-    expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
-    description: "Blocks up to X damage and deals it back until next turn.",
-    displayName: "Reflect",
   },
   protection: {
     emoji: "☥",

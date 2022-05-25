@@ -91,7 +91,10 @@ export class VCard extends Container {
       // atk: "bol-laba",
       // atk: "slot-purple",
       // atk: { file: "slot-spike (1)", color: 0xe04040, scale: 1.8 },
-      func: { file: "starc", color: 0xf0f0f0, scale: 0.8 },
+      // func: { file: "starc", color: 0xf0f0f0, scale: 0.8 },
+      // func: { file: "twirl-blurry", color: 0xf0f0f0, scale: 0.6 },
+      // func: { file: "twirl-pink", color: 0xf0f0f0, scale: 0.7 },
+      func: { file: "twirl-lite", color: 0xf0f0f0, scale: 0.6 },
       atk: { file: "slot-sword", color: 0xe04040, scale: 1.1 },
       def: { file: "slot-shield (1)", color: 0x70b0f0, scale: 1.8 },
     }[this.data.type];
@@ -144,7 +147,7 @@ export class VCard extends Container {
           stroke: 0x104050,
           strokeThickness: 8,
         });
-        label.anchor.set(0.5, 0.6);
+        label.anchor.set(0.5, 0.5);
         label.scale.set(2 / cfg.scale);
         pad.addChild(label);
       }

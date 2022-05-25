@@ -68,7 +68,7 @@ export class Game {
     let directDamage = 0;
     let healingDamage = 0;
 
-    const { block = 0, retaliation = 0, reflect = 0, leech = 0 } = target.status;
+    const { block = 0, retaliation = 0, parry: reflect = 0, leech = 0 } = target.status;
 
     directDamage = damage;
 
@@ -123,12 +123,13 @@ export class Combatant {
 
   status = {
     // ❤
-    health: 1, //
+    health: 1,
 
     // Positive
-    block: 0, //
-    protection: 0, //
+    block: 0,
+    protection: 0,
     retaliation: 0,
+    parry: 0,
     reflect: 0,
     leech: 0,
     regeneration: 0,
