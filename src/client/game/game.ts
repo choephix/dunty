@@ -15,12 +15,12 @@ export class Game {
     const playerCombatant = new Combatant({ health: HEALTH * 2 });
     playerCombatant.handReplenishCount = 4;
     playerCombatant.energyReplenishCount = 4;
-    playerCombatant.drawPile.push(...range(200).map(() => generateRandomCard()));
+    playerCombatant.drawPile.push(...range(6).map(() => generateRandomCard()));
     sideA.addCombatant(playerCombatant);
 
-    for (const _ of range(3)) {
+    for (const i of range(3)) {
       const foe = new Combatant({ health: HEALTH });
-      foe.handReplenishCount = 2;
+      foe.handReplenishCount = i+1;
       foe.energyReplenishCount = 1;
       foe.drawPile.push(...range(200).map(() => generateRandomCard()));
       sideB.addCombatant(foe);

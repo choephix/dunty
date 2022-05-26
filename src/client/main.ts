@@ -94,7 +94,7 @@ export async function startGame(app: Application) {
   hand.onCardClick = async card => {
     const { combatants } = game.sideA;
     const [actor] = combatants;
-    const { hand } = actor;
+    const { hand, discardPile } = actor;
 
     hand.splice(hand.indexOf(card), 1);
 
@@ -104,9 +104,12 @@ export async function startGame(app: Application) {
 
     await playCard(card, actor, target);
 
+    discardPile.push(card);
+
     if (hand.length === 0) {
+      endTurnButtonBehavior.isDisabled.value = true;
       await delay(0.8);
-      endPlayerTurn();
+      if (activeCombatant.current === actor) endPlayerTurn();
     }
   };
 
@@ -307,7 +310,7 @@ export async function startGame(app: Application) {
       }
 
       await delay(0.4);
-      
+
       for (const foe of game.sideB.combatants) {
         const vfoe = combatantsDictionary.get(foe)!;
         vfoe.thought = undefined;

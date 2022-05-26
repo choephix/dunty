@@ -1,19 +1,31 @@
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { Card, Combatant, CombatantStatus, CombatGroup } from "./game";
+import { Combatant, CombatantStatus, CombatGroup, IWithCards } from "./game";
 import { generateDaggerCard } from "./game.factory";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "./StatusEffectBlueprints";
 
 export module GameController {
-  export async function drawCards(count: number, actor: { hand: Card[]; drawPile: Card[] }) {
-    const cards = actor.drawPile.splice(0, count);
-    for (const card of cards) {
-      actor.hand.unshift(card);
-      await delay(0.07);
+  async function assureDrawPileHasCards(actor: IWithCards) {
+    if (actor.drawPile.length === 0) {
+      while (actor.discardPile.length > 0) {
+        const card = actor.discardPile.pop()!;
+        actor.drawPile.push(card);
+        await delay(0.07);
+      }
     }
   }
 
-  export async function discardHand(actor: { hand: Card[]; discardPile: Card[] }) {
+  export async function drawCards(count: number, actor: IWithCards) {
+    for (const _ of range(count)) {
+      await assureDrawPileHasCards(actor);
+      const card = actor.drawPile.pop()!;
+      actor.hand.unshift(card);
+      await delay(0.07);
+    }
+    await assureDrawPileHasCards(actor);
+  }
+
+  export async function discardHand(actor: IWithCards) {
     while (actor.hand.length > 0) {
       const card = actor.hand.pop()!;
       actor.discardPile.push(card);

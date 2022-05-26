@@ -241,7 +241,7 @@ class IntentionIndicators extends Container {
 
     for (const card of intentionCards) {
       const sprite = this.createIndicatorFromCard(actor, card);
-      this.addChild(sprite);
+      this.addChildAt(sprite, 0);
       this.sprites.set(card, sprite);
     }
 
