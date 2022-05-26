@@ -1,4 +1,4 @@
-import { Combatant, Game } from "@client/game/game";
+import { Card, Combatant, Game } from "@client/game/game";
 import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
 
 // export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }> = {
@@ -31,36 +31,36 @@ import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffe
 //   frozen: { icon: "❆" },
 //   exposed: { icon: "◎" },
 
-  // exposed: { icon: "⍟" },
-  // inspiring: { icon: "♫" },
-  // resurrected: { icon: "✟" },
-  // ranged: { icon: "➳" },
-  // a: { icon: "⛯" },
-  // a: { icon: "⛒" },
-  // a: { icon: "⛏" },
-  // a: { icon: "⛬" },
-  // a: { icon: "⛸" },
-  // a: { icon: "⛆" },
-  // a: { icon: "⚠" },
-  // a: { icon: "⚖" },
-  // a: { icon: "♦" },
-  // a: { icon: "⚉" },
-  // a: { icon: "♻" },
-  // a: { icon: "⚒" },
-  // a: { icon: "✺" },
-  // a: { icon: "✷" },
-  // a: { icon: "✶" },
-  // a: { icon: "✦" },
-  // a: { icon: "❀" },
-  // a: { icon: "✿" },
-  // a: { icon: "⚘" },
-  // a: { icon: "❦" },
-  // a: { icon: "☁" },
-  // a: { icon: "⚫︎" },
-  // a: { icon: "⛺︎" },
-  // sun: { icon: "☀" },
-  // lucky: { icon: "☘" },
-  // shogi: { icon: "☗" },
+// exposed: { icon: "⍟" },
+// inspiring: { icon: "♫" },
+// resurrected: { icon: "✟" },
+// ranged: { icon: "➳" },
+// a: { icon: "⛯" },
+// a: { icon: "⛒" },
+// a: { icon: "⛏" },
+// a: { icon: "⛬" },
+// a: { icon: "⛸" },
+// a: { icon: "⛆" },
+// a: { icon: "⚠" },
+// a: { icon: "⚖" },
+// a: { icon: "♦" },
+// a: { icon: "⚉" },
+// a: { icon: "♻" },
+// a: { icon: "⚒" },
+// a: { icon: "✺" },
+// a: { icon: "✷" },
+// a: { icon: "✶" },
+// a: { icon: "✦" },
+// a: { icon: "❀" },
+// a: { icon: "✿" },
+// a: { icon: "⚘" },
+// a: { icon: "❦" },
+// a: { icon: "☁" },
+// a: { icon: "⚫︎" },
+// a: { icon: "⛺︎" },
+// sun: { icon: "☀" },
+// lucky: { icon: "☘" },
+// shogi: { icon: "☗" },
 // };
 
 export function getStatusEffectEmojiOnly(statusEffect: StatusEffectKey) {
@@ -79,21 +79,31 @@ export function getStatusEffectEmojifiedString(actor: Combatant, game: Game) {
 }
 
 export function getIntentionEmojifiedString(actor: Combatant, game: Game): [string, number?] {
-  if (actor.nextCard) {
-    const { type, value } = actor.nextCard;
+  // const emojifySingleCardIntention = (card: Card) => {
+  //   const { type } = card;
 
-    if (type === "atk") {
-      const atk = game.calculateAttackPower(actor.nextCard, actor);
-      return [`⚔${atk}`, 0xf02020];
-    }
+  //   if (type === "atk") {
+  //     const atk = game.calculateAttackPower(card, actor);
+  //     return [`⚔${atk}`, 0xf02020];
+  //   }
+    
+  //   if (type === "def") {
+  //     const def = game.calculateBlockPointsToAdd(card, actor);
+  //     return [`⛊${def || "?"}`, 0x70b0f0];
+  //   }
 
-    if (type === "def") {
-      return [`⛊${value || "?"}`, 0x70b0f0];
-    }
-
-    if (type === "func") {
-      return [`★`, 0x00ffff];
-    }
-  }
+  //   if (type === "func") {
+  //     return [`★`, 0x00ffff];
+  //   }
+  // };
+  // if (actor.drawPile[0]) {
+  //   let result = '';
+  //   let color = 0xffffff;
+  //   const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(actor);
+  //   for (let i = 0; i < cardsToDrawCount && i < actor.drawPile.length; i++) {
+  //     const card = actor.drawPile[i];
+  //     [emojifySingleCardIntention(card));
+  //   }
+  // }
   return [""];
 }

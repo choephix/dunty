@@ -1,4 +1,4 @@
-import { Combatant, CombatantStatus } from "@client/game/game";
+import { Card, Combatant, CombatantStatus, Game } from "@client/game/game";
 import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
 import { game } from "@client/main";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
@@ -19,7 +19,7 @@ export class VCombatant extends Container {
   energyIndicator;
 
   thought?: string;
-  
+
   constructor(public readonly data: Combatant) {
     super();
 
@@ -32,7 +32,7 @@ export class VCombatant extends Container {
       onEnterFrame: () => {
         if (this.data.alive) {
           this.sprite.position.y = this.sprite.texture.height * 0.45;
-          this.sprite.scale.y = 1.0 + 0.01255 * Math.sin(breathStart + .01 * EnchantmentGlobals.framesTotal);
+          this.sprite.scale.y = 1.0 + 0.01255 * Math.sin(breathStart + 0.01 * EnchantmentGlobals.framesTotal);
         } else {
           this.sprite.scale.y = 0.9;
         }
@@ -82,44 +82,17 @@ export class VCombatant extends Container {
   }
 
   private addIntentionIndicator() {
-    const intentionIndicator = new Text("-", {
-      fill: [0xffffff, 0xf0e010],
-      fontFamily: "Impact, fantasy",
-      fontSize: 40,
-      stroke: 0x202020,
-      strokeThickness: 5,
-    });
-    intentionIndicator.anchor.set(0.5);
+    const { drawPile } = this.data;
+
+    const intentionIndicator = new IntentionIndicators();
     this.addChild(intentionIndicator);
 
     this.onEnterFrame.watch(
-      () => this.thought || this.data.nextCard,
-      v => {
-        if (typeof v === "string") {
-          intentionIndicator.text = v.toUpperCase();
-          intentionIndicator.style.fill = [0xffffff, 0xf0e010];
-
-          ToolTipFactory.addIntentionIndicator(
-            intentionIndicator,
-            this.data.status.stunned
-              ? `STUNNED for ${this.data.status.stunned} turns`
-              : this.data.status.frozen
-              ? `FROZEN for ${this.data.status.frozen} turns`
-              : // this.data.status.silenced ? `SILENCED for ${this.data.status.silenced} turns` :
-                // this.data.status.disarmed ? `DISARMED for ${this.data.status.disarmed} turns` :
-                v.toUpperCase()
-          );
-        } else {
-          const [text, color = 0xf0e010] = getIntentionEmojifiedString(this.data, game);
-          intentionIndicator.text = text.toUpperCase();
-          intentionIndicator.style.fill = color;
-
-          intentionIndicator.buttonMode = true;
-          if (v) {
-            ToolTipFactory.addIntentionIndicator(intentionIndicator, v);
-          }
-        }
-      },
+      () => this.thought || drawPile[0],
+      v =>
+        typeof v === "string"
+          ? intentionIndicator.updateFromText(this.data, v)
+          : intentionIndicator.update(this.data, game),
       true
     );
 
@@ -156,8 +129,7 @@ export class VCombatant extends Container {
 
     this.statusIndicators.position.set(sign * 200, 140);
 
-    this.intentionIndicator?.position.set(sign * -200, -100);
-    this.intentionIndicator?.anchor.set(rightSide ? 1 : 0, 1.0);
+    this.intentionIndicator.position.set(sign * -200, -100);
 
     this.energyIndicator.position.set(sign * 190, 160);
   }
@@ -229,4 +201,107 @@ function getStatusEffectEmojifiedString(key: StatusEffectKey, value: number) {
   if (typeof value === "number" && value != 0) return `${emoji}${value}`;
   if (typeof value === "boolean") return `${emoji}`;
   return `${emoji} (${value}?)`;
+}
+
+class IntentionIndicators extends Container {
+  readonly sprites = new Map<Card, Text>();
+
+  updateFromText(actor: Combatant, v: string) {
+    for (const card of this.sprites.keys()) {
+      this.sprites.get(card)?.destroy();
+      this.sprites.delete(card);
+    }
+
+    const sprite = this.createIndicatorFromText(v.toUpperCase(), [0xffffff, 0xf0e010]);
+
+    const { status } = actor;
+    ToolTipFactory.addIntentionIndicator(
+      sprite,
+      status.stunned
+        ? `STUNNED for ${status.stunned} turns`
+        : status.frozen
+        ? `FROZEN for ${status.frozen} turns`
+        : // this.data.status.silenced ? `SILENCED for ${this.data.status.silenced} turns` :
+          // this.data.status.disarmed ? `DISARMED for ${this.data.status.disarmed} turns` :
+          v.toUpperCase()
+    );
+    // const [text, color = 0xf0e010] = getIntentionEmojifiedString(this.data, game);
+    // intentionIndicator.text = text.toUpperCase();
+    // intentionIndicator.style.fill = color;
+  }
+
+  update(actor: Combatant, game: Game) {
+    for (const card of this.sprites.keys()) {
+      this.sprites.get(card)?.destroy();
+      this.sprites.delete(card);
+    }
+
+    const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(actor);
+    const intentionCards = actor.drawPile.slice(0, cardsToDrawCount);
+
+    for (const card of intentionCards) {
+      const sprite = this.createIndicatorFromCard(actor, card);
+      this.addChild(sprite);
+      this.sprites.set(card, sprite);
+    }
+
+    arrangeInStraightLine(this.children, { vertical: true, alignment: [0.5, 1.0] });
+
+    this.pivot.y = this.height / this.scale.y;
+  }
+
+  private createIndicatorFromText(str: string, colors: number[]) {
+    const label = new Text(str, {
+      fill: colors,
+      fontFamily: "Impact, fantasy",
+      fontSize: 40,
+      fontWeight: `bold`,
+      stroke: 0xf0f0f0,
+      strokeThickness: 5,
+      align: "right",
+    });
+    label.anchor.set(0.5);
+
+    return label;
+  }
+
+  private createIndicatorFromCard(actor: Combatant, card: Card) {
+    const emojifySingleCardIntention = (card: Card): [string, number?] => {
+      const { type } = card;
+
+      if (type === "atk") {
+        const atk = game.calculateAttackPower(card, actor);
+        return [`⚔${atk}`, 0xf02020];
+      }
+
+      if (type === "def") {
+        const def = game.calculateBlockPointsToAdd(card, actor);
+        return [`⛊${def || "?"}`, 0x70b0f0];
+      }
+
+      if (type === "func") {
+        return [`★`, 0x00ffff];
+      }
+
+      return [""];
+    };
+
+    const [str, color = 0x405080] = emojifySingleCardIntention(card);
+    const label = new Text(str, {
+      fill: color,
+      // fill: [0xffffff, 0xf0e010],
+      fontFamily: "Impact, fantasy",
+      fontWeight: `bold`,
+      fontSize: 40,
+      stroke: 0x202020,
+      strokeThickness: 5,
+      align: "right",
+    });
+    label.anchor.set(0.5);
+
+    label.buttonMode = true;
+    ToolTipFactory.addIntentionIndicator(label, card);
+
+    return label;
+  }
 }

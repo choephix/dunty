@@ -13,17 +13,22 @@ export class Game {
     const HEALTH = 3;
 
     const playerCombatant = new Combatant({ health: HEALTH * 2 });
+    playerCombatant.handReplenishCount = 4;
+    playerCombatant.energyReplenishCount = 4;
     playerCombatant.drawPile.push(...range(200).map(() => generateRandomCard()));
     sideA.addCombatant(playerCombatant);
 
     for (const _ of range(3)) {
       const foe = new Combatant({ health: HEALTH });
+      foe.handReplenishCount = 2;
+      foe.energyReplenishCount = 1;
       foe.drawPile.push(...range(200).map(() => generateRandomCard()));
       sideB.addCombatant(foe);
     }
   }
 
   calculateCardsToDrawOnTurnStart(target: Combatant) {
+    console.log(target, target.handReplenishCount, target.status.tactical);
     return target.handReplenishCount + target.status.tactical;
   }
 
@@ -119,10 +124,6 @@ export class Combatant {
 
   side!: CombatGroup;
 
-  get nextCard(): Card | null {
-    return this.drawPile[0] || null;
-  }
-
   // Properties
   characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
   textureId: string = `https://public.cx/mock/sugimori/${this.characterId}.png`;
@@ -131,7 +132,7 @@ export class Combatant {
   // State
 
   handReplenishCount = 1;
-  energyReplenishCount = 4;
+  energyReplenishCount = 1;
 
   energy = 0;
 
