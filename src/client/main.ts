@@ -1,6 +1,6 @@
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatScene } from "@client/display/entities/VCombatScene";
-import { Card, Combatant, CombatantStatus, CombatSide as CombatGroup, Game } from "@client/game/game";
+import { Card, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
 import { GameController } from "@client/game/game.controller";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
@@ -16,8 +16,7 @@ import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { getStatusEffectEmojiOnly } from "./display/entities/VCombatant.emojis";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
-import { generateRandomEnemyCard } from "./game/game.factory";
-import { StatusEffectBlueprints } from "./game/StatusEffectBlueprints";
+import { generateBloatCard } from "./game/game.factory";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 
 export let game: Game;
@@ -56,6 +55,8 @@ export async function startGame(app: Application) {
       unit.zIndex = 100 - index;
       vscene.addChild(unit);
       vscene.sortChildren();
+
+      unit.intentionIndicator.visible = !leftSide;
 
       combatantsDictionary.set(char, unit);
 
@@ -137,8 +138,10 @@ export async function startGame(app: Application) {
         for (const [key, mod] of CombatantStatus.entries(mods)) {
           target.status[key] += mod;
 
-          if (target.status.stunned > 0 || target.status.frozen > 0) {
-            target.nextCard = null;
+          if (target.status.stunned > 0) {
+            target.drawPile.unshift(generateBloatCard("stunned"));
+          } else if (target.status.frozen > 0) {
+            target.drawPile.unshift(generateBloatCard("frozen"));
           }
 
           if (noFloatyTextKeys.indexOf(key) === -1) {
@@ -224,22 +227,8 @@ export async function startGame(app: Application) {
     await GameController.activateCombatantTurnStartStatusEffects(game.sideA);
     await GameController.resetCombatantsForTurnStart(game.sideA);
 
-    for (const foe of game.sideB.combatants) {
-      await delay(0.15);
-
-      const vunit = combatantsDictionary.get(foe)!;
-      if (foe.status.frozen) {
-        foe.nextCard = null;
-        vunit.thought = StatusEffectBlueprints.frozen.emoji;
-      } else if (foe.status.stunned) {
-        foe.nextCard = null;
-        vunit.thought = StatusEffectBlueprints.stunned.emoji;
-      } else {
-        foe.nextCard = generateRandomEnemyCard();
-      }
-    }
-
     const combatant = game.sideA.combatants[0];
+    if (!combatant.alive) return;
 
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
@@ -260,10 +249,13 @@ export async function startGame(app: Application) {
 
   async function endPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
-    
+
     const combatant = game.sideA.combatants[0];
+
+    if (!combatant.alive) return;
+
     combatant.energy = 0;
-    
+
     await GameController.discardHand(combatant);
 
     activeCombatant.setCurrent(null);
@@ -271,6 +263,8 @@ export async function startGame(app: Application) {
     await delay(0.1);
 
     await resolveEnemyTurn();
+
+    if (!combatant.alive) return;
 
     await startPlayerTurn();
   }
@@ -288,18 +282,22 @@ export async function startGame(app: Application) {
 
         await delay(0.15);
 
-        const card = foe.nextCard;
-        foe.nextCard = null;
+        const vfoe = combatantsDictionary.get(foe)!;
+        vfoe.thought = " ";
 
-        if (!card) {
-          const vunit = combatantsDictionary.get(foe)!;
-          await VCombatantAnimations.noCard(vunit);
+        const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(foe);
+        await GameController.drawCards(cardsToDrawCount, foe);
+
+        if (foe.hand.length > 0) {
+          while (foe.hand.length > 0) {
+            const card = foe.hand.shift()!;
+            const target = card.type === "atk" ? playerCombatant : foe;
+            await playCard(card, foe, target);
+            await delay(0.1);
+          }
         } else {
-          const target = card.type === "atk" ? playerCombatant : foe;
-          await playCard(card, foe, target);
+          await VCombatantAnimations.noCard(vfoe);
         }
-
-        await delay(0.1);
 
         activeCombatant.setCurrent(null);
 
@@ -308,9 +306,13 @@ export async function startGame(app: Application) {
         if (!playerCombatant.alive) break;
       }
 
-      if (!game.sideA.combatants[0]?.alive) return;
-
       await delay(0.4);
+      
+      for (const foe of game.sideB.combatants) {
+        const vfoe = combatantsDictionary.get(foe)!;
+        vfoe.thought = undefined;
+        await delay(0.1);
+      }
     }
 
     vscene.ln.visible = false;

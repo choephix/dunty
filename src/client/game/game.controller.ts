@@ -1,6 +1,6 @@
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { Card, Combatant, CombatantStatus, CombatSide } from "./game";
+import { Card, Combatant, CombatantStatus, CombatGroup } from "./game";
 import { generateDaggerCard } from "./game.factory";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "./StatusEffectBlueprints";
 
@@ -21,7 +21,7 @@ export module GameController {
     }
   }
 
-  export async function activateCombatantTurnStartStatusEffects(side: CombatSide) {
+  export async function activateCombatantTurnStartStatusEffects(side: CombatGroup) {
     const dict: Partial<Record<keyof CombatantStatus, (unit: Combatant) => void>> = {
       regeneration: u => (u.status.health += u.status.regeneration),
       tactical: u => drawCards(u.status.tactical, u),
@@ -40,7 +40,7 @@ export module GameController {
     }
   }
 
-  export async function resetCombatantsForTurnStart(side: CombatSide) {
+  export async function resetCombatantsForTurnStart(side: CombatGroup) {
     for (const unit of side.combatants) {
       for (const [key] of CombatantStatus.entries(unit.status)) {
         if (key === "health") continue;

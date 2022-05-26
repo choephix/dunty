@@ -7,6 +7,10 @@ export function generateDaggerCard(): Card {
   return Object.create({ cost: 1, type: "atk", value: 1, target: CardTarget.TARGET_ENEMY });
 }
 
+export function generateBloatCard(key: "stunned" | "frozen"): Card {
+  return Object.create({ cost: 1, type: "func", mods: { [key]: -1 }, func: () => console.warn(`Un${key} self!`) });
+}
+
 export function generateRandomCard(): Card {
   return getRandomItemFrom<Card>([
     { cost: randomIntBetweenIncluding(0, 3, 2), type: "atk", value: 1, target: CardTarget.ALL_ENEMIES },

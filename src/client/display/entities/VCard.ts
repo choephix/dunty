@@ -168,7 +168,7 @@ export class VCard extends Container {
     if (this.data.type === "func") {
       if (this.data.mods) {
         const emojis = Object.keys(this.data.mods).map(
-          (k: any) => StatusEffectBlueprints[k as keyof CombatantStatus].emoji
+          (k: any) => StatusEffectBlueprints[k as keyof CombatantStatus]?.emoji || "N/A"
         );
         const label = new Text(emojis.join(""), {
           fill: [0xf0f0f0, 0xc0f0f0],

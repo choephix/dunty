@@ -19,7 +19,7 @@ export class VCombatant extends Container {
   energyIndicator;
 
   thought?: string;
-
+  
   constructor(public readonly data: Combatant) {
     super();
 
@@ -40,8 +40,8 @@ export class VCombatant extends Container {
     });
 
     this.statusIndicators = this.addStatusIndicators();
-    this.intentionIndicator = this.addIntentionIndicator();
     this.energyIndicator = this.addEnergyIndicator();
+    this.intentionIndicator = this.addIntentionIndicator();
 
     this.intializeAnimationsReactor();
   }
@@ -156,8 +156,8 @@ export class VCombatant extends Container {
 
     this.statusIndicators.position.set(sign * 200, 140);
 
-    this.intentionIndicator.position.set(sign * -200, -100);
-    this.intentionIndicator.anchor.set(rightSide ? 1 : 0, 1.0);
+    this.intentionIndicator?.position.set(sign * -200, -100);
+    this.intentionIndicator?.anchor.set(rightSide ? 1 : 0, 1.0);
 
     this.energyIndicator.position.set(sign * 190, 160);
   }

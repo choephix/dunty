@@ -3,11 +3,9 @@ import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
 import { generateRandomCard } from "./game.factory";
 
-const BASE_DRAW_COUNT_ON_TURN_START = 4;
-
 export class Game {
-  sideA = new CombatSide();
-  sideB = new CombatSide();
+  sideA = new CombatGroup();
+  sideB = new CombatGroup();
 
   start() {
     const { sideA, sideB } = this;
@@ -19,16 +17,18 @@ export class Game {
     sideA.addCombatant(playerCombatant);
 
     for (const _ of range(3)) {
-      sideB.addCombatant(new Combatant({ health: HEALTH }));
+      const foe = new Combatant({ health: HEALTH });
+      foe.drawPile.push(...range(200).map(() => generateRandomCard()));
+      sideB.addCombatant(foe);
     }
   }
 
   calculateCardsToDrawOnTurnStart(target: Combatant) {
-    return BASE_DRAW_COUNT_ON_TURN_START + target.status.tactical;
+    return target.handReplenishCount + target.status.tactical;
   }
 
   calculateEnergyToAddOnTurnStart(target: Combatant) {
-    return BASE_DRAW_COUNT_ON_TURN_START + target.status.haste;
+    return target.energyReplenishCount + target.status.haste;
   }
 
   calculateBlockPointsToAdd(card: Card, target?: Combatant) {
@@ -97,7 +97,7 @@ export class Game {
   }
 }
 
-export class CombatSide {
+export class CombatGroup {
   readonly combatants = new Array<Combatant>();
 
   addCombatant(combatant: Combatant) {
@@ -117,7 +117,11 @@ export class Combatant {
   readonly discardPile = new Array<Card>();
   readonly hand = new Array<Card>();
 
-  side!: CombatSide;
+  side!: CombatGroup;
+
+  get nextCard(): Card | null {
+    return this.drawPile[0] || null;
+  }
 
   // Properties
   characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
@@ -126,9 +130,11 @@ export class Combatant {
 
   // State
 
-  nextCard: Card | null = null;
+  handReplenishCount = 1;
+  energyReplenishCount = 4;
 
   energy = 0;
+
   status = {
     // ❤
     health: 1,
@@ -190,10 +196,11 @@ export interface Card {
   cost: number;
   type: string;
   value?: number;
-  // effect?: (actor: Combatant, target?: Combatant) => void;
   mods?: Partial<CombatantStatus>;
   isToken?: boolean;
   target: CardTarget;
+
+  func?: (actor: Combatant, target?: Combatant) => void;
 }
 
 export enum CardTarget {
