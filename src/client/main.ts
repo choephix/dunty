@@ -16,7 +16,7 @@ import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
 import { getStatusEffectEmojiOnly } from "./display/entities/VCombatant.emojis";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
-import { CardFactory } from "./game/card";
+import { generateRandomEnemyCard } from "./game/game.factory";
 import { StatusEffectBlueprints } from "./game/StatusEffectBlueprints";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 
@@ -85,16 +85,18 @@ export async function startGame(app: Application) {
 
   const handOrigin = vscene.getFractionalPosition(0.5, 0.8);
   const hand = new VHand();
-  hand.cardList = game.sideA.hand;
+  hand.cardList = game.sideA.combatants[0].hand;
   hand.position.set(handOrigin.x, handOrigin.y);
   vscene.addChild(hand);
   __window__.hand = hand;
 
   hand.onCardClick = async card => {
-    const { hand, combatants } = game.sideA;
+    const { combatants } = game.sideA;
+    const [actor] = combatants;
+    const { hand } = actor;
+
     hand.splice(hand.indexOf(card), 1);
 
-    const actor = combatants[0];
     const target = card.type === "atk" ? await selectAttackTarget() : actor;
 
     actor.energy -= card.cost;
@@ -233,7 +235,7 @@ export async function startGame(app: Application) {
         foe.nextCard = null;
         vunit.thought = StatusEffectBlueprints.stunned.emoji;
       } else {
-        foe.nextCard = CardFactory.generateRandomEnemyCard();
+        foe.nextCard = generateRandomEnemyCard();
       }
     }
 
@@ -242,8 +244,8 @@ export async function startGame(app: Application) {
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
     const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(combatant);
-    await GameController.drawCards(cardsToDrawCount, game.sideA);
-    
+    await GameController.drawCards(cardsToDrawCount, combatant);
+
     const energyToAdd = game.calculateEnergyToAddOnTurnStart(combatant);
     for (const _ of range(energyToAdd)) {
       await delay(0.033);
@@ -258,10 +260,11 @@ export async function startGame(app: Application) {
 
   async function endPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
-    await GameController.discardHand(game.sideA);
     
     const combatant = game.sideA.combatants[0];
     combatant.energy = 0;
+    
+    await GameController.discardHand(combatant);
 
     activeCombatant.setCurrent(null);
 

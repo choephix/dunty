@@ -1,7 +1,7 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
-import { CardFactory } from "./card";
+import { generateRandomCard } from "./game.factory";
 
 const BASE_DRAW_COUNT_ON_TURN_START = 4;
 
@@ -15,8 +15,8 @@ export class Game {
     const HEALTH = 3;
 
     const playerCombatant = new Combatant({ health: HEALTH * 2 });
+    playerCombatant.drawPile.push(...range(200).map(() => generateRandomCard()));
     sideA.addCombatant(playerCombatant);
-    sideA.drawPile.push(...range(200).map(() => CardFactory.generateRandomCard()));
 
     for (const _ of range(3)) {
       sideB.addCombatant(new Combatant({ health: HEALTH }));
@@ -98,10 +98,6 @@ export class Game {
 }
 
 export class CombatSide {
-  readonly drawPile = new Array<Card>();
-  readonly discardPile = new Array<Card>();
-  readonly hand = new Array<Card>();
-
   readonly combatants = new Array<Combatant>();
 
   addCombatant(combatant: Combatant) {
@@ -110,7 +106,17 @@ export class CombatSide {
   }
 }
 
+export interface IWithCards {
+  readonly drawPile: Card[];
+  readonly discardPile: Card[];
+  readonly hand: Card[];
+}
+
 export class Combatant {
+  readonly drawPile = new Array<Card>();
+  readonly discardPile = new Array<Card>();
+  readonly hand = new Array<Card>();
+
   side!: CombatSide;
 
   // Properties
