@@ -10,7 +10,7 @@ import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 import { ToolTipFactory } from "../services/TooltipFactory";
 import { VCombatantAnimations } from "./VCombatant.animations";
-import { getIntentionEmojifiedString, getStatusEffectEmojiOnly } from "./VCombatant.emojis";
+import { getStatusEffectEmojiOnly } from "./VCombatant.emojis";
 
 export class VCombatant extends Container {
   sprite;
@@ -32,7 +32,7 @@ export class VCombatant extends Container {
       onEnterFrame: () => {
         if (this.data.alive) {
           this.sprite.position.y = this.sprite.texture.height * 0.45;
-          this.sprite.scale.y = 1.0 + 0.01255 * Math.sin(breathStart + 0.01 * EnchantmentGlobals.framesTotal);
+          this.sprite.scale.y = 1.0 + 0.0125 * Math.sin(breathStart + 2.5 * EnchantmentGlobals.timeTotal);
         } else {
           this.sprite.scale.y = 0.9;
         }

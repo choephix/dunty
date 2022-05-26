@@ -28,7 +28,6 @@ export class Game {
   }
 
   calculateCardsToDrawOnTurnStart(target: Combatant) {
-    console.log(target, target.handReplenishCount, target.status.tactical);
     return target.handReplenishCount + target.status.tactical;
   }
 
