@@ -233,8 +233,6 @@ class IntentionIndicators extends Container {
 
     arrangeInStraightLine(this.children, { vertical: true, alignment: [0.5, 1.0] });
 
-    this.pivot.y = this.height / this.scale.y;
-
     this.animateInNewChildren();
   }
 
