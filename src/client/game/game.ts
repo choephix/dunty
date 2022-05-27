@@ -238,13 +238,25 @@ export interface Card {
   isToken?: boolean;
   isBloat?: boolean;
 
-  func?: (actor: Combatant, target?: Combatant) => void;
+  retain?: boolean;
+  gotoAfterPlay?: CardPileType;
+  gotoAfterDiscard?: CardPileType;
+
+  func?: (actor: Combatant, targets?: Combatant[]) => void;
 }
 
 export enum CardTarget {
-  SELF = "self",
-  TARGET_ENEMY = "target-enemy",
-  FRONT_ENEMY = "front-enemy",
-  ALL_ENEMIES = "all-enemies",
-  ALL = "all",
+  SELF = "SELF",
+  TARGET_ENEMY = "TARGET_ENEMY",
+  FRONT_ENEMY = "FRONT_ENEMY",
+  ALL_ENEMIES = "ALL_ENEMIES",
+  ALL = "ALL",
+  TARGET_ANYONE = "TARGET_ANYONE",
+}
+
+export enum CardPileType {
+  DRAW = "DRAW",
+  HAND = "HAND",
+  DISCARD = "DISCARD",
+  VOID = "VOID",
 }

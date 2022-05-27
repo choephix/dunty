@@ -18,6 +18,7 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
     cost: 1,
     type: "func",
     mods: { [key]: -1 },
+    target: CardTarget.SELF,
     isToken: true,
     isBloat: true,
     // func: () => console.warn(`Un${key} self!`),

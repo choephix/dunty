@@ -58,9 +58,7 @@ export module VCombatantAnimations {
     });
   }
 
-  export async function attack(unit: VCombatant, target?: VCombatant) {
-    console.log(`${unit.name} is attacking ${target ? target.name : "nothing"}`);
-
+  export async function attack(unit: VCombatant) {
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {

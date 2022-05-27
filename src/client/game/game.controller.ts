@@ -84,7 +84,7 @@ export module GameFAQ {
     return getEnemiesSide(actor).combatants.filter(u => u.alive);
   }
 
-  export function getAllCombatantsArray() {
+  export function getAliveAnyoneArray() {
     return [...game.sideA.combatants, ...game.sideB.combatants].filter(u => u.alive);
   }
 
@@ -95,7 +95,7 @@ export module GameFAQ {
       case CardTarget.ALL_ENEMIES:
         return getAliveEnemiesArray(actor);
       case CardTarget.ALL:
-        return getAllCombatantsArray();
+        return getAliveAnyoneArray();
       case CardTarget.FRONT_ENEMY:
         const foes = getAliveEnemiesArray(actor);
         return foes.length > 0 ? [foes[0]] : [];
@@ -108,8 +108,34 @@ export module GameFAQ {
 }
 
 export module CombatantAI {
-  export function chooseCardTarget(actor: Combatant, card: Card) {
-    const target = card.type === "atk" ? getRandomItemFrom(GameFAQ.getAliveEnemiesArray(actor)) : actor;
-    return target;
+  export function chooseCardTargets(actor: Combatant, card: Card) {
+    switch (card.target) {
+      case CardTarget.SELF: {
+        return [actor];
+      }
+      case CardTarget.ALL_ENEMIES: {
+        return GameFAQ.getAliveEnemiesArray(actor);
+      }
+      case CardTarget.ALL: {
+        return GameFAQ.getAliveAnyoneArray();
+      }
+      case CardTarget.FRONT_ENEMY: {
+        const foes = GameFAQ.getAliveEnemiesArray(actor);
+        return foes.length > 0 ? [foes[0]] : [];
+      }
+      case CardTarget.TARGET_ENEMY: {
+        const candidates = GameFAQ.getAliveEnemiesArray(actor);
+        const choice = getRandomItemFrom(candidates);
+        return choice ? [choice] : [];
+      }
+      case CardTarget.TARGET_ANYONE: {
+        const candidates = GameFAQ.getAliveAnyoneArray();
+        const choice = getRandomItemFrom(candidates);
+        return choice ? [choice] : [];
+      }
+      default:
+        console.error(`getValidTargetsArray: invalid target ${card.target}`);
+        return [actor];
+    }
   }
 }

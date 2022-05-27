@@ -229,7 +229,8 @@ class IntentionIndicators extends Container {
   }
 
   private afterUpdate() {
-    this.children.reverse();
+    // this.children.reverse();
+
     arrangeInStraightLine(this.children, { vertical: true, alignment: [0.5, 1.0] });
 
     this.pivot.y = this.height / this.scale.y;

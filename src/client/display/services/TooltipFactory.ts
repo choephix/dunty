@@ -1,5 +1,5 @@
 import { GameSingletons } from "@client/core/GameSingletons";
-import { Card } from "@client/game/game";
+import { Card, CardTarget } from "@client/game/game";
 import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
 import { Sprite } from "@pixi/sprite";
 import { VCard } from "../entities/VCard";
@@ -7,13 +7,21 @@ import { VCard } from "../entities/VCard";
 export module ToolTipFactory {
   export function addToCard(card: VCard) {
     const { data } = card;
+    const TARGET = {
+      [CardTarget.ALL]: "everyone",
+      [CardTarget.ALL_ENEMIES]: "all enemies",
+      [CardTarget.FRONT_ENEMY]: "front enemy",
+      [CardTarget.SELF]: "self",
+      [CardTarget.TARGET_ENEMY]: "target enemy",
+      [CardTarget.TARGET_ANYONE]: "any target",
+    }[data.target];
     const tooltipHintText = {
       atk: `Play and select enemy\nto ATTACK for ${data.value} damage.`,
       def: `Play to BLOCK up to\n${data.value} of damage until your next turn.`,
       func: data.mods
         ? `Play to apply\n${Object.entries(data.mods)
             .map(([k, v]) => `${v}x ${k.toUpperCase()}`)
-            .join(", ")} to self.`
+            .join(", ")} to ${TARGET}.`
         : "Play to perform a special action.",
     }[data.type];
 
@@ -22,6 +30,15 @@ export module ToolTipFactory {
   }
 
   export function addIntentionIndicator(sprite: Sprite, data: Card | string) {
+    const TARGET = typeof data === "string" ? null : {
+      [CardTarget.ALL]: "everyone",
+      [CardTarget.ALL_ENEMIES]: "you",
+      [CardTarget.FRONT_ENEMY]: "you",
+      [CardTarget.SELF]: "self",
+      [CardTarget.TARGET_ENEMY]: "you",
+      [CardTarget.TARGET_ANYONE]: "someone",
+    }[data.target];
+
     const tooltipHintText =
       typeof data === "string"
         ? data
@@ -31,7 +48,7 @@ export module ToolTipFactory {
             func: data.mods
               ? `Enemy intends to apply\n${Object.entries(data.mods)
                   .map(([k, v]) => `${v}x ${k.toUpperCase()}`)
-                  .join(", ")} to self next turn.`
+                  .join(", ")} to ${TARGET} next turn.`
               : "Play to perform\na special action next turn.",
           }[data.type] || `Unknown card type: ${data.type}`;
 

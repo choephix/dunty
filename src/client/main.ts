@@ -1,7 +1,7 @@
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatScene } from "@client/display/entities/VCombatScene";
-import { Card, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
-import { CombatantAI, GameController } from "@client/game/game.controller";
+import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
+import { CombatantAI, GameController, GameFAQ } from "@client/game/game.controller";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
@@ -95,11 +95,11 @@ export async function startGame(app: Application) {
     const { combatants } = game.sideA;
     const [actor] = combatants;
 
-    const target = card.type === "atk" ? await selectAttackTarget() : actor;
+    const targets = await getPlayerCardTargets(card, actor);
 
     actor.energy -= card.cost;
 
-    await playCardFromHand(card, actor, target);
+    await playCardFromHand(card, actor, targets);
 
     if (actor.cards.hand.length === 0) {
       endTurnButtonBehavior.isDisabled.value = true;
@@ -108,17 +108,50 @@ export async function startGame(app: Application) {
     }
   };
 
-  async function playCardFromHand(card: Card, actor: Combatant, target: Combatant = actor) {
+  async function playCardFromHand(card: Card, actor: Combatant, targets: Combatant[]) {
     const { hand, discardPile } = actor.cards;
     hand.splice(hand.indexOf(card), 1);
-    await resolveCardEffect(card, actor, target);
+    await resolveCardEffect(card, actor, targets);
     discardPile.push(card);
   }
 
-  async function resolveCardEffect(card: Card, actor: Combatant, target: Combatant = actor) {
+  async function getPlayerCardTargets(card: Card, actor: Combatant) {
+    switch (card.target) {
+      case CardTarget.SELF: {
+        return [actor];
+      }
+      case CardTarget.ALL_ENEMIES: {
+        return GameFAQ.getAliveEnemiesArray(actor);
+      }
+      case CardTarget.ALL: {
+        return GameFAQ.getAliveAnyoneArray();
+      }
+      case CardTarget.FRONT_ENEMY: {
+        const foes = GameFAQ.getAliveEnemiesArray(actor);
+        return foes.length > 0 ? [foes[0]] : [];
+      }
+      case CardTarget.TARGET_ENEMY: {
+        const candidates = GameFAQ.getAliveEnemiesArray(actor);
+        const choice = await playerSelectTarget(candidates);
+        return choice ? [choice] : [];
+      }
+      case CardTarget.TARGET_ANYONE: {
+        const candidates = GameFAQ.getAliveAnyoneArray();
+        const choice = await playerSelectTarget(candidates);
+        return choice ? [choice] : [];
+      }
+      default:
+        console.error(`getValidTargetsArray: invalid target ${card.target}`);
+        return [actor];
+    }
+  }
+
+  async function resolveCardEffect(card: Card, actor: Combatant, targets: Combatant[]) {
     const { type, mods, func } = card;
 
     if (type === "atk") {
+      const [target] = targets;
+
       await performAttack(target, actor, card);
 
       if (!actor.alive) actor.side.combatants.splice(actor.side.combatants.indexOf(target), 1);
@@ -128,8 +161,11 @@ export async function startGame(app: Application) {
     }
 
     if (type === "def") {
-      const amountToAdd = game.calculateBlockPointsToAdd(card, actor);
-      target.status.block += amountToAdd;
+      for (const target of targets) {
+        await delay(0.1);
+        const amountToAdd = game.calculateBlockPointsToAdd(card, actor);
+        target.status.block += amountToAdd;
+      }
 
       await delay(0.35);
     }
@@ -139,27 +175,31 @@ export async function startGame(app: Application) {
       await VCombatantAnimations.spellBegin(vact);
 
       if (func) {
-        func(actor, target);
+        func(actor, targets);
       }
 
       if (mods) {
         const noFloatyTextKeys = ["health"];
         for (const [key, mod] of CombatantStatus.entries(mods)) {
-          target.status[key] += mod;
-          if (target.status[key] < 0) target.status[key] = 0;
-
-          if (target.status.stunned > 0) {
-            target.cards.addCardTo(generateBloatCard("stunned"), target.cards.drawPile);
-          } else if (target.status.frozen > 0) {
-            target.cards.addCardTo(generateBloatCard("frozen"), target.cards.drawPile);
+          for (const target of targets) {
+            target.status[key] += mod;
+            if (target.status[key] < 0) target.status[key] = 0;
+  
+            if (target.status.stunned > 0) {
+              target.cards.addCardTo(generateBloatCard("stunned"), target.cards.drawPile);
+            } else if (target.status.frozen > 0) {
+              target.cards.addCardTo(generateBloatCard("frozen"), target.cards.drawPile);
+            }
+  
+            if (noFloatyTextKeys.indexOf(key) === -1) {
+              const emoji = getStatusEffectEmojiOnly(key);
+              VCombatantAnimations.spawnFloatyText(vact, `${emoji}${mod}`, 0xa0c0f0);
+            }
+            
+            await delay(0.15);
           }
 
-          if (noFloatyTextKeys.indexOf(key) === -1) {
-            const emoji = getStatusEffectEmojiOnly(key);
-            VCombatantAnimations.spawnFloatyText(vact, `${emoji}${mod}`, 0xa0c0f0);
-          }
-
-          await delay(0.45);
+          await delay(0.30);
         }
       }
 
@@ -167,8 +207,7 @@ export async function startGame(app: Application) {
     }
   }
 
-  async function selectAttackTarget() {
-    const candidates = game.sideB.combatants.filter(c => c.alive);
+  async function playerSelectTarget(candidates: Combatant[]) {
     if (candidates.length === 0) return;
 
     if (candidates.length === 1) return candidates[0];
@@ -219,13 +258,13 @@ export async function startGame(app: Application) {
 
     const vatk = combatantsDictionary.get(attacker)!;
     const vdef = combatantsDictionary.get(target)!;
-    await VCombatantAnimations.attack(vatk, vdef);
+    await VCombatantAnimations.attack(vatk);
 
     if (target.alive && reflectedDamage > 0) {
       const { directDamage, blockedDamage } = game.calculateDamage(reflectedDamage, attacker);
       console.log("Reflected damage:", directDamage, blockedDamage, reflectedDamage);
       dealDamage(attacker, directDamage, blockedDamage);
-      await VCombatantAnimations.attack(vdef, vatk);
+      await VCombatantAnimations.attack(vdef);
     }
 
     if (healingDamage > 0) {
@@ -303,9 +342,9 @@ export async function startGame(app: Application) {
           while (foe.cards.hand.length > 0) {
             // await delay(0.7);
             const card = foe.cards.hand[0];
-            const target = CombatantAI.chooseCardTarget(foe, card);
-            console.log(`AI plays`, card, `on`, target);
-            await playCardFromHand(card, foe, target);
+            const targets = CombatantAI.chooseCardTargets(foe, card);
+            console.log(`AI plays`, card, `on`, targets);
+            await playCardFromHand(card, foe, targets);
             await delay(0.1);
           }
         } else {

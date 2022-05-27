@@ -57,6 +57,7 @@
     "@tweakpane/plugin-essentials": "^0.1.4",
     "@types/string-similarity": "^4.0.0",
     "@waxio/waxjs": "^1.0.4",
+    "airtable": "^0.11.4",
     "atomicassets": "^1.4.2",
     "capitalize": "^2.0.4",
     "csv-loader": "^3.0.3",
