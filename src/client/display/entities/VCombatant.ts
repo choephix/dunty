@@ -8,6 +8,7 @@ import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
+import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 import { ToolTipFactory } from "../services/TooltipFactory";
 import { VCombatantAnimations } from "./VCombatant.animations";
@@ -93,7 +94,7 @@ export class VCombatant extends Container {
       v =>
         typeof v === "string"
           ? intentionIndicator.updateFromText(this.data, v)
-          : intentionIndicator.update(this.data, game),
+          : intentionIndicator.updateFromUpcomingCards(this.data, game),
       true
     );
 
@@ -166,6 +167,8 @@ class StatusEffectIndicators extends Container {
     arrangeInStraightLine(spritesArray, { vertical: true, alignment: [0.5, 1.0] });
 
     this.pivot.y = this.height / this.scale.y;
+
+    this.animateInNewChildren();
   }
 
   private createStatusIndicator(key: StatusEffectKey, value: number) {
@@ -189,11 +192,22 @@ class StatusEffectIndicators extends Container {
     update(value);
 
     return Object.assign(label, {
+      isNew: true,
       key,
       value,
       priority: StatusEffectBlueprints[key].displayPriority,
       update,
     });
+  }
+
+  private animateInNewChildren() {
+    for (const [_, sprite] of this.sprites) {
+      if (sprite.isNew) {
+        sprite.isNew = false;
+        const tweeener = new TemporaryTweeener(sprite);
+        tweeener.from(sprite, { pixi: { scale: 0 }, ease: "back.out" });
+      }
+    }
   }
 }
 
@@ -205,15 +219,29 @@ function getStatusEffectEmojifiedString(key: StatusEffectKey, value: number) {
 }
 
 class IntentionIndicators extends Container {
-  readonly sprites = new Map<Card, Text>();
+  readonly sprites = new Map<Card, Text & { isNew?: boolean }>();
 
-  updateFromText(actor: Combatant, v: string) {
+  private clear() {
     for (const card of this.sprites.keys()) {
       this.sprites.get(card)?.destroy();
       this.sprites.delete(card);
     }
+  }
+
+  private afterUpdate() {
+    this.children.reverse();
+    arrangeInStraightLine(this.children, { vertical: true, alignment: [0.5, 1.0] });
+
+    this.pivot.y = this.height / this.scale.y;
+
+    this.animateInNewChildren();
+  }
+
+  updateFromText(actor: Combatant, v: string) {
+    this.clear();
 
     const sprite = this.createIndicatorFromText(v.toUpperCase(), [0xffffff, 0xf0e010]);
+    Object.assign(sprite, { isNew: true });
 
     const { status } = actor;
     ToolTipFactory.addIntentionIndicator(
@@ -226,30 +254,24 @@ class IntentionIndicators extends Container {
           // this.data.status.disarmed ? `DISARMED for ${this.data.status.disarmed} turns` :
           v.toUpperCase()
     );
-    // const [text, color = 0xf0e010] = getIntentionEmojifiedString(this.data, game);
-    // intentionIndicator.text = text.toUpperCase();
-    // intentionIndicator.style.fill = color;
+
+    this.afterUpdate();
   }
 
-  update(actor: Combatant, game: Game) {
-    for (const card of this.sprites.keys()) {
-      this.sprites.get(card)?.destroy();
-      this.sprites.delete(card);
-    }
+  updateFromUpcomingCards(actor: Combatant, game: Game) {
+    this.clear();
 
     const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(actor);
     const intentionCards = actor.cards.drawPile.slice(0, cardsToDrawCount);
 
     for (const card of intentionCards) {
       const sprite = this.createIndicatorFromCard(actor, card);
+      Object.assign(sprite, { isNew: true });
       this.addChild(sprite);
       this.sprites.set(card, sprite);
     }
 
-    this.children.reverse();
-    arrangeInStraightLine(this.children, { vertical: true, alignment: [0.5, 1.0] });
-
-    this.pivot.y = this.height / this.scale.y;
+    this.afterUpdate();
   }
 
   private createIndicatorFromText(str: string, colors: number[]) {
@@ -313,5 +335,15 @@ class IntentionIndicators extends Container {
     ToolTipFactory.addIntentionIndicator(label, card);
 
     return label;
+  }
+
+  private animateInNewChildren() {
+    for (const [_, sprite] of this.sprites) {
+      if (sprite.isNew) {
+        sprite.isNew = false;
+        const tweeener = new TemporaryTweeener(sprite);
+        tweeener.from(sprite, { pixi: { scale: 0 }, ease: "back.out" });
+      }
+    }
   }
 }
