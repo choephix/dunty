@@ -1,7 +1,7 @@
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatScene } from "@client/display/entities/VCombatScene";
 import { Card, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
-import { GameController } from "@client/game/game.controller";
+import { CombatantAI, GameController } from "@client/game/game.controller";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
@@ -86,7 +86,7 @@ export async function startGame(app: Application) {
 
   const handOrigin = vscene.getFractionalPosition(0.5, 0.8);
   const hand = new VHand();
-  hand.cardList = game.sideA.combatants[0].hand;
+  hand.cardList = game.sideA.combatants[0].cards.hand;
   hand.position.set(handOrigin.x, handOrigin.y);
   vscene.addChild(hand);
   __window__.hand = hand;
@@ -94,27 +94,29 @@ export async function startGame(app: Application) {
   hand.onCardClick = async card => {
     const { combatants } = game.sideA;
     const [actor] = combatants;
-    const { hand, discardPile } = actor;
-
-    hand.splice(hand.indexOf(card), 1);
 
     const target = card.type === "atk" ? await selectAttackTarget() : actor;
 
     actor.energy -= card.cost;
 
-    await playCard(card, actor, target);
+    await playCardFromHand(card, actor, target);
 
-    discardPile.push(card);
-
-    if (hand.length === 0) {
+    if (actor.cards.hand.length === 0) {
       endTurnButtonBehavior.isDisabled.value = true;
       await delay(0.8);
       if (activeCombatant.current === actor) endPlayerTurn();
     }
   };
 
-  async function playCard(card: Card, actor: Combatant, target: Combatant = actor) {
-    const { type, mods } = card;
+  async function playCardFromHand(card: Card, actor: Combatant, target: Combatant = actor) {
+    const { hand, discardPile } = actor.cards;
+    hand.splice(hand.indexOf(card), 1);
+    await resolveCardEffect(card, actor, target);
+    discardPile.push(card);
+  }
+
+  async function resolveCardEffect(card: Card, actor: Combatant, target: Combatant = actor) {
+    const { type, mods, func } = card;
 
     if (type === "atk") {
       await performAttack(target, actor, card);
@@ -136,21 +138,27 @@ export async function startGame(app: Application) {
       const vact = combatantsDictionary.get(actor)!;
       await VCombatantAnimations.spellBegin(vact);
 
+      if (func) {
+        func(actor, target);
+      }
+
       if (mods) {
         const noFloatyTextKeys = ["health"];
         for (const [key, mod] of CombatantStatus.entries(mods)) {
           target.status[key] += mod;
+          if (target.status[key] < 0) target.status[key] = 0;
 
           if (target.status.stunned > 0) {
-            target.drawPile.unshift(generateBloatCard("stunned"));
+            target.cards.addCardTo(generateBloatCard("stunned"), target.cards.drawPile);
           } else if (target.status.frozen > 0) {
-            target.drawPile.unshift(generateBloatCard("frozen"));
+            target.cards.addCardTo(generateBloatCard("frozen"), target.cards.drawPile);
           }
 
           if (noFloatyTextKeys.indexOf(key) === -1) {
             const emoji = getStatusEffectEmojiOnly(key);
             VCombatantAnimations.spawnFloatyText(vact, `${emoji}${mod}`, 0xa0c0f0);
           }
+
           await delay(0.45);
         }
       }
@@ -236,7 +244,7 @@ export async function startGame(app: Application) {
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
     const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(combatant);
-    await GameController.drawCards(cardsToDrawCount, combatant);
+    await GameController.drawCards(cardsToDrawCount, combatant.cards);
 
     const energyToAdd = game.calculateEnergyToAddOnTurnStart(combatant);
     for (const _ of range(energyToAdd)) {
@@ -259,7 +267,7 @@ export async function startGame(app: Application) {
 
     combatant.energy = 0;
 
-    await GameController.discardHand(combatant);
+    await GameController.discardHand(combatant.cards);
 
     activeCombatant.setCurrent(null);
 
@@ -289,13 +297,15 @@ export async function startGame(app: Application) {
         vfoe.thought = " ";
 
         const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(foe);
-        await GameController.drawCards(cardsToDrawCount, foe);
+        await GameController.drawCards(cardsToDrawCount, foe.cards);
 
-        if (foe.hand.length > 0) {
-          while (foe.hand.length > 0) {
-            const card = foe.hand.shift()!;
-            const target = card.type === "atk" ? playerCombatant : foe;
-            await playCard(card, foe, target);
+        if (foe.cards.hand.length > 0) {
+          while (foe.cards.hand.length > 0) {
+            // await delay(0.7);
+            const card = foe.cards.hand[0];
+            const target = CombatantAI.chooseCardTarget(foe, card);
+            console.log(`AI plays`, card, `on`, target);
+            await playCardFromHand(card, foe, target);
             await delay(0.1);
           }
         } else {
