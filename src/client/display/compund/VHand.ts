@@ -26,7 +26,8 @@ export class VHand extends Container {
         this.cardSprites.forEach((sprite, card) => {
           if (cards.includes(card)) return;
           this.cardSprites.delete(card);
-          this.removeChild(sprite);
+
+          sprite.tweeener.to(sprite, { alpha: 0 }).then(() => sprite.destroy());
         });
 
         cards.forEach(card => {

@@ -8,6 +8,7 @@ import { Container } from "@pixi/display";
 import { Rectangle } from "@pixi/math";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
+import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import { Card, Combatant, CombatantStatus } from "../../game/game";
 import { ToolTipFactory } from "../services/TooltipFactory";
@@ -21,6 +22,8 @@ export class VCard extends Container {
   glow;
 
   actor?: Combatant;
+
+  public tweeener = new TemporaryTweeener(this);
 
   constructor(public readonly data: Card) {
     super();

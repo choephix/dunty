@@ -2,7 +2,7 @@ import { game } from "@client/main";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { Card, CardPiles, Combatant, CombatantStatus, CombatGroup } from "./game";
+import { Card, CardPiles, CardTarget, Combatant, CombatantStatus, CombatGroup } from "./game";
 import { generateDaggerCard } from "./game.factory";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "./StatusEffectBlueprints";
 
@@ -79,14 +79,37 @@ export module GameFAQ {
   function getEnemiesSide(actor: Combatant) {
     return game.sideA === actor.side ? game.sideB : game.sideA;
   }
-  export function getEnemiesArray(actor: Combatant) {
-    return getEnemiesSide(actor).combatants;
+
+  export function getAliveEnemiesArray(actor: Combatant) {
+    return getEnemiesSide(actor).combatants.filter(u => u.alive);
+  }
+
+  export function getAllCombatantsArray() {
+    return [...game.sideA.combatants, ...game.sideB.combatants].filter(u => u.alive);
+  }
+
+  export function getValidTargetsArray(actor: Combatant, card: Card): Combatant[] {
+    switch (card.target) {
+      case CardTarget.SELF:
+        return [actor];
+      case CardTarget.ALL_ENEMIES:
+        return getAliveEnemiesArray(actor);
+      case CardTarget.ALL:
+        return getAllCombatantsArray();
+      case CardTarget.FRONT_ENEMY:
+        const foes = getAliveEnemiesArray(actor);
+        return foes.length > 0 ? [foes[0]] : [];
+      case CardTarget.TARGET_ENEMY:
+        return getAliveEnemiesArray(actor);
+      default:
+        throw new Error(`getValidTargetsArray: invalid target ${card.target}`);
+    }
   }
 }
 
 export module CombatantAI {
   export function chooseCardTarget(actor: Combatant, card: Card) {
-    const target = card.type === "atk" ? getRandomItemFrom(GameFAQ.getEnemiesArray(actor)) : actor;
+    const target = card.type === "atk" ? getRandomItemFrom(GameFAQ.getAliveEnemiesArray(actor)) : actor;
     return target;
   }
 }
