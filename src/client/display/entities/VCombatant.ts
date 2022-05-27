@@ -1,3 +1,4 @@
+import { __VERBOSE__ } from "@client/debug/URL_PARAMS";
 import { Card, Combatant, CombatantStatus, Game } from "@client/game/game";
 import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
 import { game } from "@client/main";
@@ -82,7 +83,7 @@ export class VCombatant extends Container {
   }
 
   private addIntentionIndicator() {
-    const { drawPile } = this.data;
+    const { drawPile } = this.data.cards;
 
     const intentionIndicator = new IntentionIndicators();
     this.addChild(intentionIndicator);
@@ -237,14 +238,15 @@ class IntentionIndicators extends Container {
     }
 
     const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(actor);
-    const intentionCards = actor.drawPile.slice(0, cardsToDrawCount);
+    const intentionCards = actor.cards.drawPile.slice(0, cardsToDrawCount);
 
     for (const card of intentionCards) {
       const sprite = this.createIndicatorFromCard(actor, card);
-      this.addChildAt(sprite, 0);
+      this.addChild(sprite);
       this.sprites.set(card, sprite);
     }
 
+    this.children.reverse();
     arrangeInStraightLine(this.children, { vertical: true, alignment: [0.5, 1.0] });
 
     this.pivot.y = this.height / this.scale.y;
@@ -280,7 +282,15 @@ class IntentionIndicators extends Container {
       }
 
       if (type === "func") {
-        return [`★`, 0x00ffff];
+        try {
+          if (!card.isBloat) throw new Error("Not a bloat");
+          const mod = [...Object.keys(card.mods!)][0] as StatusEffectKey;
+          const emoji = StatusEffectBlueprints[mod]!.emoji;
+          return [emoji, 0x00ffff];
+        } catch (_) {
+          const emoji = `★` + (__VERBOSE__ ? ` ` + Object.keys(card.mods || {}) : ``).toUpperCase();
+          return [emoji, 0x00ffff];
+        }
       }
 
       return [""];

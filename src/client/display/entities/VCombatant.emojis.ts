@@ -1,4 +1,4 @@
-import { Card, Combatant, Game } from "@client/game/game";
+import { Combatant, Game } from "@client/game/game";
 import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
 
 // export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }> = {

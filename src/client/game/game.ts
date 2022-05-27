@@ -1,7 +1,7 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
-import { generateRandomCard } from "./game.factory";
+import { generateRandomCard, generateRandomEnemyCard } from "./game.factory";
 
 export class Game {
   sideA = new CombatGroup();
@@ -11,18 +11,25 @@ export class Game {
     const { sideA, sideB } = this;
 
     const HEALTH = 3;
+    const DECK_SIZE = 20;
 
-    const playerCombatant = new Combatant({ health: HEALTH * 2 });
+    const playerCombatant = new Combatant({ health: HEALTH * 9 });
+    playerCombatant.name = "PLAYER";
     playerCombatant.handReplenishCount = 4;
     playerCombatant.energyReplenishCount = 4;
-    playerCombatant.drawPile.push(...range(6).map(() => generateRandomCard()));
+    playerCombatant.cards.drawPile.push(...range(DECK_SIZE).map(() => generateRandomCard()));
     sideA.addCombatant(playerCombatant);
 
-    for (const i of range(3)) {
+    const ENEMIES = 1;
+    const ENEMIE_DECK_SIZE = 6;
+    const ENEMIE_HAND_SIZE = 3;
+    const ENEMIE_ENERGY = 1;
+
+    for (const _ of range(ENEMIES)) {
       const foe = new Combatant({ health: HEALTH });
-      foe.handReplenishCount = i+1;
-      foe.energyReplenishCount = 1;
-      foe.drawPile.push(...range(200).map(() => generateRandomCard()));
+      foe.handReplenishCount = ENEMIE_HAND_SIZE;
+      foe.energyReplenishCount = ENEMIE_ENERGY;
+      foe.cards.drawPile.push(...range(ENEMIE_DECK_SIZE).map(() => generateRandomEnemyCard()));
       sideB.addCombatant(foe);
     }
   }
@@ -110,25 +117,54 @@ export class CombatGroup {
   }
 }
 
-export interface IWithCards {
-  readonly drawPile: Card[];
-  readonly discardPile: Card[];
-  readonly hand: Card[];
-}
-
-export class Combatant {
+export class CardPiles {
   readonly drawPile = new Array<Card>();
   readonly discardPile = new Array<Card>();
   readonly hand = new Array<Card>();
 
+  private readonly piles = [this.drawPile, this.discardPile, this.hand];
+
+  moveCardTo(card: Card, pile: Card[], atTheBottom = false) {
+    const prevPile = this.piles.find(p => p.includes(card));
+
+    if (prevPile) {
+      prevPile.splice(prevPile.indexOf(card), 1);
+    } else {
+      console.error("Card not found in any pile");
+    }
+
+    if (atTheBottom) {
+      pile.push(card);
+    } else {
+      pile.unshift(card);
+    }
+  }
+
+  addCardTo(card: Card, pile: Card[], atTheBottom = false) {
+    if (pile.includes(card)) {
+      return console.error("Card already in pile");
+    }
+
+    if (atTheBottom) {
+      pile.push(card);
+    } else {
+      pile.unshift(card);
+    }
+  }
+}
+
+export class Combatant {
+  // Properties
+  name?: string;
   side!: CombatGroup;
 
-  // Properties
   characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
   textureId: string = `https://public.cx/mock/sugimori/${this.characterId}.png`;
   color: number = ~~(Math.random() * 0xffffff);
 
   // State
+
+  readonly cards = new CardPiles();
 
   handReplenishCount = 1;
   energyReplenishCount = 1;
@@ -197,8 +233,10 @@ export interface Card {
   type: string;
   value?: number;
   mods?: Partial<CombatantStatus>;
-  isToken?: boolean;
   target: CardTarget;
+
+  isToken?: boolean;
+  isBloat?: boolean;
 
   func?: (actor: Combatant, target?: Combatant) => void;
 }
