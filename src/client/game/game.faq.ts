@@ -6,6 +6,10 @@ export module GameFAQ {
     return game.groupA === actor.group ? game.groupB : game.groupA;
   }
 
+  export function getAliveAlliesArray(actor: Combatant) {
+    return actor.group.combatants.filter(u => u.alive);
+  }
+
   export function getAliveEnemiesArray(actor: Combatant) {
     return getEnemiesSide(actor).combatants.filter(u => u.alive);
   }
@@ -27,6 +31,8 @@ export module GameFAQ {
         return foes.length > 0 ? [foes[0]] : [];
       case CardTarget.TARGET_ENEMY:
         return getAliveEnemiesArray(actor);
+      case CardTarget.ALL_ALLIES:
+        return getAliveAlliesArray(actor);
       default:
         throw new Error(`getValidTargetsArray: invalid target ${card.target}`);
     }

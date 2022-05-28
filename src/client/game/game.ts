@@ -282,6 +282,7 @@ export enum CardTarget {
   TARGET_ENEMY = "TARGET_ENEMY",
   FRONT_ENEMY = "FRONT_ENEMY",
   ALL_ENEMIES = "ALL_ENEMIES",
+  ALL_ALLIES = "ALL_ENEMIES",
   ALL = "ALL",
 }
 

@@ -14,6 +14,9 @@ export module CombatAI {
       case CardTarget.ALL: {
         return GameFAQ.getAliveAnyoneArray();
       }
+      case CardTarget.ALL_ALLIES: {
+        return GameFAQ.getAliveAlliesArray(actor);
+      }
       case CardTarget.FRONT_ENEMY: {
         const foes = GameFAQ.getAliveEnemiesArray(actor);
         return foes.length > 0 ? [foes[0]] : [];
