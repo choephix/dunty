@@ -43,7 +43,7 @@ export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   const canvas = document.getElementById(CANVAS_ID) as HTMLCanvasElement | null;
 
   const app = new Application({
-    backgroundColor: 0x1f1f1f,
+    backgroundColor: 0x090b0e,
     //backgroundColor: 0xFFFFFF,
     resolution: window.devicePixelRatio || 1,
     view: canvas || undefined,

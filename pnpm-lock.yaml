@@ -53,6 +53,7 @@ specifiers:
   '@tweakpane/plugin-essentials': ^0.1.4
   '@types/capitalize': ^2.0.0
   '@types/d3': ^7.1.0
+  '@types/fontfaceobserver': ^2.1.0
   '@types/node': ^17.0.35
   '@types/string-similarity': ^4.0.0
   '@typescript-eslint/eslint-plugin': ^5.25.0
@@ -75,6 +76,7 @@ specifiers:
   firebase: ^9.8.1
   firebase-admin: ^10.2.0
   firebase-functions: ^3.21.2
+  fontfaceobserver: ^2.3.0
   gsap: ^3.10.4
   html-loader: ^3.1.0
   html-webpack-plugin: ^5.5.0
@@ -150,6 +152,7 @@ dependencies:
   '@pixi/utils': 6.3.2_zm75i452lauch4w72pktyv5ezi
   '@tweakpane/core': 1.0.9
   '@tweakpane/plugin-essentials': 0.1.4_tweakpane@3.0.8
+  '@types/fontfaceobserver': 2.1.0
   '@types/string-similarity': 4.0.0
   '@waxio/waxjs': 1.0.4
   airtable: 0.11.4
@@ -159,6 +162,7 @@ dependencies:
   dotenv: 16.0.1
   eosjs: 22.1.0
   firebase: 9.8.1
+  fontfaceobserver: 2.3.0
   gsap: 3.10.4
   pixi-filters: 4.1.6_ox5ukxsy2phpayrro4m2zxyici
   pixi-scrollbox: 2.3.1_pixi-viewport@4.34.4
@@ -2338,6 +2342,10 @@ packages:
       '@types/express-serve-static-core': 4.17.28
       '@types/serve-static': 1.13.10
     dev: true
+
+  /@types/fontfaceobserver/2.1.0:
+    resolution: {integrity: sha512-Vqf183RAiFdIjUi4asKqogf2HIfLDnxn+dQo9GCpnsU5QrrsLMA2bkJU1dHRudQlizLybWD61Csd1zAgUQ3JKQ==}
+    dev: false
 
   /@types/geojson/7946.0.8:
     resolution: {integrity: sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==}
@@ -4566,6 +4574,10 @@ packages:
       debug:
         optional: true
     dev: true
+
+  /fontfaceobserver/2.3.0:
+    resolution: {integrity: sha512-6FPvD/IVyT4ZlNe7Wcn5Fb/4ChigpucKYSvD6a+0iMoLn2inpo711eyIcKjmDtE5XNcgAkSH9uN/nfAeZzHEfg==}
+    dev: false
 
   /forwarded/0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}

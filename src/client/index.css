@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Blaka&family=Cinzel+Decorative:wght@400;700;900&family=Grenze+Gotisch:wght@300&family=Henny+Penny&family=Jolly+Lodger&family=Permanent+Marker&family=Sigmar+One&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Averia+Serif+Libre&family=Irish+Grover&family=Rammetto+One&family=Slackey&display=swap');
 
 html,
@@ -20,7 +19,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #1c2e30;
   
   width: 100%;
   height: 100%;
