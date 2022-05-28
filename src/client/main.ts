@@ -1,7 +1,7 @@
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatScene } from "@client/display/entities/VCombatScene";
 import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
-import { CombatantAI, GameController, GameFAQ } from "@client/game/game.controller";
+import { GameController } from "@client/game/game.controller";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
@@ -14,9 +14,11 @@ import { delay, nextFrame } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import { VHand } from "./display/compund/VHand";
 import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
-import { getStatusEffectEmojiOnly } from "./display/entities/VCombatant.emojis";
 import { EndTurnButton } from "./display/ui/EndTurnButton";
+import { HandBlockerBlock } from "./display/ui/HandBlockerBlock";
+import { CombatAI } from "./game/game.ai";
 import { generateBloatCard } from "./game/game.factory";
+import { GameFAQ } from "./game/game.faq";
 import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
 
 export let game: Game;
@@ -84,14 +86,14 @@ export async function startGame(app: Application) {
   composeSide(game.sideA, true);
   composeSide(game.sideB, false);
 
-  const handOrigin = vscene.getFractionalPosition(0.5, 0.8);
-  const hand = new VHand();
-  hand.cardList = game.sideA.combatants[0].cards.hand;
-  hand.position.set(handOrigin.x, handOrigin.y);
-  vscene.addChild(hand);
-  __window__.hand = hand;
+  const vhandOrigin = vscene.getFractionalPosition(0.5, 0.8);
+  const vhand = new VHand();
+  vhand.cardList = game.sideA.combatants[0].cards.hand;
+  vhand.position.set(vhandOrigin.x, vhandOrigin.y);
+  vscene.addChild(vhand);
+  __window__.hand = vhand;
 
-  hand.onCardClick = async card => {
+  vhand.onCardClick = async card => {
     const { combatants } = game.sideA;
     const [actor] = combatants;
 
@@ -193,7 +195,7 @@ export async function startGame(app: Application) {
             if (key === "stunned" || key === "frozen") {
               for (const _ of range(mod)) target.cards.addCardTo(generateBloatCard(key), target.cards.drawPile);
             }
-            
+
             await delay(0.22);
           }
 
@@ -209,6 +211,10 @@ export async function startGame(app: Application) {
     if (candidates.length === 0) return;
 
     if (candidates.length === 1) return candidates[0];
+
+    const bl = new HandBlockerBlock("Choose a target");
+    bl.position.copyFrom(vhand);
+    vscene.addChild(bl);
 
     const cleanUp = new Array<Function>();
     const chosen = await new Promise<Combatant>(resolve => {
@@ -239,6 +245,8 @@ export async function startGame(app: Application) {
       }
     });
     cleanUp.forEach(fn => fn());
+
+    bl.destroy();
 
     return chosen;
   }
@@ -346,7 +354,7 @@ export async function startGame(app: Application) {
               await delay(0.9);
               // await VCombatantAnimations.skipAction(vfoe, `skip\naction`);
             } else {
-              const targets = CombatantAI.chooseCardTargets(foe, card);
+              const targets = CombatAI.chooseCardTargets(foe, card);
               console.log(`AI plays`, card, `on`, targets);
               await playCardFromHand(card, foe, targets);
               await delay(0.1);

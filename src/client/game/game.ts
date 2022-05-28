@@ -3,6 +3,9 @@ import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
 import { generateRandomCard, generateRandomEnemyCard } from "./game.factory";
 
+/**
+ * Single instance of a combat encounter.
+ */
 export class Game {
   sideA = new CombatGroup();
   sideB = new CombatGroup();
