@@ -4,6 +4,7 @@ import { GameSingletons } from "@client/core/GameSingletons";
 import { FontFamily } from "@client/display/constants/FontFamily";
 import { __window__ } from "@debug/__window__";
 import { Text } from "@pixi/text";
+import { delay } from "@sdk/utils/promises";
 import FontFaceObserver from "fontfaceobserver";
 
 export async function resolveMessageScreen(message: string) {
@@ -26,8 +27,8 @@ export async function resolveMessageScreen(message: string) {
   text.position.copyFrom(vscene.getFractionalPosition(0.5, 0.4));
   vscene.addChild(text);
   vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
-
-  await waitForDocumentClick();
+  
+  await Promise.race([waitForDocumentClick(), delay(1.5)]);
 
   await vscene.tweeener.to(text, { alpha: 0, duration: 0.5, overwrite: true });
 

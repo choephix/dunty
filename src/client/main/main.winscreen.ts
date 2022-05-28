@@ -9,6 +9,7 @@ import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { Application } from "@pixi/app";
 import { Text } from "@pixi/text";
+import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import FontFaceObserver from "fontfaceobserver";
 
@@ -39,7 +40,9 @@ export async function resolveCongrats(vscene: VScene) {
   text.position.copyFrom(vscene.getFractionalPosition(0.5, 0.4));
   vscene.addChild(text);
   vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
-  await waitForDocumentClick();
+
+  await Promise.race([waitForDocumentClick(), delay(1.5)]);
+
   await vscene.tweeener.to(text, { alpha: 0, duration: 0.5, overwrite: true });
 }
 
@@ -81,13 +84,15 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
 
   vscene.tweeener.to(hint, { alpha: 0, duration: 0.5 });
 
+  vscene.tweeener.to(chosenVCard, { y: 1600, alpha: 0, duration: 0.35, ease: "back.in" });
   await vscene.tweeener.to(
     vcards.filter(vc => vc !== chosenVCard),
-    { pixi: { scale: 0 }, duration: 0.3, ease: "back.in", stagger: 0.1 }
+    { pixi: { scale: 0 }, duration: 0.25, ease: "back.in", stagger: 0.1 }
   );
-  await vscene.tweeener.to(chosenVCard, { y: 1600, alpha: 0, duration: 0.3, ease: "back.in" });
 
   vcards.forEach(vcard => vcard.destroy());
 
   console.log(`🤍 You chose `, chosenVCard.data);
+  
+  await delay(0.4);
 }
