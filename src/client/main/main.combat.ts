@@ -3,6 +3,7 @@ import { VHand } from "@client/display/compund/VHand";
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
 import { VCombatScene } from "@client/display/entities/VCombatScene";
+import { CurrentFloorIndicator } from "@client/display/ui/CurrentFloorIndicator";
 import { EndTurnButton } from "@client/display/ui/EndTurnButton";
 import { HandBlockerBlock } from "@client/display/ui/HandBlockerBlock";
 import { UserCrossCombatData } from "@client/game/data";
@@ -34,6 +35,10 @@ export async function resolveCombatEncounter() {
   __window__.container = app.stage.addChild(vscene);
 
   await vscene.playShowAnimation();
+
+  const flrIndicator = new CurrentFloorIndicator();
+  flrIndicator.position.copyFrom(vscene.getFractionalPosition(0.5, 0.01));
+  vscene.addChild(flrIndicator);
 
   const combatantsDictionary = new Map<Combatant, VCombatant>();
   function composeSide(state: CombatGroup, leftSide: boolean) {

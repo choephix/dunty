@@ -20,6 +20,7 @@ export async function main(app: Application) {
       //
 
       UserCrossCombatData.current.health = winnerParty.combatants[0].status.health;
+      UserCrossCombatData.current.currentFloor++;
 
       await resolveWinScreen(app);
     } else {

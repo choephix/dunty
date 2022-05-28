@@ -6,10 +6,12 @@ const PLAYER_HEALTH = 3;
 const DECK_SIZE = 14;
 
 export class UserCrossCombatData {
+  currentFloor = 1;
+
   health = PLAYER_HEALTH;
   handReplenishCount = 4;
   energyReplenishCount = 4;
-  
+
   readonly deck = range(DECK_SIZE).map(() => generateRandomPlayerCard());
 }
 
