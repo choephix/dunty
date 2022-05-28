@@ -23,6 +23,8 @@ export class VCard extends Container {
 
   actor?: Combatant;
 
+  state;
+
   public tweeener = new TemporaryTweeener(this);
 
   constructor(public readonly data: Card) {
@@ -37,19 +39,23 @@ export class VCard extends Container {
     this.glow = this.addGlow();
 
     this.hitArea = new Rectangle(-250, -350, 500, 700);
-    
-    createAnimatedButtonBehavior(
+
+    this.state = createAnimatedButtonBehavior(
       this,
       {
-        onUpdate({ hoverProgress }) {
-          this.glow.alpha = hoverProgress;
-          this.glow.scale.set(2.1 + 0.05 * hoverProgress * hoverProgress);
+        onUpdate({ hoverProgress, disableProgress }) {
+          const v = hoverProgress * (1.0 - disableProgress);
+          this.glow.alpha = v;
+          this.glow.scale.set(2.1 + 0.05 * v * v);
           this.zIndex = hoverProgress * 1000;
-          this.pivot.y = hoverProgress * hoverProgress * 25;
-          this.scale.set(0.4 + 0.05 * hoverProgress * hoverProgress);
+          this.pivot.y = v * v * 25;
+          this.scale.set(0.4 + 0.05 * v * v);
         },
       },
-      true
+      true,
+      {
+        tweenDisabledDuration: 0.15
+      }
     );
 
     ToolTipFactory.addToCard(this);

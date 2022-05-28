@@ -6,4 +6,11 @@ export module VCardAnimations {
     const tweeener = new TemporaryTweeener(card);
     return tweeener.from(card, { alpha: 0 });
   }
+  export function playHideAnimation(card: VCard) {
+    const tweeener = new TemporaryTweeener(card);
+
+    card.state.isDisabled.value = true;
+    return tweeener.to(card, { alpha: 0 });
+    // return tweeener.to(card, { alpha: 0, pixi: { scale: card.scale.x * 1.5 } });
+  }
 }

@@ -35,7 +35,13 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
     onClick?: (e: InteractionData) => unknown;
     onUpdate?: (this: T, state: UpdateProperties) => void;
   },
-  initialUpdate: boolean | Partial<UpdateProperties> = false
+  initialUpdate: boolean | Partial<UpdateProperties> = false,
+  {
+    tweenPressDuration = 0.2,
+    tweenHoverDuration = 0.3,
+    tweenDisabledDuration = 0.4,
+    tweenHightlightDuration = 0.4,
+  } = {}
 ) {
   const { onClick, onUpdate } = callbacks;
 
@@ -61,10 +67,10 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
       tweeener.quickTo(state, property, { duration: duration, onUpdate: dirtify, onComplete: dirtify });
 
     const tweeener = new TemporaryTweeener(target);
-    const tweenPress = makeTweenFunc("pressProgress", 0.2);
-    const tweenHover = makeTweenFunc("hoverProgress", 0.3);
-    const tweenDisabled = makeTweenFunc("disableProgress", 0.4);
-    const tweenHightlight = makeTweenFunc("highlightProgress", 0.4);
+    const tweenPress = makeTweenFunc("pressProgress", tweenPressDuration);
+    const tweenHover = makeTweenFunc("hoverProgress", tweenHoverDuration);
+    const tweenDisabled = makeTweenFunc("disableProgress", tweenDisabledDuration);
+    const tweenHightlight = makeTweenFunc("highlightProgress", tweenHightlightDuration);
     tweeener.onEveryFrame(() => {
       if (dirty) onUpdate.call(target, state);
       dirty = false;

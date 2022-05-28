@@ -6,6 +6,8 @@ import { buttonizeDisplayObject } from "@sdk-pixi/ui-helpers/buttonizeDisplayObj
 import { VCard } from "../entities/VCard";
 import { VCardAnimations } from "../entities/VCard.animations";
 
+const CARD_SCALE = 0.4;
+
 export class VHand extends Container {
   public areaWidth: number = 1024;
 
@@ -27,7 +29,7 @@ export class VHand extends Container {
           if (cards.includes(card)) return;
           this.cardSprites.delete(card);
 
-          sprite.tweeener.to(sprite, { alpha: 0 }).then(() => sprite.destroy());
+          VCardAnimations.playHideAnimation(sprite).then(() => sprite.destroy());
         });
 
         cards.forEach(card => {
@@ -45,7 +47,7 @@ export class VHand extends Container {
           const xmul = index - (sprites.length - 1) / 2;
           const delta = Math.min(200, (0.9 * this.areaWidth) / sprites.length);
           vcard.position.set(delta * xmul, -100);
-          vcard.scale.set(0.4);
+          vcard.scale.set(CARD_SCALE);
         }
       },
       true
