@@ -56,14 +56,14 @@ export class VCombatant extends Container {
     this.energyIndicator = this.addEnergyIndicator();
     this.intentionIndicator = this.addIntentionIndicator();
 
-    this.intializeAnimationsReactor();
+    this.intializeAnimationReactors();
   }
 
   readonly onEnterFrame = createEnchantedFrameLoop(this);
 
   //// Builder Methods
 
-  private intializeAnimationsReactor() {
+  private intializeAnimationReactors() {
     const { status } = this.data;
 
     this.onEnterFrame.watch.array(
@@ -87,7 +87,8 @@ export class VCombatant extends Container {
           if (value === prev[key]) continue;
           if (noFloatyTextKeys.indexOf(key) === -1) {
             const emoji = getStatusEffectEmojiOnly(key);
-            const str = value > 0 ? `+${emoji}` : value < 0 ? `-${emoji}` : emoji;
+            const delta = value - prev[key];
+            const str = delta > 0 ? `+${emoji}` : delta < 0 ? `-${emoji}` : emoji;
             VCombatantAnimations.spawnFloatyText(this, str, 0xa0c0f0);
           }
         }
