@@ -1,7 +1,8 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
-import { generateRandomEnemyCard, generateRandomPlayerCard } from "@client/game/game.factory";
+import { generateRandomEnemyCard } from "@client/game/game.factory";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
+import { UserCrossCombatData } from "./data";
 
 /**
  * Single instance of a combat encounter.
@@ -10,19 +11,16 @@ export class Game {
   groupA = new CombatGroup();
   groupB = new CombatGroup();
 
-  start() {
+  start(userRunData: UserCrossCombatData) {
     const { groupA, groupB } = this;
 
     groupA.isPlayer = true;
 
-    const PLAYER_HEALTH = 3;
-    const DECK_SIZE = 20;
-
-    const playerCombatant = new Combatant({ health: PLAYER_HEALTH });
+    const playerCombatant = new Combatant({ health: userRunData.health });
     playerCombatant.name = "PLAYER";
-    playerCombatant.handReplenishCount = 4;
-    playerCombatant.energyReplenishCount = 4;
-    playerCombatant.cards.drawPile.push(...range(DECK_SIZE).map(() => generateRandomPlayerCard()));
+    playerCombatant.handReplenishCount = userRunData.handReplenishCount;
+    playerCombatant.energyReplenishCount = userRunData.energyReplenishCount;
+    playerCombatant.cards.drawPile.push(...userRunData.deck.map(c => Object.create(c)));
     groupA.addCombatant(playerCombatant);
 
     const ENEMIES = 2;
@@ -31,15 +29,16 @@ export class Game {
     const ENEMY_ENERGY = 1;
     const ENEMY_HEALTH = 1;
 
-    for (const _ of range(ENEMIES)) {
+    for (const index of range(ENEMIES)) {
       const foe = new Combatant({ health: ENEMY_HEALTH });
+      foe.name = "ENEMY " + index;
       foe.handReplenishCount = ENEMY_HAND_SIZE;
       foe.energyReplenishCount = ENEMY_ENERGY;
       foe.cards.drawPile.push(...range(ENEMY_DECK_SIZE).map(() => generateRandomEnemyCard()));
       groupB.addCombatant(foe);
 
       //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP ////
-      foe.handReplenishCount = 1 + _;
+      foe.handReplenishCount = 1 + index;
       //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP ////
     }
   }
@@ -129,7 +128,7 @@ export class Game {
 
 export class CombatGroup {
   isPlayer = false;
-  
+
   readonly combatants = new Array<Combatant>();
 
   addCombatant(combatant: Combatant) {
@@ -182,7 +181,6 @@ export class Combatant {
 
   characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
   textureId: string = `https://public.cx/mock/sugimori/${this.characterId}.png`;
-  color: number = ~~(Math.random() * 0xffffff);
 
   // State
 
@@ -240,6 +238,10 @@ export class Combatant {
 
   constructor(initialStatus: Partial<CombatantStatus> = {}) {
     Object.assign(this.status, initialStatus);
+  }
+
+  toString() {
+    return `${this.name || "?"} (${this.status.health})`;
   }
 }
 

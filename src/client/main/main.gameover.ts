@@ -23,11 +23,11 @@ export async function resolveGameOver(app: Application) {
   text.anchor.set(0.5);
   text.position.copyFrom(vscene.getFractionalPosition(0.5, 0.4));
   vscene.addChild(text);
-  await vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
+  vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
 
   await waitForDocumentClick();
 
-  await vscene.tweeener.to(text, { alpha: 0, duration: 0.5 });
+  await vscene.tweeener.to(text, { alpha: 0, duration: 0.5, overwrite: true });
 
   vscene.playHideAnimation().then(() => vscene.destroy());
 }

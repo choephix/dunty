@@ -53,7 +53,7 @@ export function generateRandomEnemyCard(): Card {
   return getRandomItemFrom<Card>([
     { cost: 1, type: "atk", value: 1, target: CardTarget.TARGET_ENEMY },
     { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
-    { cost: 1, type: "def", value: 2, target: CardTarget.TARGET_ENEMY },
+    { cost: 1, type: "def", value: 2, target: CardTarget.SELF },
     // generateStatusEffectCard(),
     // generateStatusEffectCard(),
     // generateStatusEffectCard(),

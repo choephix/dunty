@@ -2,6 +2,7 @@ import { waitForDocumentClick } from "@client/common/display/utils/waitForDocume
 import { VScene } from "@client/common/display/VScene";
 import { FontFamily } from "@client/display/constants/FontFamily";
 import { VCard } from "@client/display/entities/VCard";
+import { UserCrossCombatData } from "@client/game/data";
 import { generateRandomPlayerCard } from "@client/game/game.factory";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
@@ -71,6 +72,8 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
   });
   vcards.forEach(vcard => vcard.removeAllListeners());
 
+  UserCrossCombatData.current.deck.push(chosenVCard.data);
+
   vscene.tweeener.to(hint, { alpha: 0, duration: 0.5 });
 
   await vscene.tweeener.to(
@@ -78,7 +81,7 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
     { pixi: { scale: 0 }, duration: 0.3, ease: "back.in", stagger: 0.1 }
   );
   await vscene.tweeener.to(chosenVCard, { y: 1600, alpha: 0, duration: 0.3, ease: "back.in" });
-  
+
   vcards.forEach(vcard => vcard.destroy());
 
   console.log(`🤍 You chose `, chosenVCard.data);

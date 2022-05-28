@@ -1,9 +1,11 @@
+import { GameSingletons } from "@client/core/GameSingletons";
 import { VHand } from "@client/display/compund/VHand";
 import { VCombatant } from "@client/display/entities/VCombatant";
 import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
 import { VCombatScene } from "@client/display/entities/VCombatScene";
 import { EndTurnButton } from "@client/display/ui/EndTurnButton";
 import { HandBlockerBlock } from "@client/display/ui/HandBlockerBlock";
+import { UserCrossCombatData } from "@client/game/data";
 import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
 import { CombatAI } from "@client/game/game.ai";
 import { GameController } from "@client/game/game.controller";
@@ -14,20 +16,19 @@ import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { GlowFilterService } from "@game/ui/fx/GlowFilterService";
-import { Application } from "@pixi/app";
 import { Color } from "@sdk/utils/color/Color";
 import { lerp } from "@sdk/utils/math";
-import { delay, nextFrame } from "@sdk/utils/promises";
+import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import { waitForWinner } from "./waitForWinner";
 
 export let game: Game;
 
-export async function resolveCombatEncounter(app: Application) {
-  await nextFrame();
+export async function resolveCombatEncounter() {
+  const app = GameSingletons.getPixiApplicaiton();
 
   game = __window__.game = new Game();
-  game.start();
+  game.start(UserCrossCombatData.current);
 
   const vscene = new VCombatScene();
   __window__.container = app.stage.addChild(vscene);
@@ -241,7 +242,7 @@ export async function resolveCombatEncounter(app: Application) {
               glow.filter.outerStrength = 1 + hoverProgress;
               glow.filter.color = Color.lerp(0xff7050, 0xff0000, hoverProgress).toInt();
 
-              vCombatant.highlight.alpha = .3 + hoverProgress;
+              vCombatant.highlight.alpha = 0.3 + hoverProgress;
             },
             onClick() {
               resolve(candidate);
@@ -250,7 +251,7 @@ export async function resolveCombatEncounter(app: Application) {
           true
         );
         cleanUp.push(() => rect.destroy());
-        cleanUp.push(() => vCombatant.highlight.visible = false);
+        cleanUp.push(() => (vCombatant.highlight.visible = false));
       }
     });
     cleanUp.forEach(fn => fn());
@@ -364,7 +365,8 @@ export async function resolveCombatEncounter(app: Application) {
               // await VCombatantAnimations.skipAction(vfoe, `skip\naction`);
             } else {
               const targets = CombatAI.chooseCardTargets(foe, card);
-              console.log(`AI plays ${card} on ${targets}`);
+              // console.log(`AI plays ${card.type.toUpperCase()} on ${targets}`);
+              console.log(`AI plays ${JSON.stringify(card)} on ${targets}`);
               await playCardFromHand(card, foe, targets);
               await delay(0.1);
             }
