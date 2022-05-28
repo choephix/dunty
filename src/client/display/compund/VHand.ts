@@ -1,5 +1,5 @@
 import { Card } from "@client/game/game";
-import { game } from "@client/main/main";
+import { game } from "@client/main/main.combat";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Container } from "@pixi/display";
 import { buttonizeDisplayObject } from "@sdk-pixi/ui-helpers/buttonizeDisplayObject";

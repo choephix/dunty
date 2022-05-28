@@ -1,5 +1,5 @@
 import { StatusEffectBlueprints } from "@client/game/StatusEffectBlueprints";
-import { game } from "@client/main/main";
+import { game } from "@client/main/main.combat";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
@@ -57,7 +57,7 @@ export class VCard extends Container {
       },
       true,
       {
-        tweenDisabledDuration: 0.15
+        tweenDisabledDuration: 0.15,
       }
     );
 

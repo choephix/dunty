@@ -1,4 +1,4 @@
-import { game } from "@client/main/main";
+import { game } from "@client/main/main.combat";
 import { Card, CardPileType, CardTarget, Combatant } from "@client/game/game";
 
 export module GameFAQ {
