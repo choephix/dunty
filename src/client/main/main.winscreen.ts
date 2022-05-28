@@ -36,9 +36,9 @@ export async function resolveCongrats(vscene: VScene) {
   text.anchor.set(0.5);
   text.position.copyFrom(vscene.getFractionalPosition(0.5, 0.4));
   vscene.addChild(text);
-  await vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
+  vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
   await waitForDocumentClick();
-  await vscene.tweeener.to(text, { alpha: 0, duration: 0.5 });
+  await vscene.tweeener.to(text, { alpha: 0, duration: 0.5, overwrite: true });
 }
 
 export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
@@ -62,14 +62,14 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
   const chosenVCard = await new Promise<VCard>(resolve => {
     const xDelta = Math.min(220, (vscene.designWidth - 220) / (cardsCount - 1));
     for (const [index, vcard] of vcards.entries()) {
-      const centerCardsAroundPoint = vscene.getFractionalPosition(.5, .5);
+      const centerCardsAroundPoint = vscene.getFractionalPosition(0.5, 0.5);
       vcard.position.x = centerCardsAroundPoint.x + (index - cardsCount / 2 + 0.5) * xDelta;
       vcard.position.y = centerCardsAroundPoint.y;
       vscene.tweeener.from(vcard, { pixi: { scale: 0 }, duration: 0.4, delay: index * 0.1, ease: "back.out" });
       createAnimatedButtonBehavior(vcard, { onClick: () => resolve(vcard) }, true);
     }
   });
-  vcards.forEach(vcard=> vcard.removeAllListeners())
+  vcards.forEach(vcard => vcard.removeAllListeners());
 
   vscene.tweeener.to(hint, { alpha: 0, duration: 0.5 });
 
