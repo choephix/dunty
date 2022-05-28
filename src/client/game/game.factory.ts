@@ -68,10 +68,10 @@ export function generateRandomEnemyCard(): Card {
 }
 
 function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card {
-  const sampleCombatant = new Combatant();
-
-  const keys = Object.keys(StatusEffectBlueprints) as (keyof CombatantStatus)[];
-  const key = statusProperty || (getRandomItemFrom(Object.keys(sampleCombatant.status)) as keyof CombatantStatus);
+  const ignore = ["cold", "oiled", "warm", "wet", "taunt"];
+  let keys = Object.keys(StatusEffectBlueprints) as (keyof CombatantStatus)[];
+  keys = keys.filter(key => !ignore.includes(key));
+  const key = statusProperty || getRandomItemFrom(keys);
   const { impactAlignment } = StatusEffectBlueprints[key];
 
   const MAP = {

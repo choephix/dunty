@@ -23,7 +23,6 @@ export async function main(app: Application) {
 
     if (resultIsVictory) {
       // VICTORY
-      //
 
       UserCrossCombatData.current.health = winnerParty.combatants[0].status.health;
       UserCrossCombatData.current.currentFloor++;
@@ -31,7 +30,6 @@ export async function main(app: Application) {
       await resolveWinScreen(app);
     } else {
       // DEFEAT
-      //
 
       await resolveGameOver(app);
       location.reload();

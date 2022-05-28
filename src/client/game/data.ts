@@ -1,8 +1,8 @@
+import { generateRandomEnemyCard } from "@client/game/game.factory";
 import { __window__ } from "@debug/__window__";
 import { range } from "@sdk/utils/range";
-import { generateRandomEnemyCard, generateRandomPlayerCard } from "@client/game/game.factory";
-import { Card } from "./game";
 import { CardPools } from "./data.cardpools";
+import { Card, CardTarget } from "./game";
 
 const PLAYER_HEALTH = 3;
 const DECK_SIZE = 14;
@@ -33,7 +33,12 @@ const FloorConfigs: FloorConfig[] = [
         name: "Goblin",
         health: 3,
         handReplenishCount: 1,
-        deck: range(DECK_SIZE).map(() => generateRandomEnemyCard()),
+        deck: [
+          { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
+          { cost: 1, type: "def", value: 2, target: CardTarget.TARGET_ENEMY },
+          { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
+          { cost: 1, type: "def", value: 2, target: CardTarget.TARGET_ENEMY },
+        ],
       },
       {
         name: "Goblin's Sister",
