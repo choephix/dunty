@@ -112,7 +112,8 @@ export async function startGame(app: Application) {
     const { hand, discardPile } = actor.cards;
     hand.splice(hand.indexOf(card), 1);
     await resolveCardEffect(card, actor, targets);
-    discardPile.push(card);
+    const toPile = card.gotoAfterPlay ? GameFAQ.getPileType(actor, card.gotoAfterPlay) : discardPile;
+    toPile.push(card);
   }
 
   async function getPlayerCardTargets(card: Card, actor: Combatant) {
@@ -147,7 +148,7 @@ export async function startGame(app: Application) {
   }
 
   async function resolveCardEffect(card: Card, actor: Combatant, targets: Combatant[]) {
-    const { type, mods, func } = card;
+    const { type, mods, onPlay: func } = card;
 
     if (type === "atk") {
       const [target] = targets;
@@ -172,7 +173,10 @@ export async function startGame(app: Application) {
 
     if (type === "func") {
       const vact = combatantsDictionary.get(actor)!;
-      await VCombatantAnimations.spellBegin(vact);
+
+      if (!card.isBloat) {
+        await VCombatantAnimations.spellBegin(vact);
+      }
 
       if (func) {
         func(actor, targets);
@@ -182,24 +186,25 @@ export async function startGame(app: Application) {
         const noFloatyTextKeys = ["health"];
         for (const [key, mod] of CombatantStatus.entries(mods)) {
           for (const target of targets) {
-            target.status[key] += mod;
-            if (target.status[key] < 0) target.status[key] = 0;
-  
-            if (target.status.stunned > 0) {
-              target.cards.addCardTo(generateBloatCard("stunned"), target.cards.drawPile);
-            } else if (target.status.frozen > 0) {
-              target.cards.addCardTo(generateBloatCard("frozen"), target.cards.drawPile);
-            }
-  
             if (noFloatyTextKeys.indexOf(key) === -1) {
               const emoji = getStatusEffectEmojiOnly(key);
-              VCombatantAnimations.spawnFloatyText(vact, `${emoji}${mod}`, 0xa0c0f0);
+              const str = mod > 0 ? `+${emoji}` : mod < 0 ? `-${emoji}` : emoji;
+              VCombatantAnimations.spawnFloatyText(vact, str, 0xa0c0f0);
             }
             
-            await delay(0.15);
+            await delay(0.22);
+
+            target.status[key] += mod;
+            if (target.status[key] < 0) target.status[key] = 0;
+
+            if (key === "stunned" || key === "frozen") {
+              for (const _ of range(mod)) target.cards.addCardTo(generateBloatCard(key), target.cards.drawPile);
+            }
+            
+            await delay(0.22);
           }
 
-          await delay(0.30);
+          await delay(0.33);
         }
       }
 
@@ -283,7 +288,7 @@ export async function startGame(app: Application) {
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
     const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(combatant);
-    await GameController.drawCards(cardsToDrawCount, combatant.cards);
+    await GameController.drawCards(cardsToDrawCount, combatant);
 
     const energyToAdd = game.calculateEnergyToAddOnTurnStart(combatant);
     for (const _ of range(energyToAdd)) {
@@ -306,7 +311,7 @@ export async function startGame(app: Application) {
 
     combatant.energy = 0;
 
-    await GameController.discardHand(combatant.cards);
+    await GameController.discardHand(combatant);
 
     activeCombatant.setCurrent(null);
 
@@ -336,12 +341,12 @@ export async function startGame(app: Application) {
         vfoe.thought = " ";
 
         const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(foe);
-        await GameController.drawCards(cardsToDrawCount, foe.cards);
+        await GameController.drawCards(cardsToDrawCount, foe);
 
         if (foe.cards.hand.length > 0) {
           while (foe.cards.hand.length > 0) {
-            // await delay(0.7);
-            const card = foe.cards.hand[0];
+            await delay(0.1);
+            const card = foe.cards.hand[foe.cards.hand.length - 1];
             const targets = CombatantAI.chooseCardTargets(foe, card);
             console.log(`AI plays`, card, `on`, targets);
             await playCardFromHand(card, foe, targets);

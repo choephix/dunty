@@ -20,7 +20,7 @@ export class Game {
     playerCombatant.cards.drawPile.push(...range(DECK_SIZE).map(() => generateRandomCard()));
     sideA.addCombatant(playerCombatant);
 
-    const ENEMIES = 1;
+    const ENEMIES = 2;
     const ENEMIE_DECK_SIZE = 6;
     const ENEMIE_HAND_SIZE = 3;
     const ENEMIE_ENERGY = 1;
@@ -119,8 +119,9 @@ export class CombatGroup {
 
 export class CardPiles {
   readonly drawPile = new Array<Card>();
-  readonly discardPile = new Array<Card>();
   readonly hand = new Array<Card>();
+  readonly discardPile = new Array<Card>();
+  readonly void = new Array<Card>();
 
   private readonly piles = [this.drawPile, this.discardPile, this.hand];
 
@@ -242,7 +243,8 @@ export interface Card {
   gotoAfterPlay?: CardPileType;
   gotoAfterDiscard?: CardPileType;
 
-  func?: (actor: Combatant, targets?: Combatant[]) => void;
+  onPlay?: (actor: Combatant, targets?: Combatant[]) => void;
+  onDraw?: (actor: Combatant) => void;
 }
 
 export enum CardTarget {

@@ -1,28 +1,39 @@
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
-import { Card, CardTarget, Combatant, CombatantStatus } from "./game";
+import { Card, CardPileType, CardTarget, Combatant, CombatantStatus } from "./game";
 import { StatusEffectBlueprints, StatusEffectImpactAlignment } from "./StatusEffectBlueprints";
 
 export function generateDaggerCard(): Card {
-  return Object.create({
+  return {
     cost: 1,
     type: "atk",
     value: 1,
     target: CardTarget.TARGET_ENEMY,
     isToken: true,
-  });
+  };
 }
 
 export function generateBloatCard(key: "stunned" | "frozen"): Card {
-  return Object.create({
+  console.log("generateBloatCard", key);
+  return {
     cost: 1,
     type: "func",
-    mods: { [key]: -1 },
+    mods: { [key]: 0 },
     target: CardTarget.SELF,
     isToken: true,
     isBloat: true,
+    onDraw(actor: Combatant) {
+      actor.status[key] = -1;
+      if (actor.status[key] < 0) actor.status[key] = 0;
+    },
+    gotoAfterPlay: CardPileType.VOID,
+    // gotoAfterDiscard: CardPileType.VOID,
+
+    // onPlay(actor: Combatant) {
+    //   GameController.drawCards(1, actor);
+    // },
     // func: () => console.warn(`Un${key} self!`),
-  });
+  };
 }
 
 export function generateRandomCard(): Card {

@@ -179,14 +179,14 @@ const __StatusEffectBlueprints = {
   },
   stunned: {
     emoji: "⚡︎",
-    expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
+    expiryType: StatusEffectExpiryType.NULL,
     description: "Skips taking actions for X turns.",
     displayName: "Stunned",
     impactAlignment: StatusEffectImpactAlignment.NEGATIVE,
   },
   frozen: {
     emoji: "❆",
-    expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
+    expiryType: StatusEffectExpiryType.NULL,
     description: "Skips taking actions for X turns.",
     displayName: "Frozen",
     impactAlignment: StatusEffectImpactAlignment.NEGATIVE,

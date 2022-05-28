@@ -66,7 +66,7 @@ export class VCard extends Container {
 
   addArt() {
     const cfg = {
-      func: { textureCategory: "books-smol", scale: 2.4 },
+      func: { textureCategory: "books-smol", scale: 2.7 },
       atk: { textureCategory: "swords", scale: 2 },
       def: { textureCategory: "shields", scale: 2 },
     }[this.data.type]!;
@@ -181,7 +181,7 @@ export class VCard extends Container {
           stroke: 0x104050,
           strokeThickness: 8,
         });
-        label.anchor.set(0.5, 0.5);
+        label.anchor.set(0.5, 0.55);
         label.scale.set(2 / cfg.scale);
         pad.addChild(label);
       }

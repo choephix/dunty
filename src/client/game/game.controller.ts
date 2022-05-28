@@ -2,36 +2,40 @@ import { game } from "@client/main";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { Card, CardPiles, CardTarget, Combatant, CombatantStatus, CombatGroup } from "./game";
+import { Card, CardPileType, CardTarget, Combatant, CombatantStatus, CombatGroup } from "./game";
 import { generateDaggerCard } from "./game.factory";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "./StatusEffectBlueprints";
 
 export module GameController {
-  async function assureDrawPileHasCards(cards: CardPiles) {
-    if (cards.drawPile.length === 0) {
-      while (cards.discardPile.length > 0) {
-        const card = cards.discardPile[0];
-        cards.moveCardTo(card, cards.drawPile);
+  async function assureDrawPileHasCards(actor: Combatant) {
+    const { drawPile, discardPile } = actor.cards;
+    if (drawPile.length === 0) {
+      while (discardPile.length > 0) {
+        const card = discardPile[0];
+        actor.cards.moveCardTo(card, drawPile);
         await delay(0.07);
       }
     }
   }
 
-  export async function drawCards(count: number, cards: CardPiles) {
+  export async function drawCards(count: number, actor: Combatant) {
+    const { drawPile, hand } = actor.cards;
     for (const _ of range(count)) {
-      await assureDrawPileHasCards(cards);
-      const card = cards.drawPile[0];
+      await assureDrawPileHasCards(actor);
+      const card = drawPile[0];
       if (!card) return console.error("drawCards: drawPile is empty");
-      cards.moveCardTo(card, cards.hand);
+      actor.cards.moveCardTo(card, hand);
+      card.onDraw?.call(card, actor);
       await delay(0.07);
     }
-    await assureDrawPileHasCards(cards);
+    await assureDrawPileHasCards(actor);
   }
 
-  export async function discardHand(cards: CardPiles) {
-    while (cards.hand.length > 0) {
-      const card = cards.hand[0];
-      cards.moveCardTo(card, cards.discardPile);
+  export async function discardHand(actor: Combatant) {
+    const { discardPile, hand } = actor.cards;
+    while (hand.length > 0) {
+      const card = hand[0];
+      actor.cards.moveCardTo(card, discardPile);
       await delay(0.07);
     }
   }
@@ -39,7 +43,7 @@ export module GameController {
   export async function activateCombatantTurnStartStatusEffects(side: CombatGroup) {
     const dict: Partial<Record<keyof CombatantStatus, (unit: Combatant) => void>> = {
       regeneration: u => (u.status.health += u.status.regeneration),
-      tactical: u => drawCards(u.status.tactical, u.cards),
+      tactical: u => drawCards(u.status.tactical, u),
       daggers: u => range(u.status.daggers).forEach(() => u.cards.hand.push(generateDaggerCard())),
       burning: u => (u.status.health -= u.status.burning),
       poisoned: u => (u.status.health -= u.status.poisoned),
@@ -103,6 +107,15 @@ export module GameFAQ {
         return getAliveEnemiesArray(actor);
       default:
         throw new Error(`getValidTargetsArray: invalid target ${card.target}`);
+    }
+  }
+
+  export function getPileType(actor: Combatant, type: CardPileType) {
+    switch (type) {
+      case CardPileType.DRAW: return actor.cards.drawPile;
+      case CardPileType.HAND: return actor.cards.hand;
+      case CardPileType.DISCARD: return actor.cards.discardPile;
+      case CardPileType.VOID: return actor.cards.void;
     }
   }
 }
