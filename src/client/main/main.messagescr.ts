@@ -16,7 +16,8 @@ export async function resolveMessageScreen(message: string) {
   __window__.container = app.stage.addChild(vscene);
 
   const text = new Text(message, {
-    fill: 0xffff00,
+    // fill: 0xffff00,
+    fill: 0xff0050,
     fontFamily: FontFamily.FloorIndicator,
     fontSize: 160,
     stroke: 0x0,

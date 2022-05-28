@@ -10,7 +10,7 @@ export class CurrentFloorIndicator extends Container {
     super();
 
     this.label = new Text(`Floor ${UserCrossCombatData.current.currentFloor}`.toUpperCase(), {
-      fill: 0xffff00,
+      fill: 0xff0050,
       // fontFamily: "'Henny Penny', Impact, fantasy",
       fontFamily: "'Jolly Lodger', Impact, fantasy",
       fontWeight: "400",

@@ -425,8 +425,7 @@ export async function resolveCombatEncounter() {
 
   const winner = await waitForWinner();
 
-  await vscene.playHideAnimation();
-  vscene.destroy({ children: true });
+  await vscene.playHideAnimation().then(() => vscene.destroy({ children: true }));
 
   return winner;
 }

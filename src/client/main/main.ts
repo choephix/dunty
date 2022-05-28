@@ -1,11 +1,13 @@
 import { UserCrossCombatData } from "@client/game/data";
 import { Application } from "@pixi/app";
+import { delay } from "@sdk/utils/promises";
 import { resolveCombatEncounter } from "./main.combat";
 import { resolveGameOver } from "./main.gameover";
 import { resolveMessageScreen } from "./main.messagescr";
 import { resolveWinScreen } from "./main.winscreen";
 
 export async function main(app: Application) {
+  await delay(.5);
 //   await resolveWinScreen(app);
 //   await resolveWinScreen(app);
 //   await resolveWinScreen(app);

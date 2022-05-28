@@ -20,7 +20,7 @@ export class VScene extends Container {
     const border = new Graphics();
     border.lineStyle(4, 0xffffff);
     border.drawRect(0, 0, this.designWidth, this.designHeight);
-    border.alpha = 0.05;
+    border.alpha = 0.01;
     this.addChild(border);
   }
 

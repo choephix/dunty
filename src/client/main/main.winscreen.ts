@@ -39,7 +39,7 @@ export async function resolveCongrats(vscene: VScene) {
   text.anchor.set(0.5);
   text.position.copyFrom(vscene.getFractionalPosition(0.5, 0.4));
   vscene.addChild(text);
-  vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
+  vscene.tweeener.from(text, { pixi: { alpha: 0, scale: 0 }, duration: .99, ease: 'elastic.out' });
 
   await Promise.race([waitForDocumentClick(), delay(1.5)]);
 

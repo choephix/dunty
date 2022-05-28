@@ -99,6 +99,6 @@ export class VCombatScene extends Container {
   }
 
   playHideAnimation() {
-    return this.tweeener.to(this, { alpha: 0, duration: 1.5 });
+    return this.tweeener.to(this, { alpha: 0, duration: 1.1 });
   }
 }
