@@ -14,6 +14,7 @@ import { ToolTipFactory } from "@client/display/services/TooltipFactory";
 import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
 import { getStatusEffectEmojiOnly } from "@client/display/entities/VCombatant.emojis";
 import { BLEND_MODES } from "@pixi/constants";
+import { FontFamily } from "../constants/FontFamily";
 
 export class VCombatant extends Container {
   highlight;
@@ -131,7 +132,8 @@ export class VCombatant extends Container {
   private addEnergyIndicator() {
     const intentionIndicator = new Text("-", {
       fill: [0xffffff, 0xf0e010],
-      fontFamily: "Impact, fantasy",
+      fontFamily: FontFamily.NumericIndicators,
+      fontWeight: "700",
       fontSize: 24,
       stroke: 0x202020,
       strokeThickness: 5,
@@ -201,9 +203,9 @@ class StatusEffectIndicators extends Container {
   private createStatusIndicator(key: StatusEffectKey, value: number) {
     const label = new Text(``, {
       fill: [0x405080, 0x202020],
-      fontFamily: "Impact, fantasy",
+      fontFamily: FontFamily.NumericIndicators,
+      fontWeight: "700",
       fontSize: 40,
-      fontWeight: `bold`,
       stroke: 0xf0f0f0,
       strokeThickness: 5,
       align: "right",
@@ -303,9 +305,9 @@ class IntentionIndicators extends Container {
   private createIndicatorFromText(str: string, colors: number[]) {
     const label = new Text(str, {
       fill: colors,
-      fontFamily: "Impact, fantasy",
+      fontFamily: FontFamily.NumericIndicators,
+      fontWeight: "700",
       fontSize: 40,
-      fontWeight: `bold`,
       stroke: 0xf0f0f0,
       strokeThickness: 5,
       align: "right",
@@ -348,8 +350,8 @@ class IntentionIndicators extends Container {
     const label = new Text(str, {
       fill: color,
       // fill: [0xffffff, 0xf0e010],
-      fontFamily: "Impact, fantasy",
-      fontWeight: `bold`,
+      fontFamily: FontFamily.NumericIndicators,
+      fontWeight: "700",
       fontSize: 40,
       stroke: 0x202020,
       strokeThickness: 5,

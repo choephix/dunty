@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Blaka&family=Cinzel+Decorative:wght@400;700;900&family=Grenze+Gotisch:wght@300&family=Henny+Penny&family=Jolly+Lodger&family=Permanent+Marker&family=Sigmar+One&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Averia+Serif+Libre&family=Irish+Grover&family=Rammetto+One&family=Slackey&display=swap');
+
 html,
 body {
   margin: 0;
@@ -23,3 +27,14 @@ body {
 
   overflow: hidden;
 }
+
+/* font-family: 'Amatic SC', cursive; // small tall
+font-family: 'Blaka', cursive; // sqr
+font-family: 'Cinzel Decorative', cursive; // slashes
+font-family: 'Grenze Gotisch', cursive; // medieval
+font-family: 'Henny Penny', cursive; // grazy story title very serif
+font-family: 'Permanent Marker', cursive;
+font-family: 'Averia Serif Libre', cursive; // burnt normal
+font-family: 'Irish Grover', cursive; // readable crazy
+font-family: 'Sigmar One', cursive; // very thick and wide
+*/ 

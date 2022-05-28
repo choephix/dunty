@@ -9,6 +9,14 @@ export class EndTurnButton extends Container {
 
     this.label = new Text("End Turn".toUpperCase(), {
       fill: 0xffffff,
+      // fontFamily: "'Henny Penny', Impact, fantasy",
+      // fontWeight: '400',
+      // fontFamily: "'Sigmar One', Impact, fantasy",
+      // fontWeight: "400",
+      // fontFamily: "'Grenze Gotisch', Impact, fantasy",
+      // fontWeight: "normal",
+      // fontFamily: "'Jolly Lodger', Impact, fantasy",
+      // fontWeight: "400",
       fontFamily: "Impact, fantasy",
       fontSize: 60,
       stroke: 0x0,

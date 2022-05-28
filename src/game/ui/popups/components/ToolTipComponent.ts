@@ -1,3 +1,4 @@
+import { FontFamily } from "@client/display/constants/FontFamily";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { Point } from "@pixi/math";
@@ -32,9 +33,9 @@ export class ToolTipComponent extends Container {
     super();
 
     this.text = new Text(content, {
-      fontFamily: ` cursive`,
-      fontSize: 32,
+      fontFamily: FontFamily.Tooltips,
       fontWeight: "bold",
+      fontSize: 32,
       fill: textColor,
       wordWrapWidth,
       wordWrap: wordWrapWidth !== undefined,

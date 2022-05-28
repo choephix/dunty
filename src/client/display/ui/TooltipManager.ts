@@ -148,7 +148,7 @@ export class TooltipManager {
     const tweeener = new TemporaryTweeener(tooltip);
     return tweeener.from(tooltip, {
       pixi: { scale: 0, alpha: 0 },
-      duration: 0.457,
+      duration: 0.29,
       ease: "back.out",
     });
   }
@@ -157,7 +157,7 @@ export class TooltipManager {
     const tweeener = new TemporaryTweeener(tooltip);
     return tweeener.to(tooltip, {
       pixi: { scale: 0.3, alpha: 0 },
-      duration: 0.14,
+      duration: 0.11,
       ease: "power2.in",
       onComplete: () => tooltip.destroy(),
     });
