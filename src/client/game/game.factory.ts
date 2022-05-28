@@ -39,12 +39,12 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
 
 export function generateRandomPlayerCard(): Card {
   return getRandomItemFrom<Card>([
-    generateStatusEffectCard("stunned"),
-    generateStatusEffectCard("frozen"),
+    // generateStatusEffectCard("stunned"),
+    // generateStatusEffectCard("frozen"),
     { cost: randomIntBetweenIncluding(0, 3, 2), type: "atk", value: 1, target: CardTarget.ALL_ENEMIES },
     { cost: randomIntBetweenIncluding(0, 3, 2), type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
     { cost: randomIntBetweenIncluding(0, 3, 2), type: "def", value: 2, target: CardTarget.SELF },
-    { cost: randomIntBetweenIncluding(0, 3, 2), type: "func", mods: { health: 2 }, target: CardTarget.SELF },
+    // { cost: randomIntBetweenIncluding(0, 3, 2), type: "func", mods: { health: 2 }, target: CardTarget.SELF },
     // generateStatusEffectCard(),
   ]);
 }
@@ -52,15 +52,15 @@ export function generateRandomPlayerCard(): Card {
 export function generateRandomEnemyCard(): Card {
   return getRandomItemFrom<Card>([
     { cost: 1, type: "atk", value: 1, target: CardTarget.TARGET_ENEMY },
-    // { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
-    // { cost: 1, type: "def", value: 2, target: CardTarget.TARGET_ENEMY },
+    { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
+    { cost: 1, type: "def", value: 2, target: CardTarget.TARGET_ENEMY },
     // generateStatusEffectCard(),
     // generateStatusEffectCard(),
     // generateStatusEffectCard(),
     // generateStatusEffectCard(),
     // generateStatusEffectCard(),
-    generateStatusEffectCard(),
-    generateStatusEffectCard("frozen"),
+    // generateStatusEffectCard(),
+    // generateStatusEffectCard("frozen"),
   ]);
 }
 

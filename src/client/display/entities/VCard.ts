@@ -51,7 +51,7 @@ export class VCard extends Container {
           this.pivot.y = v * v * 25;
           this.scale.set(0.4 + 0.05 * v * v);
 
-          const actorEnergy = this.actor?.energy || 0;
+          const actorEnergy = this.actor?.energy ?? Number.POSITIVE_INFINITY;
           this.glow.tint = this.data.cost > actorEnergy ? 0xff0000 : 0xffffff;
         },
       },
@@ -166,7 +166,7 @@ export class VCard extends Container {
       pad.addChild(label);
 
       const getCurrentValue =
-        this.data.type == "atk" ? () => game.calculateAttackPower(this.data, this.actor) : () => this.data.value || 0;
+        game && this.data.type == "atk" ? () => game.calculateAttackPower(this.data, this.actor) : () => this.data.value || 0;
       const onEnterFrame = createEnchantedFrameLoop(pad);
       onEnterFrame.watch(
         getCurrentValue,
@@ -215,4 +215,9 @@ export class VCard extends Container {
 
 export function formatEnergyCost(cost: number) {
   return cost ? new Array(cost).fill("⦿").join("") : "FREE";
+}
+
+export module VCard {
+  export const DESIGN_WIDTH = 500;
+  export const DESIGN_HEIGHT = 700;
 }

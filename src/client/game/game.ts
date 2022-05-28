@@ -29,7 +29,7 @@ export class Game {
     const ENEMY_DECK_SIZE = 6;
     const ENEMY_HAND_SIZE = 3;
     const ENEMY_ENERGY = 1;
-    const ENEMY_HEALTH = 3;
+    const ENEMY_HEALTH = 1;
 
     for (const _ of range(ENEMIES)) {
       const foe = new Combatant({ health: ENEMY_HEALTH });

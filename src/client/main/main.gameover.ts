@@ -1,3 +1,4 @@
+import { waitForDocumentClick } from "@client/common/display/utils/waitForDocumentClick";
 import { VScene } from "@client/common/display/VScene";
 import { FontFamily } from "@client/display/constants/FontFamily";
 import { __window__ } from "@debug/__window__";
@@ -19,8 +20,14 @@ export async function resolveGameOver(app: Application) {
     strokeThickness: 2,
     lineHeight: 160,
   });
-
   text.anchor.set(0.5);
   text.position.copyFrom(vscene.getFractionalPosition(0.5, 0.4));
   vscene.addChild(text);
+  await vscene.tweeener.from(text, { alpha: 0, duration: 1.5 });
+
+  await waitForDocumentClick();
+
+  await vscene.tweeener.to(text, { alpha: 0, duration: 0.5 });
+
+  vscene.playHideAnimation().then(() => vscene.destroy());
 }
