@@ -1,6 +1,7 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { FloorConfig, UserCrossCombatData } from "./data";
+import { shuffleArray } from "./game.utils";
 
 /**
  * Single instance of a combat encounter.
@@ -21,6 +22,8 @@ export class Game {
       playerCombatant.energyReplenishCount = userRunData.energyReplenishCount;
       playerCombatant.cards.drawPile.push(...userRunData.deck.map(c => Object.create(c)));
       groupA.addCombatant(playerCombatant);
+      
+      shuffleArray(playerCombatant.cards.drawPile);
     }
 
     {
@@ -38,6 +41,8 @@ export class Game {
         foe.energyReplenishCount = energyReplenishCount;
         foe.cards.drawPile.push(...deck.map(c => Object.create(c)));
         groupB.addCombatant(foe);
+        
+        shuffleArray(foe.cards.drawPile);
       }
     }
   }
@@ -267,6 +272,8 @@ export interface Card {
 
   onPlay?: (actor: Combatant, targets?: Combatant[]) => void;
   onDraw?: (actor: Combatant) => void;
+
+  textureUrl?: string;
 }
 
 export enum CardTarget {

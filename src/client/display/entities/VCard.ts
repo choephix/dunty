@@ -74,16 +74,66 @@ export class VCard extends Container {
   }
 
   addArt() {
-    const cfg = {
-      func: { textureCategory: "books-smol", scale: 2.7 },
-      atk: { textureCategory: "swords", scale: 2 },
-      def: { textureCategory: "shields", scale: 2 },
-    }[this.data.type]!;
+    const getStuff = (): [string, number] => {
+      if (this.data.textureUrl) {
+        return [this.data.textureUrl, 1];
+      }
 
-    const textureId = `https://public.cx/mock/${cfg.textureCategory}/${randomIntBetweenIncluding(1, 48)}.png`;
-    const sprite = Sprite.from(textureId);
+      const getBookFilename = (): string => {
+        const ref = {
+          health: 30,
+          block: 45,
+          parry: 19,
+          reflect: 5,
+          retaliation: 26,
+          protection: 43,
+          brittle: 13,
+          exposed: 12,
+          doomed: 31,
+          leech: 38,
+          regeneration: 50,
+          strength: 44,
+          rage: 11,
+          fury: 48,
+          haste: 36,
+          taunt: 22,
+          tactical: 10,
+          daggers: 24,
+          defensive: 40,
+          weak: 39,
+          burning: 18,
+          poisoned: 32,
+          bleeding: 1,
+          stunned: 16,
+          frozen: 17,
+          wet: 21,
+          warm: 27,
+          oiled: 37,
+          cold: 28,
+          sleep: 15,
+        };
+        const key = Object.keys(this.data.mods || {})[0];
+        return String(ref[key as never] || 2);
+      };
+
+      const cfg = {
+        func: { textureCategory: "books-smol", scale: 2.7 },
+        atk: { textureCategory: "swords", scale: 2 },
+        def: { textureCategory: "shields", scale: 2 },
+      }[this.data.type]!;
+
+      const num = {
+        func: getBookFilename(),
+        atk: [this.data.cost * 9 + (this.data.value || 0)],
+        def: [this.data.cost * 10 + (this.data.value || 0)],
+      }[this.data.type]!;
+
+      return [`https://public.cx/mock/${cfg.textureCategory}/${num}.png`, cfg.scale];
+    };
+    const [textureUrl, scale] = getStuff();
+    const sprite = Sprite.from(textureUrl);
     sprite.anchor.set(0.5);
-    sprite.scale.set(cfg.scale);
+    sprite.scale.set(scale);
     sprite.position.set(0, -40);
     this.addChild(sprite);
     return sprite;
@@ -166,7 +216,9 @@ export class VCard extends Container {
       pad.addChild(label);
 
       const getCurrentValue =
-        game && this.data.type == "atk" ? () => game.calculateAttackPower(this.data, this.actor) : () => this.data.value || 0;
+        game && this.data.type == "atk"
+          ? () => game.calculateAttackPower(this.data, this.actor)
+          : () => this.data.value || 0;
       const onEnterFrame = createEnchantedFrameLoop(pad);
       onEnterFrame.watch(
         getCurrentValue,

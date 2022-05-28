@@ -2,6 +2,7 @@ import { __window__ } from "@debug/__window__";
 import { range } from "@sdk/utils/range";
 import { generateRandomEnemyCard, generateRandomPlayerCard } from "@client/game/game.factory";
 import { Card } from "./game";
+import { CardPools } from "./data.cardpools";
 
 const PLAYER_HEALTH = 3;
 const DECK_SIZE = 14;
@@ -11,9 +12,10 @@ export class UserCrossCombatData {
 
   health = PLAYER_HEALTH;
   handReplenishCount = 4;
-  energyReplenishCount = 4;
+  energyReplenishCount = 3;
 
-  readonly deck = range(DECK_SIZE).map(() => generateRandomPlayerCard());
+  // readonly deck = range(DECK_SIZE).map(() => generateRandomPlayerCard());
+  readonly deck = CardPools.playerStartingCards.map(c => Object.create(c));
 }
 
 export module UserCrossCombatData {

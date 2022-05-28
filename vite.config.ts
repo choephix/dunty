@@ -17,4 +17,7 @@ const alias = getDirectories("./src").map(dir => {
 export default defineConfig({
   root: "src/client",
   resolve: { alias },
+  build: {
+    outDir: "/www/public/www/dunty",
+  }
 });
