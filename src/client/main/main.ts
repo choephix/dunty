@@ -4,9 +4,9 @@ import { resolveGameOver } from "./main.gameover";
 import { resolveWinScreen } from "./main.winscreen";
 
 export async function main(app: Application) {
-  // await resolveWinScreen(app);
-  // await resolveWinScreen(app);
-  // await resolveWinScreen(app);
+  await resolveWinScreen(app);
+  await resolveWinScreen(app);
+  await resolveWinScreen(app);
 
   while (true) {
     const winnerParty = await resolveCombatEncounter(app);

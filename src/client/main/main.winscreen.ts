@@ -69,6 +69,7 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
       createAnimatedButtonBehavior(vcard, { onClick: () => resolve(vcard) }, true);
     }
   });
+  vcards.forEach(vcard=> vcard.removeAllListeners())
 
   vscene.tweeener.to(hint, { alpha: 0, duration: 0.5 });
 
