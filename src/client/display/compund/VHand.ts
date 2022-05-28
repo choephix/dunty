@@ -35,7 +35,7 @@ export class VHand extends Container {
         cards.forEach(card => {
           if (this.cardSprites.has(card)) return;
           const sprite = new VCard(card);
-          sprite.actor = game.sideA.combatants[0];
+          sprite.actor = game.groupA.combatants[0];
           buttonizeDisplayObject(sprite, () => this.onCardClick?.(card));
           this.cardSprites.set(card, sprite);
           this.addChild(sprite);

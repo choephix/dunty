@@ -1,25 +1,25 @@
+import { VHand } from "@client/display/compund/VHand";
 import { VCombatant } from "@client/display/entities/VCombatant";
+import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
 import { VCombatScene } from "@client/display/entities/VCombatScene";
+import { EndTurnButton } from "@client/display/ui/EndTurnButton";
+import { HandBlockerBlock } from "@client/display/ui/HandBlockerBlock";
 import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
+import { CombatAI } from "@client/game/game.ai";
 import { GameController } from "@client/game/game.controller";
+import { generateBloatCard } from "@client/game/game.factory";
+import { GameFAQ } from "@client/game/game.faq";
+import { CurrentSelectionHelper } from "@client/sdk/CurrentSelectionHelper";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
-import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { GlowFilterService } from "@game/ui/fx/GlowFilterService";
 import { Application } from "@pixi/app";
 import { Color } from "@sdk/utils/color/Color";
 import { lerp } from "@sdk/utils/math";
 import { delay, nextFrame } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { VHand } from "@client/display/compund/VHand";
-import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
-import { EndTurnButton } from "@client/display/ui/EndTurnButton";
-import { HandBlockerBlock } from "@client/display/ui/HandBlockerBlock";
-import { CombatAI } from "@client/game/game.ai";
-import { generateBloatCard } from "@client/game/game.factory";
-import { GameFAQ } from "@client/game/game.faq";
-import { CurrentSelectionHelper } from "@client/sdk/CurrentSelectionHelper";
+import { waitForWinner } from "./waitForWinner";
 
 export let game: Game;
 
@@ -28,6 +28,8 @@ export async function main(app: Application) {
 
   while (true) {
     await startGame(app);
+
+    console.log("Game over");
   }
 }
 
@@ -83,19 +85,25 @@ export async function startGame(app: Application) {
     },
   });
 
-  composeSide(game.sideA, true);
-  composeSide(game.sideB, false);
+  composeSide(game.groupA, true);
+  composeSide(game.groupB, false);
 
   const vhandOrigin = vscene.getFractionalPosition(0.5, 0.8);
   const vhand = new VHand();
-  vhand.cardList = game.sideA.combatants[0].cards.hand;
+  vhand.cardList = game.groupA.combatants[0].cards.hand;
   vhand.position.set(vhandOrigin.x, vhandOrigin.y);
   vscene.addChild(vhand);
   __window__.hand = vhand;
 
   vhand.onCardClick = async card => {
-    const { combatants } = game.sideA;
+    const { combatants } = game.groupA;
     const [actor] = combatants;
+
+    if (card.cost > actor.energy) {
+      const vactor = combatantsDictionary.get(actor)!;
+      VCombatantAnimations.spawnFloatyText(vactor, "⦿\nNo ENERGEY!", 0xff4040);
+      return;
+    }
 
     const targets = await getPlayerCardTargets(card, actor);
 
@@ -115,7 +123,7 @@ export async function startGame(app: Application) {
       const { hand } = actor.cards;
       hand.splice(hand.indexOf(card), 1);
       await resolveCardEffect(card, actor, targets);
-      await GameController.disposeCardAfterPlay(card, actor)
+      await GameController.disposeCardAfterPlay(card, actor);
     } catch (error) {
       console.error(error);
     }
@@ -177,10 +185,10 @@ export async function startGame(app: Application) {
     }
 
     if (type === "func") {
-      const vact = combatantsDictionary.get(actor)!;
+      const vactor = combatantsDictionary.get(actor)!;
 
       if (!card.isBloat) {
-        await VCombatantAnimations.spellBegin(vact);
+        await VCombatantAnimations.spellBegin(vactor);
       }
 
       if (func) {
@@ -283,10 +291,10 @@ export async function startGame(app: Application) {
   }
 
   async function startPlayerTurn() {
-    await GameController.activateCombatantTurnStartStatusEffects(game.sideA);
-    await GameController.resetCombatantsForTurnStart(game.sideA);
+    await GameController.activateCombatantTurnStartStatusEffects(game.groupA);
+    await GameController.resetCombatantsForTurnStart(game.groupA);
 
-    const combatant = game.sideA.combatants[0];
+    const combatant = game.groupA.combatants[0];
     if (!combatant.alive) return;
 
     endTurnButtonBehavior.isDisabled.value = true;
@@ -309,7 +317,7 @@ export async function startGame(app: Application) {
   async function endPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
 
-    const combatant = game.sideA.combatants[0];
+    const combatant = game.groupA.combatants[0];
 
     if (!combatant.alive) return;
 
@@ -331,12 +339,12 @@ export async function startGame(app: Application) {
   async function resolveEnemyTurn() {
     vscene.ln.visible = true;
 
-    await GameController.activateCombatantTurnStartStatusEffects(game.sideB);
-    await GameController.resetCombatantsForTurnStart(game.sideB);
+    await GameController.activateCombatantTurnStartStatusEffects(game.groupB);
+    await GameController.resetCombatantsForTurnStart(game.groupB);
 
-    const playerCombatant = game.sideA.combatants[0];
-    if (playerCombatant && game.sideB.combatants.length) {
-      for (const foe of game.sideB.combatants) {
+    const playerCombatant = game.groupA.combatants[0];
+    if (playerCombatant && game.groupB.combatants.length) {
+      for (const foe of game.groupB.combatants) {
         activeCombatant.setCurrent(foe);
 
         await delay(0.15);
@@ -376,7 +384,7 @@ export async function startGame(app: Application) {
 
       await delay(0.4);
 
-      for (const foe of game.sideB.combatants) {
+      for (const foe of game.groupB.combatants) {
         const vfoe = combatantsDictionary.get(foe)!;
         vfoe.thought = undefined;
         await delay(0.1);
@@ -410,13 +418,10 @@ export async function startGame(app: Application) {
 
   startPlayerTurn();
 
-  const onEnterFrame = createEnchantedFrameLoop(vscene);
-  app.ticker.add(onEnterFrame);
-  await onEnterFrame.waitUntil(() => !game.sideA.combatants.length || !game.sideB.combatants.length);
-  app.ticker.remove(onEnterFrame);
+  const winner = await waitForWinner();
 
   await vscene.playHideAnimation();
   vscene.destroy({ children: true });
 
-  console.log("Game over");
+  return winner;
 }

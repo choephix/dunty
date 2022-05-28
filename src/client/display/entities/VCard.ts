@@ -50,6 +50,9 @@ export class VCard extends Container {
           this.zIndex = hoverProgress * 1000;
           this.pivot.y = v * v * 25;
           this.scale.set(0.4 + 0.05 * v * v);
+
+          const actorEnergy = this.actor?.energy || 0;
+          this.glow.tint = this.data.cost > actorEnergy ? 0xff0000 : 0xffffff;
         },
       },
       true,

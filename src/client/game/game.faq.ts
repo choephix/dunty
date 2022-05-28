@@ -3,7 +3,7 @@ import { Card, CardPileType, CardTarget, Combatant } from "@client/game/game";
 
 export module GameFAQ {
   function getEnemiesSide(actor: Combatant) {
-    return game.sideA === actor.side ? game.sideB : game.sideA;
+    return game.groupA === actor.side ? game.groupB : game.groupA;
   }
 
   export function getAliveEnemiesArray(actor: Combatant) {
@@ -11,7 +11,7 @@ export module GameFAQ {
   }
 
   export function getAliveAnyoneArray() {
-    return [...game.sideA.combatants, ...game.sideB.combatants].filter(u => u.alive);
+    return [...game.groupA.combatants, ...game.groupB.combatants].filter(u => u.alive);
   }
 
   export function getValidTargetsArray(actor: Combatant, card: Card): Combatant[] {

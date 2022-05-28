@@ -7,11 +7,11 @@ import { generateRandomPlayerCard, generateRandomEnemyCard } from "@client/game/
  * Single instance of a combat encounter.
  */
 export class Game {
-  sideA = new CombatGroup();
-  sideB = new CombatGroup();
+  groupA = new CombatGroup();
+  groupB = new CombatGroup();
 
   start() {
-    const { sideA, sideB } = this;
+    const { groupA, groupB } = this;
 
     const PLAYER_HEALTH = 3;
     const DECK_SIZE = 20;
@@ -21,7 +21,7 @@ export class Game {
     playerCombatant.handReplenishCount = 4;
     playerCombatant.energyReplenishCount = 4;
     playerCombatant.cards.drawPile.push(...range(DECK_SIZE).map(() => generateRandomPlayerCard()));
-    sideA.addCombatant(playerCombatant);
+    groupA.addCombatant(playerCombatant);
 
     const ENEMIES = 2;
     const ENEMY_DECK_SIZE = 6;
@@ -35,8 +35,17 @@ export class Game {
       // foe.handReplenishCount = ENEMY_HAND_SIZE;
       foe.energyReplenishCount = ENEMY_ENERGY;
       foe.cards.drawPile.push(...range(ENEMY_DECK_SIZE).map(() => generateRandomEnemyCard()));
-      sideB.addCombatant(foe);
+      groupB.addCombatant(foe);
     }
+  }
+
+  *iterateCombatants() {
+    yield* this.groupA.combatants;
+    yield* this.groupB.combatants;
+  }
+
+  isGroupAlive(g: CombatGroup) {
+    return g.combatants.some(c => c.status.health > 0);
   }
 
   calculateCardsToDrawOnTurnStart(target: Combatant) {
