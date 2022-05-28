@@ -27,7 +27,7 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
       if (actor.status[key] < 0) actor.status[key] = 0;
     },
     gotoAfterPlay: CardPileType.VOID,
-    // gotoAfterDiscard: CardPileType.VOID,
+    gotoAfterDiscard: CardPileType.VOID,
 
     // onPlay(actor: Combatant) {
     //   GameController.drawCards(1, actor);

@@ -1,8 +1,9 @@
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { Card, Combatant, CombatantStatus, CombatGroup } from "./game";
-import { generateDaggerCard } from "./game.factory";
-import { StatusEffectBlueprints, StatusEffectExpiryType } from "./StatusEffectBlueprints";
+import { Card, CardPileType, Combatant, CombatantStatus, CombatGroup } from "@client/game/game";
+import { generateDaggerCard } from "@client/game/game.factory";
+import { GameFAQ } from "@client/game/game.faq";
+import { StatusEffectBlueprints, StatusEffectExpiryType } from "@client/game/StatusEffectBlueprints";
 
 export module GameController {
   async function assureDrawPileHasCards(actor: Combatant) {
@@ -41,8 +42,13 @@ export module GameController {
   }
 
   export async function discardCard(card: Card, actor: Combatant) {
-    const { discardPile } = actor.cards;
-    actor.cards.moveCardTo(card, discardPile);
+    const toPile = GameFAQ.getPileType(actor, card.gotoAfterDiscard || CardPileType.DISCARD);
+    actor.cards.moveCardTo(card, toPile);
+  }
+
+  export async function disposeCardAfterPlay(card: Card, actor: Combatant) {
+    const toPile = GameFAQ.getPileType(actor, card.gotoAfterPlay || CardPileType.DISCARD);
+    toPile.push(card);
   }
 
   export async function activateCombatantTurnStartStatusEffects(side: CombatGroup) {

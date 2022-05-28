@@ -111,11 +111,14 @@ export async function startGame(app: Application) {
   };
 
   async function playCardFromHand(card: Card, actor: Combatant, targets: Combatant[]) {
-    const { hand, discardPile } = actor.cards;
-    hand.splice(hand.indexOf(card), 1);
-    await resolveCardEffect(card, actor, targets);
-    const toPile = card.gotoAfterPlay ? GameFAQ.getPileType(actor, card.gotoAfterPlay) : discardPile;
-    toPile.push(card);
+    try {
+      const { hand } = actor.cards;
+      hand.splice(hand.indexOf(card), 1);
+      await resolveCardEffect(card, actor, targets);
+      await GameController.disposeCardAfterPlay(card, actor)
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function getPlayerCardTargets(card: Card, actor: Combatant) {
