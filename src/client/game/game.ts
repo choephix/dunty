@@ -13,6 +13,8 @@ export class Game {
   start() {
     const { groupA, groupB } = this;
 
+    groupA.isPlayer = true;
+
     const PLAYER_HEALTH = 3;
     const DECK_SIZE = 20;
 
@@ -123,6 +125,8 @@ export class Game {
 }
 
 export class CombatGroup {
+  isPlayer = false;
+  
   readonly combatants = new Array<Combatant>();
 
   addCombatant(combatant: Combatant) {

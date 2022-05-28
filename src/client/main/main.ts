@@ -6,8 +6,8 @@ export async function main(app: Application) {
   await nextFrame();
 
   while (true) {
-    const winner = await resolveCombatEncounter(app);
+    const winnerParty = await resolveCombatEncounter(app);
 
-    console.log("Game over.\nWinner:", winner);
+    console.log("Game over.\nWinner:", winnerParty);
   }
 }
