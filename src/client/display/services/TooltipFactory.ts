@@ -49,7 +49,7 @@ export module ToolTipFactory {
               ? `Enemy intends to apply\n${Object.entries(data.mods)
                   .map(([k, v]) => `${v}x ${k.toUpperCase()}`)
                   .join(", ")} to ${TARGET} next turn.`
-              : "Play to perform\na special action next turn.",
+              : "Enemy will perform\na special action next turn.",
           }[data.type] || `Unknown card type: ${data.type}`;
 
     const tooltips = GameSingletons.getTooltipManager();
