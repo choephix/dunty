@@ -124,8 +124,8 @@ export class VCard extends Container {
 
       const num = {
         func: getBookFilename(),
-        atk: [this.data.cost * 9 + (this.data.value || 0)],
-        def: [this.data.cost * 10 + (this.data.value || 0)],
+        atk: [this.data.cost * 12 + (this.data.value || 0)],
+        def: [this.data.cost * 9 + (this.data.value || 0)],
       }[this.data.type]!;
 
       return [`https://public.cx/mock/${cfg.textureCategory}/${num}.png`, cfg.scale];
