@@ -2,6 +2,7 @@ import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import { Card, CardPileType, CardTarget, Combatant, CombatantStatus } from "@client/game/game";
 import { StatusEffectBlueprints, StatusEffectImpactAlignment } from "@client/game//StatusEffectBlueprints";
+import { GameController } from "./game.controller";
 
 export function generateDaggerCard(): Card {
   return {
@@ -22,17 +23,17 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
     target: CardTarget.SELF,
     isToken: true,
     isBloat: true,
+
+    gotoAfterPlay: CardPileType.VOID,
+    gotoAfterDiscard: CardPileType.VOID,
+
     onDraw(actor: Combatant) {
       actor.status[key] = -1;
       if (actor.status[key] < 0) actor.status[key] = 0;
     },
-    gotoAfterPlay: CardPileType.VOID,
-    gotoAfterDiscard: CardPileType.VOID,
-
-    // onPlay(actor: Combatant) {
-    //   GameController.drawCards(1, actor);
-    // },
-    // func: () => console.warn(`Un${key} self!`),
+    onPlay(actor: Combatant) {
+      GameController.drawCards(1, actor);
+    },
   };
 }
 
