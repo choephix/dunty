@@ -43,7 +43,7 @@ export async function resolveCongrats(vscene: VScene) {
 
   await Promise.race([waitForDocumentClick(), delay(1.5)]);
 
-  await vscene.tweeener.to(text, { alpha: 0, duration: 0.5, overwrite: true });
+  await vscene.tweeener.to(text, { alpha: 0, duration: 0.3, overwrite: true });
 }
 
 export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {

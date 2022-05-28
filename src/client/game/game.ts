@@ -1,8 +1,6 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
-import { generateRandomEnemyCard } from "@client/game/game.factory";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
-import { range } from "@sdk/utils/range";
-import { UserCrossCombatData } from "./data";
+import { FloorConfig, UserCrossCombatData } from "./data";
 
 /**
  * Single instance of a combat encounter.
@@ -11,35 +9,36 @@ export class Game {
   groupA = new CombatGroup();
   groupB = new CombatGroup();
 
-  start(userRunData: UserCrossCombatData) {
+  start(userRunData: UserCrossCombatData, floorConfig: FloorConfig) {
     const { groupA, groupB } = this;
 
     groupA.isPlayer = true;
 
-    const playerCombatant = new Combatant({ health: userRunData.health });
-    playerCombatant.name = "PLAYER";
-    playerCombatant.handReplenishCount = userRunData.handReplenishCount;
-    playerCombatant.energyReplenishCount = userRunData.energyReplenishCount;
-    playerCombatant.cards.drawPile.push(...userRunData.deck.map(c => Object.create(c)));
-    groupA.addCombatant(playerCombatant);
+    {
+      const playerCombatant = new Combatant({ health: userRunData.health });
+      playerCombatant.name = "PLAYER";
+      playerCombatant.handReplenishCount = userRunData.handReplenishCount;
+      playerCombatant.energyReplenishCount = userRunData.energyReplenishCount;
+      playerCombatant.cards.drawPile.push(...userRunData.deck.map(c => Object.create(c)));
+      groupA.addCombatant(playerCombatant);
+    }
 
-    const ENEMIES = 2;
-    const ENEMY_DECK_SIZE = 6;
-    const ENEMY_HAND_SIZE = 3;
-    const ENEMY_ENERGY = 1;
-    const ENEMY_HEALTH = 1;
-
-    for (const index of range(ENEMIES)) {
-      const foe = new Combatant({ health: ENEMY_HEALTH });
-      foe.name = "ENEMY " + index;
-      foe.handReplenishCount = ENEMY_HAND_SIZE;
-      foe.energyReplenishCount = ENEMY_ENERGY;
-      foe.cards.drawPile.push(...range(ENEMY_DECK_SIZE).map(() => generateRandomEnemyCard()));
-      groupB.addCombatant(foe);
-
-      //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP ////
-      foe.handReplenishCount = 1 + index;
-      //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP ////
+    {
+      for (const [index, foeConfig] of floorConfig.foes.entries()) {
+        const {
+          name = "Unknown Enemy " + (index + 1),
+          health = 3,
+          handReplenishCount = 1,
+          energyReplenishCount = 0,
+          deck = [],
+        } = foeConfig;
+        const foe = new Combatant({ health });
+        foe.name = name;
+        foe.handReplenishCount = handReplenishCount;
+        foe.energyReplenishCount = energyReplenishCount;
+        foe.cards.drawPile.push(...deck.map(c => Object.create(c)));
+        groupB.addCombatant(foe);
+      }
     }
   }
 
@@ -187,7 +186,7 @@ export class Combatant {
   readonly cards = new CardPiles();
 
   handReplenishCount = 1;
-  energyReplenishCount = 1;
+  energyReplenishCount = 0;
 
   energy = 0;
 

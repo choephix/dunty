@@ -147,6 +147,8 @@ export module VCombatantAnimations {
   export async function die(unit: VCombatant) {
     console.log(`${unit.name} is dying`);
 
+    unit.thought = " ";
+
     const tweeener = new TemporaryTweeener(unit);
 
     const filter = new AdjustmentFilter();
@@ -170,7 +172,7 @@ export module VCombatantAnimations {
     const fx = new Text(value, {
       fill: [0xd0e0f0, color],
       fontFamily: "Impact, fantasy",
-      fontSize: 40 + 20 * 2 / value.length,
+      fontSize: 40 + (20 * 2) / value.length,
       fontWeight: `bold`,
       stroke: 0x102030,
       strokeThickness: 10,

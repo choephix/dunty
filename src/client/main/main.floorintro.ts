@@ -36,18 +36,19 @@ export async function resolveFloorIntroScreen() {
   vscene.addChild(text);
   vscene.tweeener.from(text, { pixi: { scale: 0 }, duration: 0.4, ease: `back.out` });
 
-  function addSword(angle: number) {
+  function addSword(flip: boolean) {
+    const flipSign = flip ? -1 : 1;
+    const scale = 2.0;
     const sprite = Sprite.from(texture);
     sprite.position.copyFrom(text);
     sprite.anchor.set(0.5);
-    sprite.scale.set(-2.0, 2.0);
-    sprite.angle = angle;
+    sprite.scale.set(flipSign * scale, scale);
     sprite.tint = 0x2020f0;
-    vscene.tweeener.from(sprite, { pixi: { alpha: 0, angle: 45 }, duration: 0.4, ease: "back.out" });
+    vscene.tweeener.from(sprite, { pixi: { alpha: 0, angle: -flipSign * 45 }, duration: 0.4, ease: "back.out" });
     return vscene.addChildAt(sprite, 0);
   }
 
-  const swords = [addSword(90), addSword(0)];
+  const swords = [addSword(false), addSword(true)];
 
   await Promise.race([waitForDocumentClick(), delay(1.25)]);
 

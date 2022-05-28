@@ -7,14 +7,11 @@ import { resolveGameOver } from "./main.gameover";
 import { resolveWinScreen } from "./main.winscreen";
 
 export async function main(app: Application) {
-  await delay(.5);
-//   await resolveWinScreen(app);
-//   await resolveWinScreen(app);
-//   await resolveWinScreen(app);
+  await delay(0.5);
 
   while (true) {
     await resolveFloorIntroScreen();
-    
+
     const winnerParty = await resolveCombatEncounter();
     const resultIsVictory = Boolean(winnerParty?.isPlayer);
 

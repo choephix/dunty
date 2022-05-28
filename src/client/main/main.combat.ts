@@ -6,7 +6,7 @@ import { VCombatScene } from "@client/display/entities/VCombatScene";
 import { CurrentFloorIndicator } from "@client/display/ui/CurrentFloorIndicator";
 import { EndTurnButton } from "@client/display/ui/EndTurnButton";
 import { HandBlockerBlock } from "@client/display/ui/HandBlockerBlock";
-import { UserCrossCombatData } from "@client/game/data";
+import { getFloorConfig, UserCrossCombatData } from "@client/game/data";
 import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup, Game } from "@client/game/game";
 import { CombatAI } from "@client/game/game.ai";
 import { GameController } from "@client/game/game.controller";
@@ -29,7 +29,7 @@ export async function resolveCombatEncounter() {
   const app = GameSingletons.getPixiApplicaiton();
 
   game = __window__.game = new Game();
-  game.start(UserCrossCombatData.current);
+  game.start(UserCrossCombatData.current, getFloorConfig(UserCrossCombatData.current.currentFloor));
 
   const vscene = new VCombatScene();
   __window__.container = app.stage.addChild(vscene);
