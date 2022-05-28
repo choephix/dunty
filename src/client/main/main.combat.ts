@@ -158,8 +158,8 @@ export async function resolveCombatEncounter(app: Application) {
 
       await performAttack(target, actor, card);
 
-      if (!actor.alive) actor.side.combatants.splice(actor.side.combatants.indexOf(target), 1);
-      if (!target.alive) target.side.combatants.splice(target.side.combatants.indexOf(target), 1);
+      if (!actor.alive) actor.group.combatants.splice(actor.group.combatants.indexOf(target), 1);
+      if (!target.alive) target.group.combatants.splice(target.group.combatants.indexOf(target), 1);
 
       return;
     }
@@ -217,6 +217,8 @@ export async function resolveCombatEncounter(app: Application) {
     bl.position.set(vhandOrigin.x, vhandOrigin.y - 100);
     vscene.addChild(bl);
 
+    const actor = game.groupA.combatants[0];
+
     const cleanUp = new Array<Function>();
     const chosen = await new Promise<Combatant>(resolve => {
       for (const candidate of candidates) {
@@ -225,6 +227,9 @@ export async function resolveCombatEncounter(app: Application) {
         const glow = new GlowFilterService({ color: 0xff0000, distance: 8, outerStrength: 0.99, innerStrength: 0.99 });
         glow.addFilter(vCombatant.sprite);
         cleanUp.push(() => glow.removeFrom(vCombatant.sprite));
+
+        vCombatant.highlight.visible = true;
+        vCombatant.highlight.tint = actor.group.combatants.indexOf(candidate) > 0 ? 0x00ffff : 0xff0000;
 
         const rect = drawRect(vCombatant, { x: -150, y: -150, width: 300, height: 300 });
         rect.alpha = 0.5;
@@ -235,6 +240,8 @@ export async function resolveCombatEncounter(app: Application) {
             onUpdate({ hoverProgress }) {
               glow.filter.outerStrength = 1 + hoverProgress;
               glow.filter.color = Color.lerp(0xff7050, 0xff0000, hoverProgress).toInt();
+
+              vCombatant.highlight.alpha = .3 + hoverProgress;
             },
             onClick() {
               resolve(candidate);
@@ -243,6 +250,7 @@ export async function resolveCombatEncounter(app: Application) {
           true
         );
         cleanUp.push(() => rect.destroy());
+        cleanUp.push(() => vCombatant.highlight.visible = false);
       }
     });
     cleanUp.forEach(fn => fn());

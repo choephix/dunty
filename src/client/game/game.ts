@@ -127,7 +127,7 @@ export class CombatGroup {
 
   addCombatant(combatant: Combatant) {
     this.combatants.push(combatant);
-    combatant.side = this;
+    combatant.group = this;
   }
 }
 
@@ -171,7 +171,7 @@ export class CardPiles {
 export class Combatant {
   // Properties
   name?: string;
-  side!: CombatGroup;
+  group!: CombatGroup;
 
   characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
   textureId: string = `https://public.cx/mock/sugimori/${this.characterId}.png`;

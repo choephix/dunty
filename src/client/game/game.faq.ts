@@ -3,7 +3,7 @@ import { Card, CardPileType, CardTarget, Combatant } from "@client/game/game";
 
 export module GameFAQ {
   function getEnemiesSide(actor: Combatant) {
-    return game.groupA === actor.side ? game.groupB : game.groupA;
+    return game.groupA === actor.group ? game.groupB : game.groupA;
   }
 
   export function getAliveEnemiesArray(actor: Combatant) {

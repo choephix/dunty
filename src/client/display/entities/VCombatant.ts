@@ -13,8 +13,10 @@ import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 import { ToolTipFactory } from "@client/display/services/TooltipFactory";
 import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
 import { getStatusEffectEmojiOnly } from "@client/display/entities/VCombatant.emojis";
+import { BLEND_MODES } from "@pixi/constants";
 
 export class VCombatant extends Container {
+  highlight;
   sprite;
   statusIndicators;
   intentionIndicator;
@@ -24,6 +26,14 @@ export class VCombatant extends Container {
 
   constructor(public readonly data: Combatant) {
     super();
+
+    this.highlight = new Sprite(Texture.from("https://public.cx/3/radial-4.png"));
+    this.highlight.anchor.set(0.45, 0.35);
+    this.highlight.position.set(0, -50);
+    this.highlight.scale.set(2.8, 0.7);
+    this.highlight.blendMode = BLEND_MODES.ADD;
+    this.highlight.visible = false;
+    this.addChild(this.highlight);
 
     this.sprite = new Sprite(Texture.from(data.textureId));
     this.sprite.anchor.set(0.5, 0.95);
