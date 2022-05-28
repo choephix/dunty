@@ -183,15 +183,8 @@ export async function startGame(app: Application) {
       }
 
       if (mods) {
-        const noFloatyTextKeys = ["health"];
         for (const [key, mod] of CombatantStatus.entries(mods)) {
           for (const target of targets) {
-            if (noFloatyTextKeys.indexOf(key) === -1) {
-              const emoji = getStatusEffectEmojiOnly(key);
-              const str = mod > 0 ? `+${emoji}` : mod < 0 ? `-${emoji}` : emoji;
-              VCombatantAnimations.spawnFloatyText(vact, str, 0xa0c0f0);
-            }
-            
             await delay(0.22);
 
             target.status[key] += mod;

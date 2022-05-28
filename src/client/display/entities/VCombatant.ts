@@ -66,6 +66,23 @@ export class VCombatant extends Container {
       },
       true
     );
+
+    const noFloatyTextKeys = ["health"];
+    this.onEnterFrame.watch.properties(
+      () => status,
+      (current, prev) => {
+        const entries = CombatantStatus.entries(current);
+        for (const [key, value] of entries) {
+          if (value === prev[key]) continue;
+          if (noFloatyTextKeys.indexOf(key) === -1) {
+            const emoji = getStatusEffectEmojiOnly(key);
+            const str = value > 0 ? `+${emoji}` : value < 0 ? `-${emoji}` : emoji;
+            VCombatantAnimations.spawnFloatyText(this, str, 0xa0c0f0);
+          }
+        }
+      },
+      true
+    );
   }
 
   private addStatusIndicators() {

@@ -25,7 +25,10 @@ export module GameController {
       const card = drawPile[0];
       if (!card) return console.error("drawCards: drawPile is empty");
       actor.cards.moveCardTo(card, hand);
-      card.onDraw?.call(card, actor);
+      if (card.onDraw) {
+        card.onDraw.call(card, actor);
+        await delay(0.25);
+      }
       await delay(0.07);
     }
     await assureDrawPileHasCards(actor);
