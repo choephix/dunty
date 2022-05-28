@@ -12,14 +12,14 @@ import { Color } from "@sdk/utils/color/Color";
 import { lerp } from "@sdk/utils/math";
 import { delay, nextFrame } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { VHand } from "./display/compund/VHand";
-import { VCombatantAnimations } from "./display/entities/VCombatant.animations";
-import { EndTurnButton } from "./display/ui/EndTurnButton";
-import { HandBlockerBlock } from "./display/ui/HandBlockerBlock";
-import { CombatAI } from "./game/game.ai";
-import { generateBloatCard } from "./game/game.factory";
-import { GameFAQ } from "./game/game.faq";
-import { CurrentSelectionHelper } from "./sdk/CurrentSelectionHelper";
+import { VHand } from "@client/display/compund/VHand";
+import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
+import { EndTurnButton } from "@client/display/ui/EndTurnButton";
+import { HandBlockerBlock } from "@client/display/ui/HandBlockerBlock";
+import { CombatAI } from "@client/game/game.ai";
+import { generateBloatCard } from "@client/game/game.factory";
+import { GameFAQ } from "@client/game/game.faq";
+import { CurrentSelectionHelper } from "@client/sdk/CurrentSelectionHelper";
 
 export let game: Game;
 
@@ -187,7 +187,7 @@ export async function startGame(app: Application) {
       if (mods) {
         for (const [key, mod] of CombatantStatus.entries(mods)) {
           for (const target of targets) {
-            await delay(0.22);
+            await delay(0.1);
 
             target.status[key] += mod;
             if (target.status[key] < 0) target.status[key] = 0;
@@ -196,10 +196,10 @@ export async function startGame(app: Application) {
               for (const _ of range(mod)) target.cards.addCardTo(generateBloatCard(key), target.cards.drawPile);
             }
 
-            await delay(0.22);
+            await delay(0.1);
           }
 
-          await delay(0.33);
+          await delay(0.55);
         }
       }
 

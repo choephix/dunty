@@ -1,7 +1,7 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
-import { generateRandomCard, generateRandomEnemyCard } from "./game.factory";
+import { generateRandomPlayerCard, generateRandomEnemyCard } from "@client/game/game.factory";
 
 /**
  * Single instance of a combat encounter.
@@ -13,26 +13,28 @@ export class Game {
   start() {
     const { sideA, sideB } = this;
 
-    const HEALTH = 3;
+    const PLAYER_HEALTH = 3;
     const DECK_SIZE = 20;
 
-    const playerCombatant = new Combatant({ health: HEALTH * 9 });
+    const playerCombatant = new Combatant({ health: PLAYER_HEALTH });
     playerCombatant.name = "PLAYER";
     playerCombatant.handReplenishCount = 4;
     playerCombatant.energyReplenishCount = 4;
-    playerCombatant.cards.drawPile.push(...range(DECK_SIZE).map(() => generateRandomCard()));
+    playerCombatant.cards.drawPile.push(...range(DECK_SIZE).map(() => generateRandomPlayerCard()));
     sideA.addCombatant(playerCombatant);
 
     const ENEMIES = 2;
-    const ENEMIE_DECK_SIZE = 6;
-    const ENEMIE_HAND_SIZE = 3;
-    const ENEMIE_ENERGY = 1;
+    const ENEMY_DECK_SIZE = 6;
+    const ENEMY_HAND_SIZE = 3;
+    const ENEMY_ENERGY = 1;
+    const ENEMY_HEALTH = 3;
 
     for (const _ of range(ENEMIES)) {
-      const foe = new Combatant({ health: HEALTH });
-      foe.handReplenishCount = ENEMIE_HAND_SIZE;
-      foe.energyReplenishCount = ENEMIE_ENERGY;
-      foe.cards.drawPile.push(...range(ENEMIE_DECK_SIZE).map(() => generateRandomEnemyCard()));
+      const foe = new Combatant({ health: ENEMY_HEALTH });
+      foe.handReplenishCount = 1 + _;
+      // foe.handReplenishCount = ENEMY_HAND_SIZE;
+      foe.energyReplenishCount = ENEMY_ENERGY;
+      foe.cards.drawPile.push(...range(ENEMY_DECK_SIZE).map(() => generateRandomEnemyCard()));
       sideB.addCombatant(foe);
     }
   }

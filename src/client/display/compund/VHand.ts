@@ -1,10 +1,10 @@
 import { Card } from "@client/game/game";
-import { game } from "@client/main";
+import { game } from "@client/main/main";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Container } from "@pixi/display";
 import { buttonizeDisplayObject } from "@sdk-pixi/ui-helpers/buttonizeDisplayObject";
-import { VCard } from "../entities/VCard";
-import { VCardAnimations } from "../entities/VCard.animations";
+import { VCard } from "@client/display/entities/VCard";
+import { VCardAnimations } from "@client/display/entities/VCard.animations";
 
 const CARD_SCALE = 0.4;
 

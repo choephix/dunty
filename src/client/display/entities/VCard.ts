@@ -1,5 +1,5 @@
 import { StatusEffectBlueprints } from "@client/game/StatusEffectBlueprints";
-import { game } from "@client/main";
+import { game } from "@client/main/main";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
@@ -10,8 +10,8 @@ import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
-import { Card, Combatant, CombatantStatus } from "../../game/game";
-import { ToolTipFactory } from "../services/TooltipFactory";
+import { Card, Combatant, CombatantStatus } from "@client/game/game";
+import { ToolTipFactory } from "@client/display/services/TooltipFactory";
 
 export class VCard extends Container {
   background;

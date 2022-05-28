@@ -10,7 +10,7 @@
   - [x] Refactor STUNNED / FROZEN — add card to top of deck
   - [x] Refactor CARD-SPRITES into persistent object, not managed by only the hand
   - [x] Implement target types
-  - [ ] Block actions while waiting for player target select
+  - [x] Block actions while waiting for player target select
   - [ ] In-between combat scenes
     - [ ] Victory / Defeat
     - [ ] Persistent cards

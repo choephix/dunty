@@ -1,7 +1,7 @@
 import { __VERBOSE__ } from "@client/debug/URL_PARAMS";
 import { Card, Combatant, CombatantStatus, Game } from "@client/game/game";
 import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
-import { game } from "@client/main";
+import { game } from "@client/main/main";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
@@ -10,9 +10,9 @@ import { Text } from "@pixi/text";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
-import { ToolTipFactory } from "../services/TooltipFactory";
-import { VCombatantAnimations } from "./VCombatant.animations";
-import { getStatusEffectEmojiOnly } from "./VCombatant.emojis";
+import { ToolTipFactory } from "@client/display/services/TooltipFactory";
+import { VCombatantAnimations } from "@client/display/entities/VCombatant.animations";
+import { getStatusEffectEmojiOnly } from "@client/display/entities/VCombatant.emojis";
 
 export class VCombatant extends Container {
   sprite;
