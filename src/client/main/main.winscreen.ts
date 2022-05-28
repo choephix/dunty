@@ -78,6 +78,8 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
     { pixi: { scale: 0 }, duration: 0.3, ease: "back.in", stagger: 0.1 }
   );
   await vscene.tweeener.to(chosenVCard, { y: 1600, alpha: 0, duration: 0.3, ease: "back.in" });
+  
+  vcards.forEach(vcard => vcard.destroy());
 
   console.log(`🤍 You chose `, chosenVCard.data);
 }

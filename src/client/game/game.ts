@@ -1,7 +1,7 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
+import { generateRandomEnemyCard, generateRandomPlayerCard } from "@client/game/game.factory";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
-import { generateRandomPlayerCard, generateRandomEnemyCard } from "@client/game/game.factory";
 
 /**
  * Single instance of a combat encounter.
@@ -33,11 +33,14 @@ export class Game {
 
     for (const _ of range(ENEMIES)) {
       const foe = new Combatant({ health: ENEMY_HEALTH });
-      foe.handReplenishCount = 1 + _;
-      // foe.handReplenishCount = ENEMY_HAND_SIZE;
+      foe.handReplenishCount = ENEMY_HAND_SIZE;
       foe.energyReplenishCount = ENEMY_ENERGY;
       foe.cards.drawPile.push(...range(ENEMY_DECK_SIZE).map(() => generateRandomEnemyCard()));
       groupB.addCombatant(foe);
+
+      //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP ////
+      foe.handReplenishCount = 1 + _;
+      //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP //// TEMP ////
     }
   }
 
