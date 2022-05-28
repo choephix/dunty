@@ -32,6 +32,11 @@ export class TooltipManager {
     document.addEventListener("tap", clear);
   }
 
+  clear() {
+    this.targets.clear();
+    this.setCurrentTooltipTarget(null);
+  }
+
   clearDestroyedTargets() {
     for (const [target] of this.targets) {
       if (target.destroyed) {

@@ -1,5 +1,6 @@
 import { waitForDocumentClick } from "@client/common/display/utils/waitForDocumentClick";
 import { VScene } from "@client/common/display/VScene";
+import { GameSingletons } from "@client/core/GameSingletons";
 import { FontFamily } from "@client/display/constants/FontFamily";
 import { VCard } from "@client/display/entities/VCard";
 import { UserCrossCombatData } from "@client/game/data";
@@ -43,7 +44,7 @@ export async function resolveCongrats(vscene: VScene) {
 }
 
 export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
-  const hint = new Text("Pick a card\nto add to your deck\nfor this run", {
+  const hint = new Text("Pick a card\nto add to your deck", {
     fill: 0x909090,
     fontFamily: FontFamily.CardPickScreen,
     fontSize: 60,
@@ -56,6 +57,8 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
   hint.position.copyFrom(vscene.getFractionalPosition(0.5, 0.3));
   vscene.addChild(hint);
   vscene.tweeener.from(hint, { alpha: 0, duration: 1.5 });
+
+  new FontFaceObserver("Irish Grover").load().then(() => hint.updateText(false));
 
   const cards = range(cardsCount).map(c => generateRandomPlayerCard());
   const vcards = cards.map(c => vscene.addChild(new VCard(c)));
@@ -71,6 +74,8 @@ export async function resolveNewCardChoice(vscene: VScene, cardsCount: number) {
     }
   });
   vcards.forEach(vcard => vcard.removeAllListeners());
+
+  GameSingletons.getTooltipManager().clear();
 
   UserCrossCombatData.current.deck.push(chosenVCard.data);
 

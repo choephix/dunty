@@ -2,6 +2,7 @@ import { UserCrossCombatData } from "@client/game/data";
 import { Application } from "@pixi/app";
 import { resolveCombatEncounter } from "./main.combat";
 import { resolveGameOver } from "./main.gameover";
+import { resolveMessageScreen } from "./main.messagescr";
 import { resolveWinScreen } from "./main.winscreen";
 
 export async function main(app: Application) {
@@ -10,6 +11,8 @@ export async function main(app: Application) {
 //   await resolveWinScreen(app);
 
   while (true) {
+    await resolveMessageScreen(`Floor ${UserCrossCombatData.current.currentFloor}`);
+    
     const winnerParty = await resolveCombatEncounter();
     const resultIsVictory = Boolean(winnerParty?.isPlayer);
 

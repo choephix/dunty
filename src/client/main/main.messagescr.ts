@@ -7,7 +7,7 @@ import { Text } from "@pixi/text";
 import FontFaceObserver from "fontfaceobserver";
 
 export async function resolveMessageScreen(message: string) {
-  await new FontFaceObserver("Henny Penny").load();
+  await new FontFaceObserver("Jolly Lodger").load();
 
   const app = GameSingletons.getPixiApplicaiton();
 
@@ -15,8 +15,8 @@ export async function resolveMessageScreen(message: string) {
   __window__.container = app.stage.addChild(vscene);
 
   const text = new Text(message, {
-    fill: 0xffffff,
-    fontFamily: FontFamily.GameOver,
+    fill: 0xffff00,
+    fontFamily: FontFamily.FloorIndicator,
     fontSize: 160,
     stroke: 0x0,
     strokeThickness: 2,

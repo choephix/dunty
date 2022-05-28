@@ -4,4 +4,5 @@ export enum FontFamily {
   GameOver = "'Henny Penny', Impact, fantasy",
   // NumericIndicators = "'Slackey', Impact, fantasy",
   CardPickScreen = "'Irish Grover', cursive",
+  FloorIndicator = "'Jolly Lodger', Impact, fantasy",
 }
