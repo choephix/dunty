@@ -15,7 +15,7 @@ export class HandBlockerBlock extends Container {
     this.pad.alpha = 0.8;
     this.pad.width = 1080;
     this.pad.height = 400;
-    this.pad.anchor.set(0.5, 0.7);
+    this.pad.anchor.set(0.5);
     this.addChild(this.pad);
 
     this.label = new Text(str.toUpperCase(), {

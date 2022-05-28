@@ -214,7 +214,7 @@ export async function resolveCombatEncounter(app: Application) {
     if (candidates.length === 1) return candidates[0];
 
     const bl = new HandBlockerBlock("Choose a target");
-    bl.position.copyFrom(vhand);
+    bl.position.set(vhandOrigin.x, vhandOrigin.y - 100);
     vscene.addChild(bl);
 
     const cleanUp = new Array<Function>();
@@ -356,7 +356,7 @@ export async function resolveCombatEncounter(app: Application) {
               // await VCombatantAnimations.skipAction(vfoe, `skip\naction`);
             } else {
               const targets = CombatAI.chooseCardTargets(foe, card);
-              console.log(`AI plays`, card, `on`, targets);
+              console.log(`AI plays ${card} on ${targets}`);
               await playCardFromHand(card, foe, targets);
               await delay(0.1);
             }
