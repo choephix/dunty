@@ -347,10 +347,17 @@ export async function startGame(app: Application) {
           while (foe.cards.hand.length > 0) {
             await delay(0.1);
             const card = foe.cards.hand[foe.cards.hand.length - 1];
-            const targets = CombatantAI.chooseCardTargets(foe, card);
-            console.log(`AI plays`, card, `on`, targets);
-            await playCardFromHand(card, foe, targets);
-            await delay(0.1);
+            if (card.isBloat) {
+              VCombatantAnimations.spawnFloatyText(vfoe, `skip\naction`, 0xd0d0d0);
+              await GameController.discardCard(card, foe);
+              await delay(0.9);
+              // await VCombatantAnimations.skipAction(vfoe, `skip\naction`);
+            } else {
+              const targets = CombatantAI.chooseCardTargets(foe, card);
+              console.log(`AI plays`, card, `on`, targets);
+              await playCardFromHand(card, foe, targets);
+              await delay(0.1);
+            }
           }
         } else {
           await VCombatantAnimations.noCard(vfoe);
@@ -408,15 +415,4 @@ export async function startGame(app: Application) {
   vscene.destroy({ children: true });
 
   console.log("Game over");
-
-  // const handOrigin = container.getFractionalPosition(0.5, 0.8);
-  // for (const [index, card] of game.sideA.hand.entries()) {
-  //   const vcard = new VCard(card);
-
-  //   const xmul = index - (game.sideA.hand.length - 1) / 2;
-  //   const delta = Math.min(200, 0.9 * container.designWidth / game.sideA.hand.length);
-  //   vcard.position.set(handOrigin.x + delta * xmul, handOrigin.y - 100);
-  //   vcard.scale.set(0.4);
-  //   container.addChild(vcard);
-  // }
 }

@@ -32,12 +32,16 @@ export module GameController {
   }
 
   export async function discardHand(actor: Combatant) {
-    const { discardPile, hand } = actor.cards;
+    const { hand } = actor.cards;
     while (hand.length > 0) {
-      const card = hand[0];
-      actor.cards.moveCardTo(card, discardPile);
+      await discardCard(hand[0], actor);
       await delay(0.07);
     }
+  }
+
+  export async function discardCard(card: Card, actor: Combatant) {
+    const { discardPile } = actor.cards;
+    actor.cards.moveCardTo(card, discardPile);
   }
 
   export async function activateCombatantTurnStartStatusEffects(side: CombatGroup) {

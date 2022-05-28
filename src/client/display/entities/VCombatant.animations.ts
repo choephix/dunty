@@ -162,15 +162,19 @@ export module VCombatantAnimations {
     await blinkThought(unit, "?");
   }
 
+  export async function skipAction(unit: VCombatant, text: string) {
+    await blinkThought(unit, text);
+  }
+
   export async function spawnFloatyText(unit: VCombatant, value: string, color: number) {
     const fx = new Text(value, {
       fill: [0xd0e0f0, color],
       fontFamily: "Impact, fantasy",
-      fontSize: 80,
+      fontSize: 40 + 20 * 2 / value.length,
       fontWeight: `bold`,
       stroke: 0x102030,
       strokeThickness: 10,
-      align: "right",
+      align: "center",
     });
     fx.anchor.set(0.5, 0.5);
     unit.addChild(fx);

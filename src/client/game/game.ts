@@ -249,11 +249,11 @@ export interface Card {
 
 export enum CardTarget {
   SELF = "SELF",
+  TARGET_ANYONE = "TARGET_ANYONE",
   TARGET_ENEMY = "TARGET_ENEMY",
   FRONT_ENEMY = "FRONT_ENEMY",
   ALL_ENEMIES = "ALL_ENEMIES",
   ALL = "ALL",
-  TARGET_ANYONE = "TARGET_ANYONE",
 }
 
 export enum CardPileType {
