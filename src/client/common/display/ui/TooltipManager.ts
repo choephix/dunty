@@ -13,7 +13,7 @@ type TooltipOptions = {
   wordWrapWidth: number;
 };
 
-const DEFAULT_DELAY = 700;
+const DEFAULT_DELAY = .700;
 
 export class TooltipManager {
   private currentTooltip: ToolTipComponent | null = null;
@@ -64,7 +64,7 @@ export class TooltipManager {
     const on = () => {
       clearCurrentTimeout();
 
-      this.timeoutHandle = setTimeout(() => this.setCurrentTooltipTarget(target), delay);
+      this.timeoutHandle = setTimeout(() => this.setCurrentTooltipTarget(target), 1000 * delay);
     };
 
     const off = () => {

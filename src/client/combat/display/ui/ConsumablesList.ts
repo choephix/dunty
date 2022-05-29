@@ -89,7 +89,7 @@ export class VConsumableItem extends Sprite {
 
     this.buttonMode = true;
 
-    GameSingletons.getTooltipManager().registerTarget(this, { content: data.hint, delay: .25 });
+    GameSingletons.getTooltipManager().registerTarget(this, { content: data.hint, delay: .17 });
   }
 
   buttonize(onClick?: () => void) {
