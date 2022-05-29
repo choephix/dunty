@@ -22,7 +22,7 @@ export class Game {
       playerCombatant.energyReplenishCount = userRunData.energyReplenishCount;
       playerCombatant.cards.drawPile.push(...userRunData.deck.map(c => Object.create(c)));
       groupA.addCombatant(playerCombatant);
-      
+
       shuffleArray(playerCombatant.cards.drawPile);
     }
 
@@ -41,7 +41,7 @@ export class Game {
         foe.energyReplenishCount = energyReplenishCount;
         foe.cards.drawPile.push(...deck.map(c => Object.create(c)));
         groupB.addCombatant(foe);
-        
+
         shuffleArray(foe.cards.drawPile);
       }
     }
@@ -96,13 +96,23 @@ export class Game {
     return value;
   }
 
-  calculateDamage(damage: number, target: Combatant) {
+  calculateDamage(damage: number, target: Combatant, attacker: Combatant) {
     let blockedDamage = 0;
     let reflectedDamage = 0;
     let directDamage = 0;
     let healingDamage = 0;
 
-    const { block = 0, retaliation = 0, parry: reflect = 0, leech = 0 } = target.status;
+    const { leech = 0 } = attacker.status;
+    const { block = 0, retaliation = 0, parry = 0, reflect = 0, health } = target.status;
+
+    if (reflect > 0) {
+      return {
+        directDamage: 0,
+        blockedDamage: 0,
+        reflectedDamage: damage,
+        healingDamage: 0,
+      };
+    }
 
     directDamage = damage;
 
@@ -111,20 +121,31 @@ export class Game {
       directDamage -= blockedDamage;
     }
 
-    if (reflect > 0) {
-      reflectedDamage = Math.min(reflect, damage);
+    if (parry > 0) {
+      reflectedDamage = Math.min(parry, damage);
       directDamage -= reflectedDamage;
     }
 
-    reflectedDamage += retaliation; // TODO: reflected damage is not implemented yet
+    reflectedDamage += retaliation;
 
     if (directDamage < 0) {
       directDamage = 0;
     }
 
-    healingDamage = Math.min(directDamage, leech); // TODO: leech is not implemented yet
+    healingDamage = Math.min(directDamage, leech, health);
 
-    console.log({ damage, block, directDamage, blockedDamage, reflectedDamage, target });
+    console.log({
+      damage,
+      directDamage,
+      blockedDamage,
+      reflectedDamage,
+      healingDamage,
+      block,
+      retaliation,
+      parry,
+      leech,
+      target,
+    });
 
     return { directDamage, blockedDamage, reflectedDamage, healingDamage };
   }

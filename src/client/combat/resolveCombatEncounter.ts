@@ -284,7 +284,9 @@ export async function resolveCombatEncounter() {
 
   async function performAttack(target: Combatant, attacker: Combatant, card: Card) {
     const atkPwr = game.calculateAttackPower(card, attacker, target);
-    const { directDamage, blockedDamage, reflectedDamage, healingDamage } = game.calculateDamage(atkPwr, target);
+    const { directDamage, blockedDamage, reflectedDamage, healingDamage } = game.calculateDamage(atkPwr, target, attacker);
+
+    console.log({ directDamage, blockedDamage, reflectedDamage, healingDamage });
 
     dealDamage(target, directDamage, blockedDamage);
 
@@ -293,8 +295,7 @@ export async function resolveCombatEncounter() {
     await VCombatantAnimations.attack(vatk);
 
     if (target.alive && reflectedDamage > 0) {
-      const { directDamage, blockedDamage } = game.calculateDamage(reflectedDamage, attacker);
-      console.log("Reflected damage:", directDamage, blockedDamage, reflectedDamage);
+      const { directDamage, blockedDamage } = game.calculateDamage(reflectedDamage, attacker, target);
       dealDamage(attacker, directDamage, blockedDamage);
       await VCombatantAnimations.attack(vdef);
     }
