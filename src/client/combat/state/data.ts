@@ -28,7 +28,7 @@ __window__.UserCrossCombatData = UserCrossCombatData;
 
 const FloorConfigs: FloorConfig[] = [
   {
-    foes: [
+    foes: [ // 1
       {
         name: "Goblin",
         health: 3,
@@ -57,7 +57,7 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 2
       {
         health: 3,
         handReplenishCount: 1,
@@ -95,9 +95,9 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 3
       {
-        health: 3,
+        health: 4,
         handReplenishCount: 1,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
@@ -108,7 +108,7 @@ const FloorConfigs: FloorConfig[] = [
         ],
       },
       {
-        health: 2,
+        health: 3,
         handReplenishCount: 1,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
@@ -122,7 +122,7 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 4
       {
         health: 10,
         handReplenishCount: 2,
@@ -141,9 +141,9 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 5
       {
-        health: 4,
+        health: 5,
         handReplenishCount: 1,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
@@ -154,7 +154,7 @@ const FloorConfigs: FloorConfig[] = [
         ],
       },
       {
-        health: 4,
+        health: 5,
         handReplenishCount: 1,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
@@ -168,9 +168,9 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 6
       {
-        health: 4,
+        health: 5,
         handReplenishCount: 1,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
@@ -181,7 +181,7 @@ const FloorConfigs: FloorConfig[] = [
         ],
       },
       {
-        health: 5,
+        health: 4,
         handReplenishCount: 1,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
@@ -192,7 +192,7 @@ const FloorConfigs: FloorConfig[] = [
         ],
       },
       {
-        health: 4,
+        health: 5,
         handReplenishCount: 1,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
@@ -206,7 +206,7 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 7
       {
         health: 5,
         handReplenishCount: 1,
@@ -233,7 +233,7 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 8
       {
         health: 5,
         handReplenishCount: 1,
@@ -270,7 +270,7 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 9
       {
         health: 7,
         handReplenishCount: 2,
@@ -299,7 +299,7 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 10
       {
         health: 9,
         handReplenishCount: 1,
@@ -340,7 +340,7 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [
+    foes: [ // 11
       {
         health: 5,
         handReplenishCount: 2,

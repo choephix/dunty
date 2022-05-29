@@ -1,5 +1,6 @@
 import { UserCrossCombatData } from "@client/combat/state/data";
 import { loadCards } from "@client/combat/state/data.load";
+import { __FLOOR__ } from "@client/debug/URL_PARAMS";
 import { Application } from "@pixi/app";
 import { delay } from "@sdk/utils/promises";
 import { resolveCombatEncounter } from "../combat/resolveCombatEncounter";
@@ -9,6 +10,8 @@ import { resolveWinScreen } from "./main.winscreen";
 
 export async function main(app: Application) {
   await delay(0.5);
+
+  UserCrossCombatData.current.currentFloor = __FLOOR__;
 
   const airtableCards = await loadCards();
   console.log("Cards loaded", airtableCards);
