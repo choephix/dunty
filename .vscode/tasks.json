@@ -6,7 +6,12 @@
       "script": "dev",
       "problemMatcher": [],
       "label": "⚡ START ⚡",
-      "detail": "export AIRTABLE_API_KEY=key2I1RjdmmcXn495 ; vite --host 0.0.0.0",
-    }
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": [],
+      "label": "BUILD",
+    },
   ]
 }

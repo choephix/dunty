@@ -11,8 +11,8 @@
   - [x] Refactor CARD-SPRITES into persistent object, not managed by only the hand
   - [x] Implement target types
   - [x] Block actions while waiting for player target select
-  - [ ] In-between combat scenes
-    - [ ] Victory / Defeat
-    - [ ] Persistent cards
-    - [ ] Choose cards
+  - [x] In-between combat scenes
+    - [x] Victory / Defeat
+    - [x] Persistent cards
+    - [x] Choose cards
     - [ ] Consumables
