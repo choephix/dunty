@@ -8,6 +8,7 @@ import { GameSingletons } from "@client/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
 import { spawnSpriteWave } from "@game/asorted/animations/spawnSpriteWave";
 import { BLEND_MODES } from "@pixi/constants";
+import { Texture } from "@pixi/core";
 import { Text } from "@pixi/text";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { delay } from "@sdk/utils/promises";
@@ -48,6 +49,10 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
 
   new FontFaceObserver("Irish Grover").load().then(() => hint.updateText(false));
 
+  await Promise.race([waitForDocumentClick(), delay(0.7)]);
+  await Texture.fromURL(item.iconTextureUrl);
+  await Texture.fromURL(waveTextureUrl);
+
   const vitem = new VConsumableItem(item);
   vitem.position.copyFrom(vscene.getFractionalPosition(0.5, 0.5));
   vitem.scale.set(2);
@@ -55,11 +60,7 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
   vscene.tweeener.from(vitem, { pixi: { scale: 0 }, duration: 0.4, ease: "back.out" });
 
   spawnSpriteWave(
-    // `https://public.cx/3/rays-1.png`,
-    // `https://public.cx/3/plazmo-5.png`,
-    // `https://public.cx/2/flare-11.2.png`,
-    `https://public.cx/2/boom-w1.png`,
-    // `https://public.cx/3/flare-24.png`,
+    waveTextureUrl,
     { pixi: { scale: 2.0 }, duration: 1 },
     { x: vitem.x, y: vitem.y, blendMode: BLEND_MODES.ADD, parent: vscene }
   );
@@ -75,3 +76,9 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
 
   await delay(0.4);
 }
+
+// const waveTextureUrl = `https://public.cx/3/rays-1.png`;
+// const waveTextureUrl = `https://public.cx/3/plazmo-5.png`;
+// const waveTextureUrl = `https://public.cx/2/flare-11.2.png`;
+const waveTextureUrl = `https://public.cx/2/boom-w1.png`;
+// const waveTextureUrl = `https://public.cx/3/flare-24.png`;

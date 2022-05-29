@@ -26,7 +26,10 @@ export function spawnBling(position: IPointData, container: Container) {
       sprite.scale.set(p);
       sprite.rotation += ani.rot || 0;
     });
-    sprite.destroy();
+    
+    try {
+      sprite.destroy();
+    } catch (e) {}
   }
 
   wave({
