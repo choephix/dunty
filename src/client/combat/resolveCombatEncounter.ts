@@ -357,10 +357,12 @@ export async function resolveCombatEncounter() {
 
     await GameController.activateCombatantTurnStartStatusEffects(game.groupB);
     await GameController.resetCombatantsForTurnStart(game.groupB);
-
+    
     const playerCombatant = game.groupA.combatants[0];
     if (playerCombatant && game.groupB.combatants.length) {
       for (const foe of game.groupB.combatants) {
+        if (!playerCombatant.alive) break;
+        
         activeCombatant.setCurrent(foe);
 
         await delay(0.15);
@@ -370,6 +372,8 @@ export async function resolveCombatEncounter() {
 
         const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(foe);
         await GameController.drawCards(cardsToDrawCount, foe);
+        
+        if (!playerCombatant.alive) break;
 
         if (foe.cards.hand.length > 0) {
           while (foe.cards.hand.length > 0) {

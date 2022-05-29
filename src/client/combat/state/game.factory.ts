@@ -34,6 +34,8 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
     onPlay(actor: Combatant) {
       GameController.drawCards(1, actor);
     },
+
+    description: `${key.toUpperCase()}\nPlay to draw a card\n(only valid for player)`,
   };
 }
 

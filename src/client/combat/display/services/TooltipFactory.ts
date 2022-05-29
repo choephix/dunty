@@ -25,6 +25,10 @@ export module ToolTipFactory {
   }
 
   function getCardHintText(card: Card) {
+    if (card.description) {
+      return card.description;
+    }
+
     const TARGET = {
       [CardTarget.ALL]: "everyone",
       [CardTarget.ALL_ENEMIES]: "all enemies",

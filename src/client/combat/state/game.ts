@@ -295,6 +295,7 @@ export interface Card {
   onDraw?: (actor: Combatant) => void;
 
   textureUrl?: string;
+  description?: string;
 }
 
 export enum CardTarget {
