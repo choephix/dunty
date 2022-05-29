@@ -169,10 +169,6 @@ export class VCombatant extends Container {
   waitUntilLoaded() {
     return this.onEnterFrame.waitUntil(() => this.sprite.texture.baseTexture.valid);
   }
-
-  get name() {
-    return this.data.name;
-  }
 }
 
 class StatusEffectIndicators extends Container {
