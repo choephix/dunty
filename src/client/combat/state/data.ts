@@ -1,5 +1,6 @@
 import { generateRandomEnemyCard } from "@client/combat/state/game.factory";
 import { __window__ } from "@debug/__window__";
+import { deepCopy } from "@sdk/helpers/objects";
 import { range } from "@sdk/utils/range";
 import { CardPools } from "./data.cardpools";
 import { Card, CardTarget } from "./game";
@@ -28,7 +29,8 @@ __window__.UserCrossCombatData = UserCrossCombatData;
 
 const FloorConfigs: FloorConfig[] = [
   {
-    foes: [ // 1
+    foes: [
+      // 1
       {
         name: "Goblin",
         health: 3,
@@ -57,7 +59,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 2
+    foes: [
+      // 2
       {
         health: 3,
         handReplenishCount: 1,
@@ -95,7 +98,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 3
+    foes: [
+      // 3
       {
         health: 4,
         handReplenishCount: 1,
@@ -122,7 +126,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 4
+    foes: [
+      // 4
       {
         health: 10,
         handReplenishCount: 2,
@@ -141,7 +146,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 5
+    foes: [
+      // 5
       {
         health: 5,
         handReplenishCount: 1,
@@ -168,7 +174,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 6
+    foes: [
+      // 6
       {
         health: 5,
         handReplenishCount: 1,
@@ -206,7 +213,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 7
+    foes: [
+      // 7
       {
         health: 5,
         handReplenishCount: 1,
@@ -233,7 +241,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 8
+    foes: [
+      // 8
       {
         health: 5,
         handReplenishCount: 1,
@@ -270,7 +279,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 9
+    foes: [
+      // 9
       {
         health: 7,
         handReplenishCount: 2,
@@ -299,7 +309,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 10
+    foes: [
+      // 10
       {
         health: 9,
         handReplenishCount: 1,
@@ -340,7 +351,8 @@ const FloorConfigs: FloorConfig[] = [
   },
 
   {
-    foes: [ // 11
+    foes: [
+      // 11
       {
         health: 5,
         handReplenishCount: 2,
@@ -373,7 +385,13 @@ const FloorConfigs: FloorConfig[] = [
 export function getFloorConfig(floor: number): FloorConfig {
   floor = Math.max(0, floor - 1);
   floor = floor % FloorConfigs.length;
-  return FloorConfigs[floor];
+  const cfg = deepCopy(FloorConfigs[floor]);
+  const ascension = Math.floor(floor / FloorConfigs.length);
+  cfg.foes.forEach(foe => {
+    foe.health += ascension * 3;
+    foe.handReplenishCount += Math.max(ascension, 4);
+  });
+  return cfg;
 }
 
 export type FloorConfig = {
