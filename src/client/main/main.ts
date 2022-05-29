@@ -6,11 +6,16 @@ import { resolveCombatEncounter } from "../combat/resolveCombatEncounter";
 import { resolveFloorIntroScreen } from "./main.floorintro";
 import { resolveGameOver } from "./main.gameover";
 import { resolveWinScreen } from "./main.winscreen";
+import { resolveTitleScreen } from "./screens/resolveTitleScreen";
 
 export async function main(app: Application) {
   await delay(0.5);
 
   UserCrossCombatData.current.currentFloor = __FLOOR__;
+
+  await resolveTitleScreen();
+
+  await delay(0.5);
 
   // await resolveGainItemScreen();
   // console.log("Cards loaded", await loadCards());

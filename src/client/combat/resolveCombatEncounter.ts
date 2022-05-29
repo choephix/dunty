@@ -34,7 +34,7 @@ export async function resolveCombatEncounter() {
   game.start(UserCrossCombatData.current, getFloorConfig(UserCrossCombatData.current.currentFloor));
 
   const vscene = new VCombatScene();
-  __window__.container = app.stage.addChild(vscene);
+  __window__.container = app.stage.addChildAt(vscene, 0);
 
   await vscene.playShowAnimation();
 

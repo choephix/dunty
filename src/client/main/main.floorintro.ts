@@ -52,7 +52,10 @@ export async function resolveFloorIntroScreen() {
 
   await Promise.race([waitForDocumentClick(), delay(1.25)]);
 
-  await vscene.tweeener.to([text, ...swords], { alpha: 0, duration: 0.5, overwrite: true });
+  await Promise.all([
+    vscene.tweeener.to(text, { pixi: { alpha: 0, scale: 0 }, duration: 0.5, overwrite: true, ease: "back.in" }),
+    vscene.tweeener.to(swords, { pixi: { scale: 0 }, duration: 0.5, overwrite: true, ease: "power1.in" }),
+  ]);
 
   vscene.playHideAnimation().then(() => vscene.destroy());
 }
