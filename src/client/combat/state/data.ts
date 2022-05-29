@@ -387,9 +387,10 @@ export function getFloorConfig(floor: number): FloorConfig {
   floor = floor % FloorConfigs.length;
   const cfg = deepCopy(FloorConfigs[floor]);
   const ascension = Math.floor(floor / FloorConfigs.length);
+  console.log("ascension", ascension);
   cfg.foes.forEach(foe => {
-    foe.health += ascension * 3;
-    foe.handReplenishCount += Math.max(ascension, 4);
+    foe.health += ascension * 2;
+    foe.handReplenishCount += Math.min(ascension, 4);
   });
   return cfg;
 }
