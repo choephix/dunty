@@ -58,7 +58,8 @@ export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   parentElement.innerHTML = ``;
   parentElement.appendChild(app.view);
 
-  const onlyIfPageVisible = (callback: () => void) => () => void (document.visibilityState === "visible" && callback());
+  const onlyIfPageVisible = (callback: () => void) => (): void =>
+    void (document.visibilityState === "visible" && callback());
   const ticker = new Ticker();
   ticker.start();
   ticker.add(

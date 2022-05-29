@@ -1,3 +1,5 @@
+import { ToolTipFactory } from "@client/display/services/TooltipFactory";
+import { Card, Combatant, CombatantStatus } from "@client/game/game";
 import { StatusEffectBlueprints } from "@client/game/StatusEffectBlueprints";
 import { game } from "@client/main/main.combat";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
@@ -9,9 +11,6 @@ import { Rectangle } from "@pixi/math";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
-import { randomIntBetweenIncluding } from "@sdk/utils/random";
-import { Card, Combatant, CombatantStatus } from "@client/game/game";
-import { ToolTipFactory } from "@client/display/services/TooltipFactory";
 
 export class VCard extends Container {
   background;
