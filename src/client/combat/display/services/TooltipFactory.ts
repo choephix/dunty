@@ -1,15 +1,27 @@
-import { GameSingletons } from "@client/core/GameSingletons";
 import { Card, CardTarget } from "@client/combat/state/game";
-import { StatusEffectBlueprints, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
+import {
+  StatusEffectBlueprints,
+  StatusEffectExpiryType,
+  StatusEffectKey,
+} from "@client/combat/state/StatusEffectBlueprints";
+import { GameSingletons } from "@client/core/GameSingletons";
 import { Sprite } from "@pixi/sprite";
 import { VCard } from "../entities/VCard";
 
 export module ToolTipFactory {
   function getStatusEffectHintText(statusEffect: StatusEffectKey, value: number) {
-    const { displayName = statusEffect.toUpperCase(), description = `Unknown status effect` } =
-      StatusEffectBlueprints[statusEffect] || {};
+    const blueprint = StatusEffectBlueprints[statusEffect];
+    const { displayName = statusEffect.toUpperCase(), description = `Unknown status effect` } = blueprint || {};
 
-    return `${displayName.toUpperCase()}\n${description}`.trim().replace(/ X /g, ` ${value} `);
+    const expiryHint = {
+      [StatusEffectExpiryType.DECREMENT_AFTER_HURT]: `Decrements after taking damage.`,
+      [StatusEffectExpiryType.DECREMENT_BEFORE_TURN]: `Decrements before next turn.`,
+      [StatusEffectExpiryType.RESET_AFTER_ENCOUNTER]: `Resets after the combat encounter.`,
+      [StatusEffectExpiryType.RESET_BEFORE_TURN]: `Resets before next turn.`,
+      [StatusEffectExpiryType.NULL]: `Does not expire.`,
+    }[blueprint.expiryType] || ``;
+
+    return `${displayName.toUpperCase()}\n${description}\n(${expiryHint})`.trim().replace(/ X /g, ` ${value} `);
   }
 
   function getCardHintText(card: Card) {
@@ -18,21 +30,21 @@ export module ToolTipFactory {
       [CardTarget.ALL_ENEMIES]: "all enemies",
       [CardTarget.FRONT_ENEMY]: "front enemy",
       [CardTarget.SELF]: "self",
-      [CardTarget.TARGET_ENEMY]: "target enemy",
+      [CardTarget.TARGET_ENEMY]: "selected enemy",
       [CardTarget.TARGET_ANYONE]: "any target",
     }[card.target];
 
     switch (card.type) {
       case "atk":
-        return `Play and select enemy\nto ATTACK for ${card.value} damage.`;
+        return `ATTACK ${TARGET} for ${card.value} damage.`;
       case "def":
-        return `Play to BLOCK up to\n${card.value} of damage until your next turn.`;
+        return `Play to BLOCK up to ${card.value} of damage until your next turn.\n(Applies to ${TARGET})`;
       case "func": {
         if (!card.mods) return "Play to perform a special action.";
         const entries = Object.entries(card.mods);
         const modsList = entries.map(([k, v]) => `${v}x ${k.toUpperCase()}`).join(", ");
         const paragraphs = [
-          `Play to apply\n${modsList} to ${TARGET}.`,
+          `Play to apply ${modsList} to ${TARGET}.`,
           ...entries.map(([k, v]) => getStatusEffectHintText(k as any, v)),
         ];
         return paragraphs.join("\n\n");
@@ -45,7 +57,6 @@ export module ToolTipFactory {
   function getEnemyIntentionHintText(card: Card | string) {
     if (typeof card === "string") {
       return card;
-
     }
     const TARGET = {
       [CardTarget.ALL]: "everyone",
@@ -92,7 +103,7 @@ export module ToolTipFactory {
   }
 
   export function addToEnergyIndicator(sprite: Sprite, value: number) {
-    const tooltipHintText = `Energy is used to play cards.\nYou have ${value} energy.`;
+    const tooltipHintText = `Energy is used to play cards.\n\nYou have ${value} energy.`;
     const tooltips = GameSingletons.getTooltipManager();
     tooltips.registerTarget(sprite, {
       content: tooltipHintText,
