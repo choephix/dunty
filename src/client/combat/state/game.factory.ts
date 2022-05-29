@@ -1,5 +1,5 @@
-import { StatusEffectBlueprints, StatusEffectImpactAlignment } from "@client/game//StatusEffectBlueprints";
-import { Card, CardPileType, CardTarget, Combatant, CombatantStatus } from "@client/game/game";
+import { StatusEffectBlueprints, StatusEffectImpactAlignment } from "@client/combat/state/StatusEffectBlueprints";
+import { Card, CardPileType, CardTarget, Combatant, CombatantStatus } from "@client/combat/state/game";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import { GameController } from "./game.controller";

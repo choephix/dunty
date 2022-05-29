@@ -1,7 +1,7 @@
 import { waitForDocumentClick } from "@client/common/display/utils/waitForDocumentClick";
 import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
-import { FontFamily } from "@client/display/constants/FontFamily";
+import { FontFamily } from "@client/common/display/constants/FontFamily";
 import { __window__ } from "@debug/__window__";
 import { Text } from "@pixi/text";
 import { delay } from "@sdk/utils/promises";

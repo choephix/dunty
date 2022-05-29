@@ -1,9 +1,9 @@
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { Card, CardPileType, Combatant, CombatantStatus, CombatGroup } from "@client/game/game";
-import { generateDaggerCard } from "@client/game/game.factory";
-import { GameFAQ } from "@client/game/game.faq";
-import { StatusEffectBlueprints, StatusEffectExpiryType } from "@client/game/StatusEffectBlueprints";
+import { Card, CardPileType, Combatant, CombatantStatus, CombatGroup } from "@client/combat/state/game";
+import { generateDaggerCard } from "@client/combat/state/game.factory";
+import { GameFAQ } from "@client/combat/state/game.faq";
+import { StatusEffectBlueprints, StatusEffectExpiryType } from "@client/combat/state/StatusEffectBlueprints";
 
 export module GameController {
   async function assureDrawPileHasCards(actor: Combatant) {

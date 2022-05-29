@@ -1,6 +1,6 @@
 import { waitForDocumentClick } from "@client/common/display/utils/waitForDocumentClick";
 import { VScene } from "@client/common/display/VScene";
-import { FontFamily } from "@client/display/constants/FontFamily";
+import { FontFamily } from "@client/common/display/constants/FontFamily";
 import { __window__ } from "@debug/__window__";
 import { Application } from "@pixi/app";
 import { Text } from "@pixi/text";

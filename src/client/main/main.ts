@@ -1,8 +1,8 @@
-import { UserCrossCombatData } from "@client/game/data";
-import { loadCards } from "@client/game/data.load";
+import { UserCrossCombatData } from "@client/combat/state/data";
+import { loadCards } from "@client/combat/state/data.load";
 import { Application } from "@pixi/app";
 import { delay } from "@sdk/utils/promises";
-import { resolveCombatEncounter } from "./main.combat";
+import { resolveCombatEncounter } from "../combat/resolveCombatEncounter";
 import { resolveFloorIntroScreen } from "./main.floorintro";
 import { resolveGameOver } from "./main.gameover";
 import { resolveWinScreen } from "./main.winscreen";

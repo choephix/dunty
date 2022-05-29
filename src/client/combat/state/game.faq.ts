@@ -1,5 +1,5 @@
-import { game } from "@client/main/main.combat";
-import { Card, CardPileType, CardTarget, Combatant } from "@client/game/game";
+import { game } from "@client/combat/resolveCombatEncounter";
+import { Card, CardPileType, CardTarget, Combatant } from "@client/combat/state/game";
 
 export module GameFAQ {
   function getEnemiesSide(actor: Combatant) {

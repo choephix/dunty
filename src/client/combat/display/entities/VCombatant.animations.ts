@@ -1,5 +1,5 @@
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
-import { VCombatant } from "@client/display/entities/VCombatant";
+import { VCombatant } from "@client/combat/display/entities/VCombatant";
 import { spawnSpriteWave } from "@game/asorted/animations/spawnSpriteWave";
 import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";

@@ -1,7 +1,7 @@
-import { ToolTipFactory } from "@client/display/services/TooltipFactory";
-import { Card, Combatant, CombatantStatus } from "@client/game/game";
-import { StatusEffectBlueprints } from "@client/game/StatusEffectBlueprints";
-import { game } from "@client/main/main.combat";
+import { ToolTipFactory } from "@client/combat/display/services/TooltipFactory";
+import { Card, Combatant, CombatantStatus } from "@client/combat/state/game";
+import { StatusEffectBlueprints } from "@client/combat/state/StatusEffectBlueprints";
+import { game } from "@client/combat/resolveCombatEncounter";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";

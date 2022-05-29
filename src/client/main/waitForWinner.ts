@@ -1,6 +1,6 @@
 import { GameSingletons } from "@client/core/GameSingletons";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
-import { game } from "@client/main/main.combat";
+import { game } from "@client/combat/resolveCombatEncounter";
 
 export async function waitForWinner() {
   const app = GameSingletons.getPixiApplicaiton();

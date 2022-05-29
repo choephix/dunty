@@ -1,8 +1,8 @@
 import { waitForDocumentClick } from "@client/common/display/utils/waitForDocumentClick";
 import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
-import { FontFamily } from "@client/display/constants/FontFamily";
-import { UserCrossCombatData } from "@client/game/data";
+import { FontFamily } from "@client/common/display/constants/FontFamily";
+import { UserCrossCombatData } from "@client/combat/state/data";
 import { __window__ } from "@debug/__window__";
 import { Texture } from "@pixi/core";
 import { Sprite } from "@pixi/sprite";

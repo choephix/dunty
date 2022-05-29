@@ -1,10 +1,10 @@
-import { Card } from "@client/game/game";
-import { game } from "@client/main/main.combat";
+import { Card } from "@client/combat/state/game";
+import { game } from "@client/combat/resolveCombatEncounter";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Container } from "@pixi/display";
 import { buttonizeDisplayObject } from "@sdk-pixi/ui-helpers/buttonizeDisplayObject";
-import { VCard } from "@client/display/entities/VCard";
-import { VCardAnimations } from "@client/display/entities/VCard.animations";
+import { VCard } from "@client/combat/display/entities/VCard";
+import { VCardAnimations } from "@client/combat/display/entities/VCard.animations";
 
 const CARD_SCALE = 0.4;
 

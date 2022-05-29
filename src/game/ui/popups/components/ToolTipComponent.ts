@@ -1,4 +1,4 @@
-import { FontFamily } from "@client/display/constants/FontFamily";
+import { FontFamily } from "@client/common/display/constants/FontFamily";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { Point } from "@pixi/math";

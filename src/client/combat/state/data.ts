@@ -1,4 +1,4 @@
-import { generateRandomEnemyCard } from "@client/game/game.factory";
+import { generateRandomEnemyCard } from "@client/combat/state/game.factory";
 import { __window__ } from "@debug/__window__";
 import { range } from "@sdk/utils/range";
 import { CardPools } from "./data.cardpools";

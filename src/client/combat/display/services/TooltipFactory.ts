@@ -1,6 +1,6 @@
 import { GameSingletons } from "@client/core/GameSingletons";
-import { Card, CardTarget } from "@client/game/game";
-import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
+import { Card, CardTarget } from "@client/combat/state/game";
+import { StatusEffectBlueprints, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
 import { Sprite } from "@pixi/sprite";
 import { VCard } from "../entities/VCard";
 

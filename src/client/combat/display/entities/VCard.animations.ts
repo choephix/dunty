@@ -1,5 +1,5 @@
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
-import { VCard } from "@client/display/entities/VCard";
+import { VCard } from "@client/combat/display/entities/VCard";
 
 export module VCardAnimations {
   export function playShowAnimation(card: VCard) {

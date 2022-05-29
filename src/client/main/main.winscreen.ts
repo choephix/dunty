@@ -1,10 +1,10 @@
 import { waitForDocumentClick } from "@client/common/display/utils/waitForDocumentClick";
 import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
-import { FontFamily } from "@client/display/constants/FontFamily";
-import { VCard } from "@client/display/entities/VCard";
-import { UserCrossCombatData } from "@client/game/data";
-import { generateRandomPlayerCard } from "@client/game/game.factory";
+import { FontFamily } from "@client/common/display/constants/FontFamily";
+import { VCard } from "@client/combat/display/entities/VCard";
+import { UserCrossCombatData } from "@client/combat/state/data";
+import { generateRandomPlayerCard } from "@client/combat/state/game.factory";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { Application } from "@pixi/app";

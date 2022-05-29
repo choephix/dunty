@@ -1,4 +1,4 @@
-import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/display/entities/VCombatant.textures";
+import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/combat/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { FloorConfig, UserCrossCombatData } from "./data";
 import { shuffleArray } from "./game.utils";

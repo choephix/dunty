@@ -1,5 +1,5 @@
-import { Combatant, Game } from "@client/game/game";
-import { StatusEffectBlueprints, StatusEffectKey } from "@client/game/StatusEffectBlueprints";
+import { Combatant, Game } from "@client/combat/state/game";
+import { StatusEffectBlueprints, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
 
 // export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }> = {
 //   health: { icon: `❤` },
