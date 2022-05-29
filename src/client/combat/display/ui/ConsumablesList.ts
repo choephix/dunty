@@ -1,5 +1,5 @@
 import { game } from "@client/combat/resolveCombatEncounter";
-import { ConsumableItem, ConsumableItemBlueprints } from "@client/combat/state/ConsumableItemBlueprints";
+import { ConsumableItem } from "@client/combat/state/ConsumableItemBlueprints";
 import { UserCrossCombatData } from "@client/combat/state/data";
 import { GameSingletons } from "@client/core/GameSingletons";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
@@ -19,7 +19,7 @@ export class ConsumablesList extends Container {
   constructor(readonly consumables: ConsumableItem[] = UserCrossCombatData.current.consumables) {
     super();
 
-    consumables.push(...ConsumableItemBlueprints)
+    // consumables.push(...ConsumableItemBlueprints);
 
     this.onEnterFrame.watch.array(
       () => this.consumables,
@@ -66,30 +66,38 @@ export class ConsumablesList extends Container {
 
   private createConsumableIcon(item: ConsumableItem) {
     const { consumables } = this;
-    return new VConsumableItem(item, () => {
+    const icon = new VConsumableItem(item);
+    icon.buttonize(() => {
       consumables.splice(consumables.indexOf(item), 1);
       item.onPlay(game.groupA.combatants[0], game);
     });
+    return icon;
   }
 }
 
 export class VConsumableItem extends Sprite {
   declare hitArea: Rectangle;
 
-  constructor(readonly data: ConsumableItem, onClick?: () => void) {
+  scaleMultiplier = 1.0;
+
+  constructor(readonly data: ConsumableItem) {
     super(Texture.WHITE);
 
     this.texture = Texture.from(data.iconTextureUrl);
     this.hitArea = new Rectangle(-50, -50, 100, 100);
     this.anchor.set(0.5);
 
-    GameSingletons.getTooltipManager().registerTarget(this, data.hint);
+    this.buttonMode = true;
 
+    GameSingletons.getTooltipManager().registerTarget(this, data.hint);
+  }
+
+  buttonize(onClick?: () => void) {
     createAnimatedButtonBehavior(
       this,
       {
         onUpdate(this, { hoverProgress }) {
-          this.scale.set(0.6 + 0.2 * hoverProgress);
+          this.scale.set(this.scaleMultiplier * (0.6 + 0.2 * hoverProgress));
           this.zIndex = hoverProgress * 1000;
         },
         onClick,
@@ -97,8 +105,4 @@ export class VConsumableItem extends Sprite {
       true
     );
   }
-
-  // getLocalBounds() {
-  //   return this.hitArea;
-  // }
 }

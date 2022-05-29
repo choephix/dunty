@@ -12,6 +12,7 @@ import { Text } from "@pixi/text";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import FontFaceObserver from "fontfaceobserver";
+import { resolveGainItemScreen } from "./main.gainitem";
 
 export async function resolveWinScreen(app: Application) {
   await new FontFaceObserver("Henny Penny").load();
@@ -21,7 +22,11 @@ export async function resolveWinScreen(app: Application) {
 
   await resolveCongrats(vscene);
 
-  await resolveNewCardChoice(vscene, 4);
+  if (UserCrossCombatData.current.currentFloor % 5 === 2) {
+    await resolveGainItemScreen();
+  }
+
+  await resolveNewCardChoice(vscene, 3);
 
   vscene.playHideAnimation().then(() => vscene.destroy());
 }
