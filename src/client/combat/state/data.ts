@@ -37,18 +37,6 @@ const FloorConfigs: FloorConfig[] = [
         health: 3,
         handReplenishCount: 1,
         deck: [
-          { cost: 3, type: "func", mods: { stunned: 2 }, target: CardTarget.TARGET_ENEMY },
-          { cost: 3, type: "func", mods: { stunned: 2 }, target: CardTarget.TARGET_ENEMY },
-          { cost: 3, type: "func", mods: { frozen: 2 }, target: CardTarget.TARGET_ENEMY },
-          { cost: 3, type: "func", mods: { frozen: 2 }, target: CardTarget.TARGET_ENEMY },
-        ],
-      },
-      // 1
-      {
-        name: "Goblin",
-        health: 3,
-        handReplenishCount: 1,
-        deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
           { cost: 1, type: "def", value: 2, target: CardTarget.SELF },
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
