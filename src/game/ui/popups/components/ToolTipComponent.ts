@@ -36,6 +36,7 @@ export class ToolTipComponent extends Container {
       fontFamily: FontFamily.Tooltips,
       fontWeight: "bold",
       fontSize: 32,
+      lineHeight: 36,
       fill: textColor,
       wordWrapWidth,
       wordWrap: wordWrapWidth !== undefined,

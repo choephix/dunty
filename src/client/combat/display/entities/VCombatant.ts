@@ -145,11 +145,12 @@ export class VCombatant extends Container {
 
     this.onEnterFrame.watch(
       () => this.data.energy,
-      v => (intentionIndicator.text = v > 0 ? new Array(v).fill("⦿").join("") : ""),
+      v => {
+        intentionIndicator.text = v > 0 ? new Array(v).fill("⦿").join("") : "";
+        ToolTipFactory.addToEnergyIndicator(intentionIndicator, this.data.energy);
+      },
       true
     );
-
-    ToolTipFactory.addToEnergyIndicator(intentionIndicator, this.data.energy);
 
     return intentionIndicator;
   }

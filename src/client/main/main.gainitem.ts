@@ -49,7 +49,7 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
 
   new FontFaceObserver("Irish Grover").load().then(() => hint.updateText(false));
 
-  await Promise.race([waitForDocumentClick(), delay(0.7)]);
+  await Promise.race([waitForDocumentClick(), delay(0.3)]);
   await Texture.fromURL(item.iconTextureUrl);
   await Texture.fromURL(waveTextureUrl);
 

@@ -42,40 +42,48 @@ export module ToolTipFactory {
     }
   }
 
+  function getEnemyIntentionHintText(card: Card | string) {
+    if (typeof card === "string") {
+      return card;
+
+    }
+    const TARGET = {
+      [CardTarget.ALL]: "everyone",
+      [CardTarget.ALL_ENEMIES]: "you",
+      [CardTarget.FRONT_ENEMY]: "you",
+      [CardTarget.SELF]: "self",
+      [CardTarget.TARGET_ENEMY]: "you",
+      [CardTarget.TARGET_ANYONE]: "someone",
+    }[card.target];
+
+    switch (card.type) {
+      case "atk":
+        return `Enemy intends to\nATTACK you for ${card.value} damage next turn.`;
+      case "def":
+        return `Enemy intends to apply\n${card.value}x BLOCK to self next turn.`;
+      case "func": {
+        if (!card.mods) return "Play to perform a special action.";
+        const entries = Object.entries(card.mods);
+        const modsList = entries.map(([k, v]) => `${v}x ${k.toUpperCase()}`).join(", ");
+        const paragraphs = [
+          `Enemy intends to apply\n${modsList} to ${TARGET}.`,
+          ...entries.map(([k, v]) => getStatusEffectHintText(k as any, v)),
+        ];
+        return paragraphs.join("\n\n");
+      }
+      default:
+        return `Unknown card type: ${card.type}`;
+    }
+  }
   export function addToCard(card: VCard) {
     const tooltips = GameSingletons.getTooltipManager();
-    tooltips.registerTarget(card, getCardHintText(card.data));
-    tooltips.registerTarget(card, { content: getCardHintText(card.data), wordWrapWidth: 300 });
+    const hint = getCardHintText(card.data) + `\n\nCosts ⦿${card.data.cost} energy to play.`;
+    tooltips.registerTarget(card, { content: hint, wordWrapWidth: 300 });
   }
 
   export function addIntentionIndicator(sprite: Sprite, data: Card | string) {
-    const TARGET =
-      typeof data === "string"
-        ? null
-        : {
-            [CardTarget.ALL]: "everyone",
-            [CardTarget.ALL_ENEMIES]: "you",
-            [CardTarget.FRONT_ENEMY]: "you",
-            [CardTarget.SELF]: "self",
-            [CardTarget.TARGET_ENEMY]: "you",
-            [CardTarget.TARGET_ANYONE]: "someone",
-          }[data.target];
-
-    const tooltipHintText =
-      typeof data === "string"
-        ? data
-        : {
-            atk: `Enemy intends to\nATTACK you for ${data.value} damage next turn.`,
-            def: `Enemy intends to apply\n${data.value}x BLOCK to self next turn.`,
-            func: data.mods
-              ? `Enemy intends to apply\n${Object.entries(data.mods)
-                  .map(([k, v]) => `${v}x ${k.toUpperCase()}`)
-                  .join(", ")} to ${TARGET} next turn.`
-              : "Enemy will perform\na special action next turn.",
-          }[data.type] || `Unknown card type: ${data.type}`;
-
     const tooltips = GameSingletons.getTooltipManager();
-    tooltips.registerTarget(sprite, tooltipHintText);
+    tooltips.registerTarget(sprite, { content: getEnemyIntentionHintText(data), wordWrapWidth: 300 });
   }
 
   export function addToStatusEffect(sprite: Sprite, statusEffect: StatusEffectKey, value: number) {
