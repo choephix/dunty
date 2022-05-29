@@ -6,6 +6,7 @@ import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButton
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
+import { Rectangle } from "@pixi/math";
 import { Sprite } from "@pixi/sprite";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 
@@ -18,7 +19,7 @@ export class ConsumablesList extends Container {
   constructor(readonly consumables: ConsumableItem[] = UserCrossCombatData.current.consumables) {
     super();
 
-    consumables.push(...ConsumableItemBlueprints);
+    consumables.push(...ConsumableItemBlueprints)
 
     this.onEnterFrame.watch.array(
       () => this.consumables,
@@ -64,28 +65,40 @@ export class ConsumablesList extends Container {
   }
 
   private createConsumableIcon(item: ConsumableItem) {
-    const sprite = new Sprite(Texture.WHITE);
-    sprite.texture = Texture.from(item.iconTextureUrl);
-    sprite.anchor.set(0.5);
-
-    GameSingletons.getTooltipManager().registerTarget(sprite, item.hint);
-
     const { consumables } = this;
+    return new VConsumableItem(item, () => {
+      consumables.splice(consumables.indexOf(item), 1);
+      item.onPlay(game.groupA.combatants[0], game);
+    });
+  }
+}
+
+export class VConsumableItem extends Sprite {
+  declare hitArea: Rectangle;
+
+  constructor(readonly data: ConsumableItem, onClick?: () => void) {
+    super(Texture.WHITE);
+
+    this.texture = Texture.from(data.iconTextureUrl);
+    this.hitArea = new Rectangle(-50, -50, 100, 100);
+    this.anchor.set(0.5);
+
+    GameSingletons.getTooltipManager().registerTarget(this, data.hint);
+
     createAnimatedButtonBehavior(
-      sprite,
+      this,
       {
         onUpdate(this, { hoverProgress }) {
           this.scale.set(0.6 + 0.2 * hoverProgress);
           this.zIndex = hoverProgress * 1000;
         },
-        onClick() {
-          consumables.splice(consumables.indexOf(item), 1);
-          item.onPlay(game.groupA.combatants[0], game);
-        },
+        onClick,
       },
       true
     );
-
-    return sprite;
   }
+
+  // getLocalBounds() {
+  //   return this.hitArea;
+  // }
 }

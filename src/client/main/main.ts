@@ -4,6 +4,7 @@ import { Application } from "@pixi/app";
 import { delay } from "@sdk/utils/promises";
 import { resolveCombatEncounter } from "../combat/resolveCombatEncounter";
 import { resolveFloorIntroScreen } from "./main.floorintro";
+import { resolveGainItemScreen } from "./main.gainitem";
 import { resolveGameOver } from "./main.gameover";
 import { resolveWinScreen } from "./main.winscreen";
 
@@ -11,6 +12,10 @@ export async function main(app: Application) {
   await delay(0.5);
 
   UserCrossCombatData.current.currentFloor = __FLOOR__;
+
+  await resolveGainItemScreen();
+  await resolveGainItemScreen();
+  await resolveGainItemScreen();
 
   // console.log("Cards loaded", await loadCards());
 
