@@ -27,6 +27,9 @@ import { gsap } from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import { callOnEnterFrameRecursively } from "@sdk/pixi/enchant/oef/callOnEnterFrameRecursively";
 
+import { settings } from "@pixi/settings";
+settings.FILTER_RESOLUTION = window.devicePixelRatio || 1;
+
 PixiPlugin.registerPIXI(PIXI);
 gsap.registerPlugin(PixiPlugin);
 
