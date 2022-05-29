@@ -1,5 +1,6 @@
 import { __window__ } from "@debug/__window__";
 import { deepCopy } from "@sdk/helpers/objects";
+import { ConsumableItem } from "./ConsumableItemBlueprints";
 import { CardPools } from "./data.cardpools";
 import { Card, CardTarget } from "./game";
 
@@ -15,6 +16,8 @@ export class UserCrossCombatData {
 
   // readonly deck = range(DECK_SIZE).map(() => generateRandomPlayerCard());
   readonly deck = CardPools.playerStartingCards.map(c => Object.create(c));
+
+  readonly consumables = new Array<ConsumableItem>();
 }
 
 export module UserCrossCombatData {

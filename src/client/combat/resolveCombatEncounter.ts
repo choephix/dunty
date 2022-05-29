@@ -22,6 +22,7 @@ import { lerp } from "@sdk/utils/math";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import { waitForWinner } from "../main/waitForWinner";
+import { ConsumablesList } from "./display/ui/ConsumablesList";
 
 export let game: Game;
 
@@ -36,9 +37,17 @@ export async function resolveCombatEncounter() {
 
   await vscene.playShowAnimation();
 
-  const flrIndicator = new CurrentFloorIndicator();
-  flrIndicator.position.copyFrom(vscene.getFractionalPosition(0.5, 0.01));
-  vscene.addChild(flrIndicator);
+  {
+    const flrIndicator = new CurrentFloorIndicator();
+    flrIndicator.position.copyFrom(vscene.getFractionalPosition(0.5, 0.01));
+    vscene.addChild(flrIndicator);
+  }
+
+  {
+    const vconsumables = new ConsumablesList();
+    vconsumables.position.copyFrom(vscene.getFractionalPosition(0.5, 0.98));
+    vscene.addChild(vconsumables);
+  }
 
   const combatantsDictionary = new Map<Combatant, VCombatant>();
   function composeSide(state: CombatGroup, leftSide: boolean) {

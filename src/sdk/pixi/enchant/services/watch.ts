@@ -44,22 +44,30 @@ export function makeWatchService(ticker: ITicker) {
 
   function watchArray<T extends unknown[]>(
     getValues: () => Readonly<T>,
-    onChange: (newValues: Readonly<T>, oldValues: Readonly<T>, changeFlags: { [K in keyof T]: boolean }) => any,
+    onChange: (newValues: Readonly<T>, oldValues: Readonly<T> ) => any,
     shouldMakeInitialCall = false
   ) {
     let prevValues = [...getValues()] as T;
-    shouldMakeInitialCall && onChange(prevValues, prevValues, new Array(prevValues.length).fill(true) as any);
-    const compare = (value: T[number], i: number) => value !== prevValues[i];
+    shouldMakeInitialCall && onChange(prevValues, prevValues);
     return ticker.add(function observeArrayFunc() {
       const newValues = getValues();
-      const len = newValues.length > prevValues.length ? newValues.length : prevValues.length;
-      const changeFlags = new Array(len).fill(false) as any;
-      for (let i = 0; i < len; i++) {
-        changeFlags[i] = compare(newValues[i], i);
+      let changed = prevValues.length != newValues.length;
+
+      __window__.foo = [prevValues, newValues];
+
+      if (!changed) {
+        const len = newValues.length > prevValues.length ? newValues.length : prevValues.length;
+        for (let i = 0; i < len; i++) {
+          if (prevValues[i] !== newValues[i]) {
+            changed = true;
+            break;
+          }
+        }
       }
-      if (changeFlags.some(Boolean)) {
+
+      if (changed) {
         try {
-          onChange(newValues, prevValues, changeFlags);
+          onChange(newValues, prevValues);
         } catch (e) {
           console.error(e);
         } finally {
