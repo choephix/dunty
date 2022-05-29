@@ -12,6 +12,7 @@ export async function main(app: Application) {
 
   UserCrossCombatData.current.currentFloor = __FLOOR__;
 
+  // await resolveGainItemScreen();
   // console.log("Cards loaded", await loadCards());
 
   while (true) {
@@ -22,16 +23,11 @@ export async function main(app: Application) {
 
     console.log("💀 Combat over. Result:", resultIsVictory ? "Victory" : "Defeat");
 
-    if (resultIsVictory) {
-      // VICTORY
-
+    if (resultIsVictory) { // VICTORY
       UserCrossCombatData.current.health = winnerParty.combatants[0].status.health;
       UserCrossCombatData.current.currentFloor++;
-
       await resolveWinScreen(app);
-    } else {
-      // DEFEAT
-
+    } else { // DEFEAT
       await resolveGameOver(app);
       location.reload();
       break;

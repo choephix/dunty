@@ -23,6 +23,7 @@ import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import { waitForWinner } from "../main/waitForWinner";
 import { ConsumablesList } from "./display/ui/ConsumablesList";
+import { spawnBling } from "./display/fx/bling";
 
 export let game: Game;
 
@@ -114,6 +115,7 @@ export async function resolveCombatEncounter() {
 
     actor.energy -= card.cost;
 
+    spawnBling(vhand.cardSprites.get(card)!.position, vhand);
     await playCardFromHand(card, actor, targets);
 
     if (actor.cards.hand.length === 0) {

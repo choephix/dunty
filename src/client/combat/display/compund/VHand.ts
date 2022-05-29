@@ -13,7 +13,7 @@ export class VHand extends Container {
 
   public cardList: Card[] = [];
 
-  private readonly cardSprites = new Map<Card, VCard>();
+  public readonly cardSprites = new Map<Card, VCard>();
 
   public onCardClick?: (card: Card) => void;
 

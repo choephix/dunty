@@ -6,6 +6,8 @@ import { waitForDocumentClick } from "@client/common/display/utils/waitForDocume
 import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
+import { spawnSpriteWave } from "@game/asorted/animations/spawnSpriteWave";
+import { BLEND_MODES } from "@pixi/constants";
 import { Text } from "@pixi/text";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { delay } from "@sdk/utils/promises";
@@ -52,7 +54,17 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
   vscene.addChild(vitem);
   vscene.tweeener.from(vitem, { pixi: { scale: 0 }, duration: 0.4, ease: "back.out" });
 
-  await Promise.race([waitForDocumentClick(), delay(3.5)]);
+  spawnSpriteWave(
+    // `https://public.cx/3/rays-1.png`,
+    // `https://public.cx/3/plazmo-5.png`,
+    // `https://public.cx/2/flare-11.2.png`,
+    `https://public.cx/2/boom-w1.png`,
+    // `https://public.cx/3/flare-24.png`,
+    { pixi: { scale: 2.0 }, duration: 1 },
+    { x: vitem.x, y: vitem.y, blendMode: BLEND_MODES.ADD, parent: vscene }
+  );
+
+  await waitForDocumentClick();
 
   GameSingletons.getTooltipManager().clear();
 
