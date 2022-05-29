@@ -58,8 +58,8 @@ export const ConsumableItemBlueprints: ConsumableItem[] = [
   {
     iconTextureUrl: "https://public.cx/mock/items-1-smol/48.png",
     onPlay: (actor: Combatant, game: Game) => {
-      return GameController.drawCards(1, actor)
+      return GameController.drawCards(3, actor)
     },
-    hint: "Heal5",
+    hint: "Draw 3 cards",
   },
 ];
