@@ -12,9 +12,9 @@ import { Text } from "@pixi/text";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import FontFaceObserver from "fontfaceobserver";
-import { resolveGainItemScreen } from "./main.gainitem";
+import { resolveGainItemScreen } from "./resolveGainItemScreen";
 
-export async function resolveWinScreen(app: Application) {
+export async function resolveVictoryScreen(app: Application) {
   await new FontFaceObserver("Henny Penny").load();
 
   const vscene = new VScene();
@@ -22,7 +22,7 @@ export async function resolveWinScreen(app: Application) {
 
   await resolveCongrats(vscene);
 
-  if (UserCrossCombatData.current.currentFloor % 5 === 2) {
+  if ((UserCrossCombatData.current.currentFloor % 4) === 2) {
     await resolveGainItemScreen();
   }
 

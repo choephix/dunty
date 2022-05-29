@@ -21,7 +21,7 @@ import { Color } from "@sdk/utils/color/Color";
 import { lerp } from "@sdk/utils/math";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { waitForWinner } from "../main/waitForWinner";
+import { waitForWinner } from "./waitForWinner";
 import { ConsumablesList } from "./display/ui/ConsumablesList";
 import { spawnBling } from "./display/fx/bling";
 

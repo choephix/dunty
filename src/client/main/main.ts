@@ -3,9 +3,9 @@ import { __FLOOR__ } from "@client/debug/URL_PARAMS";
 import { Application } from "@pixi/app";
 import { delay } from "@sdk/utils/promises";
 import { resolveCombatEncounter } from "../combat/resolveCombatEncounter";
-import { resolveFloorIntroScreen } from "./main.floorintro";
-import { resolveGameOver } from "./main.gameover";
-import { resolveWinScreen } from "./main.winscreen";
+import { resolveFloorIntroScreen } from "./screens/resolveFloorIntroScreen";
+import { resolveGameOverScreen } from "./screens/resolveGameOverScreen";
+import { resolveVictoryScreen } from "./screens/resolveVictoryScreen";
 import { resolveTitleScreen } from "./screens/resolveTitleScreen";
 
 export async function main(app: Application) {
@@ -32,9 +32,9 @@ export async function main(app: Application) {
     if (resultIsVictory) { // VICTORY
       UserCrossCombatData.current.health = winnerParty.combatants[0].status.health;
       UserCrossCombatData.current.currentFloor++;
-      await resolveWinScreen(app);
+      await resolveVictoryScreen(app);
     } else { // DEFEAT
-      await resolveGameOver(app);
+      await resolveGameOverScreen(app);
       location.reload();
       break;
     }

@@ -6,7 +6,7 @@ import { Application } from "@pixi/app";
 import { Text } from "@pixi/text";
 import FontFaceObserver from "fontfaceobserver";
 
-export async function resolveGameOver(app: Application) {
+export async function resolveGameOverScreen(app: Application) {
   await new FontFaceObserver("Henny Penny").load();
 
   const vscene = new VScene();
