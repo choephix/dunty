@@ -32,9 +32,9 @@ export async function main(app: Application) {
     if (resultIsVictory) { // VICTORY
       UserCrossCombatData.current.health = winnerParty.combatants[0].status.health;
       UserCrossCombatData.current.currentFloor++;
-      await resolveVictoryScreen(app);
+      await resolveVictoryScreen();
     } else { // DEFEAT
-      await resolveGameOverScreen(app);
+      await resolveGameOverScreen();
       location.reload();
       break;
     }

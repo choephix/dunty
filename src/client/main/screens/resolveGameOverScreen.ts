@@ -5,10 +5,12 @@ import { __window__ } from "@debug/__window__";
 import { Application } from "@pixi/app";
 import { Text } from "@pixi/text";
 import FontFaceObserver from "fontfaceobserver";
+import { GameSingletons } from "@client/core/GameSingletons";
 
-export async function resolveGameOverScreen(app: Application) {
+export async function resolveGameOverScreen() {
   await new FontFaceObserver("Henny Penny").load();
-
+  
+  const app = GameSingletons.getPixiApplicaiton();
   const vscene = new VScene();
   __window__.container = app.stage.addChild(vscene);
 
