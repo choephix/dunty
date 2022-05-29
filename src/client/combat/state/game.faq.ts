@@ -18,7 +18,7 @@ export module GameFAQ {
     return [...game.groupA.combatants, ...game.groupB.combatants].filter(u => u.alive);
   }
 
-  export function getValidTargetsArray(actor: Combatant, card: Card): Combatant[] {
+  export function getValidTargetsArray(actor: Combatant, card: Pick<Card, 'target'>): Combatant[] {
     switch (card.target) {
       case CardTarget.SELF:
         return [actor];
