@@ -358,8 +358,8 @@ const FloorConfigs: FloorConfig[] = [
         health: 5,
         handReplenishCount: 2,
         deck: [
-          { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
-          { cost: 1, type: "def", value: 2, target: CardTarget.SELF },
+          { cost: 1, type: "atk", value: 3, target: CardTarget.TARGET_ENEMY },
+          { cost: 1, type: "def", value: 3, target: CardTarget.SELF },
           { cost: 1, type: "atk", value: 4, target: CardTarget.TARGET_ENEMY },
           { cost: 1, type: "def", value: 4, target: CardTarget.SELF },
           { cost: 3, type: "func", mods: { regeneration: 4 }, target: CardTarget.SELF },
@@ -377,6 +377,26 @@ const FloorConfigs: FloorConfig[] = [
           { cost: 1, type: "atk", value: 4, target: CardTarget.TARGET_ENEMY },
           { cost: 1, type: "def", value: 4, target: CardTarget.SELF },
           { cost: 3, type: "func", mods: { stunned: 2 }, target: CardTarget.TARGET_ENEMY },
+        ],
+      },
+    ],
+  },
+
+  {
+    foes: [
+      // 12
+      {
+        health: 25,
+        handReplenishCount: 3,
+        deck: [
+          { cost: 1, type: "atk", value: 6, target: CardTarget.TARGET_ENEMY },
+          { cost: 1, type: "def", value: 6, target: CardTarget.SELF },
+          { cost: 1, type: "atk", value: 4, target: CardTarget.TARGET_ENEMY },
+          { cost: 1, type: "def", value: 4, target: CardTarget.SELF },
+          { cost: 3, type: "func", mods: { regeneration: 4 }, target: CardTarget.SELF },
+          { cost: 3, type: "func", mods: { fury: 2 }, target: CardTarget.SELF },
+          { cost: 3, type: "func", mods: { strength: 1 }, target: CardTarget.SELF },
+          { cost: 3, type: "func", mods: { frozen: 2 }, target: CardTarget.TARGET_ENEMY },
         ],
       },
     ],
