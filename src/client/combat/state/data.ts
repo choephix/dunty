@@ -218,7 +218,7 @@ const FloorConfigs: FloorConfig[] = [
       // 7
       {
         health: 5,
-        handReplenishCount: 1,
+        handReplenishCount: 2,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
           { cost: 1, type: "def", value: 2, target: CardTarget.SELF },
@@ -229,7 +229,7 @@ const FloorConfigs: FloorConfig[] = [
       },
       {
         health: 5,
-        handReplenishCount: 1,
+        handReplenishCount: 2,
         deck: [
           { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
           { cost: 1, type: "def", value: 2, target: CardTarget.SELF },
@@ -390,7 +390,7 @@ export function getFloorConfig(floor: number): FloorConfig {
   const ascension = Math.floor(floor / FloorConfigs.length);
   console.log("ascension", ascension);
   cfg.foes.forEach(foe => {
-    foe.health += ascension * 2;
+    foe.health += ascension * 3;
     foe.handReplenishCount += Math.min(ascension, 4);
   });
   return cfg;
