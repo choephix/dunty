@@ -62,7 +62,7 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
 
   if (onUpdate) {
     let dirty = false;
-    const dirtify = () => void (dirty = true);
+    const dirtify = (): any => void (dirty = true);
     const makeTweenFunc = (property: keyof typeof state, duration: number) =>
       tweeener.quickTo(state, property, { duration: duration, onUpdate: dirtify, onComplete: dirtify });
 
