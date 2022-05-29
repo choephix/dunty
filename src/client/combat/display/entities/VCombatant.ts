@@ -1,6 +1,6 @@
 import { __VERBOSE__ } from "@client/debug/URL_PARAMS";
 import { Card, Combatant, CombatantStatus, Game } from "@client/combat/state/game";
-import { StatusEffectBlueprints, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
+import { StatusEffectBlueprints, StatusEffectExpiryType, StatusEffectImpactAlignment, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
 import { game } from "@client/combat/resolveCombatEncounter";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Texture } from "@pixi/core";
@@ -205,8 +205,22 @@ class StatusEffectIndicators extends Container {
   }
 
   private createStatusIndicator(key: StatusEffectKey, value: number) {
+    const { displayPriority, impactAlignment } = StatusEffectBlueprints[key];
+
+    function getColors(key: StatusEffectKey) {
+      if (key === 'health') return [0x70c050, 0x107010, 0x105010];
+      if (key === 'block') return [0x4050f0, 0x101090];
+      
+      if (impactAlignment === StatusEffectImpactAlignment.NEUTRAL) return [0x4050f0, 0x101090];
+      if (impactAlignment === StatusEffectImpactAlignment.POSITIVE) return [0x40c0f0, 0x106090];
+      if (impactAlignment === StatusEffectImpactAlignment.NEGATIVE) return [0xf04040, 0x901010];
+    }
+    const colors = {
+      health: [0x70c050, 0x107010, 0x105010],
+      block: [0x4050f0, 0x101090],
+    }[key] ?? [0x405080, 0x202020];
     const label = new Text(``, {
-      fill: [0x405080, 0x202020],
+      fill: colors,
       fontFamily: FontFamily.NumericIndicators,
       fontWeight: "700",
       fontSize: 40,
@@ -228,7 +242,7 @@ class StatusEffectIndicators extends Container {
       isNew: true,
       key,
       value,
-      priority: StatusEffectBlueprints[key].displayPriority,
+      priority: displayPriority,
       update,
     });
   }

@@ -13,9 +13,10 @@ export async function main(app: Application) {
 
   UserCrossCombatData.current.currentFloor = __FLOOR__;
 
-  await resolveTitleScreen();
-
-  await delay(0.5);
+  if (__FLOOR__ === 1) {
+    await resolveTitleScreen();
+    await delay(0.5);
+  }
 
   // await resolveGainItemScreen();
   // console.log("Cards loaded", await loadCards());

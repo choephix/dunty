@@ -98,6 +98,7 @@ function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card 
     stunned: 2,
     frozen: 2,
   }
+  console.log(`generateStatusEffectCard`, statusProperty, xMap[statusProperty!]);
   const value = xMap[statusProperty!] || randomIntBetweenIncluding(1, 3, 2);
 
   let keys = Object.keys(StatusEffectBlueprints) as (keyof CombatantStatus)[];
