@@ -1,7 +1,5 @@
-import { generateRandomEnemyCard } from "@client/combat/state/game.factory";
 import { __window__ } from "@debug/__window__";
 import { deepCopy } from "@sdk/helpers/objects";
-import { range } from "@sdk/utils/range";
 import { CardPools } from "./data.cardpools";
 import { Card, CardTarget } from "./game";
 

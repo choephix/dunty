@@ -64,8 +64,12 @@ export class VCard extends Container {
   }
 
   addBackground() {
-    const { type, isToken } = this.data;
-    const filename = isToken ? "front-trap" : { atk: "front-red", def: "front-grand", func: "front-pink" }[type];
+    const { type, isToken, isBloat } = this.data;
+    const filename = isBloat
+      ? "front-trap"
+      : isToken
+      ? "front-sneak"
+      : { atk: "front-red", def: "front-grand", func: "front-pink" }[type];
     const sprite = Sprite.from(`https://public.cx/mock/cards/${filename}.png`);
     sprite.anchor.set(0.5);
     this.addChild(sprite);

@@ -144,6 +144,7 @@ const __StatusEffectBlueprints = {
   },
   defensive: {
     emoji: "⛨",
+    // expiryType: StatusEffectExpiryType.DECREMENT_BEFORE_TURN,
     expiryType: StatusEffectExpiryType.RESET_AFTER_ENCOUNTER,
     description: "Increases Block gained by cards by X until the encounter ends.",
     displayName: "Defensive",

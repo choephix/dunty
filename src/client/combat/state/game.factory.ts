@@ -6,7 +6,7 @@ import { GameController } from "./game.controller";
 
 export function generateDaggerCard(): Card {
   return {
-    cost: 1,
+    cost: 0,
     type: "atk",
     value: 1,
     target: CardTarget.TARGET_ENEMY,
@@ -69,12 +69,41 @@ export function generateRandomEnemyCard(): Card {
 
 function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card {
   const ignore = ["cold", "oiled", "warm", "wet", "taunt"];
+
+  const xMap = {
+    health: 2,
+    block: 2,
+    parry: 2,
+    reflect: 2,
+    retaliation: 2,
+    protection: 2,
+    brittle: 2,
+    exposed: 2,
+    doomed: 2,
+    leech: 2,
+    regeneration: 3,
+    strength: 2,
+    rage: 2,
+    fury: 2,
+    haste: 2,
+    tactical: 2,
+    daggers: 2,
+    defensive: 1,
+    weak: 2,
+    burning: 3,
+    poisoned: 3,
+    bleeding: 3,
+    stunned: 2,
+    frozen: 2,
+  }
+  const value = xMap[statusProperty!] || randomIntBetweenIncluding(1, 3, 2);
+
   let keys = Object.keys(StatusEffectBlueprints) as (keyof CombatantStatus)[];
   keys = keys.filter(key => !ignore.includes(key));
   const key = statusProperty || getRandomItemFrom(keys);
   const { impactAlignment } = StatusEffectBlueprints[key];
 
-  const MAP = {
+  const TARGET_MAP = {
     [StatusEffectImpactAlignment.POSITIVE]: getRandomItemFrom([CardTarget.SELF]),
     [StatusEffectImpactAlignment.NEUTRAL]: getRandomItemFrom([CardTarget.ALL]),
     [StatusEffectImpactAlignment.NEGATIVE]: getRandomItemFrom([
@@ -84,5 +113,5 @@ function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card 
     ]),
   };
 
-  return { cost: 1, type: "func", mods: { [key]: 2 }, target: MAP[impactAlignment] || CardTarget.ALL };
+  return { cost: 1, type: "func", mods: { [key]: value }, target: TARGET_MAP[impactAlignment] || CardTarget.ALL };
 }
