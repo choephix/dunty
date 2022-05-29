@@ -20,5 +20,6 @@ export default defineConfig({
   base: "/www/dunty",
   build: {
     outDir: "/www/public/www/dunty",
+    emptyOutDir: true,
   },
 });

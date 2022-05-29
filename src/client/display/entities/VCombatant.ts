@@ -25,6 +25,8 @@ export class VCombatant extends Container {
 
   thought?: string;
 
+  name = this.data.name;
+
   constructor(public readonly data: Combatant) {
     super();
 
