@@ -1,16 +1,16 @@
-import { CardTarget, Combatant, Game } from "./game";
-import { GameController } from "./game.controller";
+import { Combat } from "../logic/Combat";
+import { CardTarget, Combatant } from "./CombatState";
 
 export type ConsumableItem = {
   iconTextureUrl: string;
-  onPlay: (actor: Combatant, game: Game) => void | Promise<void>;
+  onPlay: (actor: Combatant, game: Combat) => void | Promise<void>;
   hint: string;
 };
 
 export const ConsumableItemBlueprints: ConsumableItem[] = [
   {
     iconTextureUrl: "https://public.cx/mock/items-1-smol/21.png",
-    onPlay: (actor: Combatant, game: Game) => {
+    onPlay: (actor: Combatant, game: Combat) => {
       actor.status.health += 5;
     },
     hint: "Heal 5",
@@ -18,7 +18,7 @@ export const ConsumableItemBlueprints: ConsumableItem[] = [
 
   {
     iconTextureUrl: "https://public.cx/mock/items-1-smol/45.png",
-    onPlay: (actor: Combatant, game: Game) => {
+    onPlay: (actor: Combatant, game: Combat) => {
       actor.energy += 2;
     },
     hint: "Gain 2 energy",
@@ -26,7 +26,7 @@ export const ConsumableItemBlueprints: ConsumableItem[] = [
 
   {
     iconTextureUrl: "https://public.cx/mock/items-1-smol/5.png",
-    onPlay: (actor: Combatant, game: Game) => {
+    onPlay: (actor: Combatant, game: Combat) => {
       actor.status.block += 12;
     },
     hint: "Gain 12 block",
@@ -34,7 +34,7 @@ export const ConsumableItemBlueprints: ConsumableItem[] = [
 
   {
     iconTextureUrl: "https://public.cx/mock/items-1-smol/11.png",
-    onPlay: (actor: Combatant, game: Game) => {
+    onPlay: (actor: Combatant, game: Combat) => {
       actor.status.fury += 3;
     },
     hint: "Gain 3 fury",
@@ -42,7 +42,7 @@ export const ConsumableItemBlueprints: ConsumableItem[] = [
 
   {
     iconTextureUrl: "https://public.cx/mock/items-1-smol/14.png",
-    onPlay: (actor: Combatant, game: Game) => {
+    onPlay: (actor: Combatant, game: Combat) => {
       actor.cards.addCardTo(
         { type: "atk", cost: 0, value: 2, isToken: true, target: CardTarget.TARGET_ENEMY },
         actor.cards.hand
@@ -57,8 +57,8 @@ export const ConsumableItemBlueprints: ConsumableItem[] = [
 
   {
     iconTextureUrl: "https://public.cx/mock/items-1-smol/48.png",
-    onPlay: (actor: Combatant, game: Game) => {
-      return GameController.drawCards(3, actor)
+    onPlay: (actor: Combatant, game: Combat) => {
+      return game.ctrl.drawCards(3, actor)
     },
     hint: "Draw 3 cards",
   },

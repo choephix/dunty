@@ -1,8 +1,8 @@
+import { Card, CardPileType, CardTarget, Combatant, CombatantStatus } from "@client/combat/state/CombatState";
 import { StatusEffectBlueprints, StatusEffectImpactAlignment } from "@client/combat/state/StatusEffectBlueprints";
-import { Card, CardPileType, CardTarget, Combatant, CombatantStatus } from "@client/combat/state/game";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
-import { GameController } from "./game.controller";
+import { Combat } from "../logic/Combat";
 
 export function generateDaggerCard(): Card {
   return {
@@ -32,7 +32,7 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
       if (actor.status[key] < 0) actor.status[key] = 0;
     },
     onPlay(actor: Combatant) {
-      GameController.drawCards(1, actor);
+      Combat.current!.ctrl.drawCards(1, actor);
     },
 
     description: `${key.toUpperCase()}\nPlay to draw a card\n(player only)`,

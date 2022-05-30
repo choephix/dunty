@@ -1,4 +1,4 @@
-import { game } from "@client/combat/resolveCombatEncounter";
+import { Combat } from "@client/combat/logic/Combat";
 import { ConsumableItem } from "@client/combat/state/ConsumableItemBlueprints";
 import { UserCrossCombatData } from "@client/combat/state/data";
 import { GameSingletons } from "@client/core/GameSingletons";
@@ -69,7 +69,9 @@ export class ConsumablesList extends Container {
     const icon = new VConsumableItem(item);
     icon.buttonize(() => {
       consumables.splice(consumables.indexOf(item), 1);
-      item.onPlay(game.groupA.combatants[0], game);
+
+      const game = Combat.current!
+      item.onPlay(game.state.groupA.combatants[0], game);
     });
     return icon;
   }

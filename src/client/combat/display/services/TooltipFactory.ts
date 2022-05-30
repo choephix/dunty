@@ -1,4 +1,4 @@
-import { Card, CardTarget } from "@client/combat/state/game";
+import { Card, CardTarget } from "@client/combat/state/CombatState";
 import {
   StatusEffectBlueprints,
   StatusEffectExpiryType,

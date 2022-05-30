@@ -1,4 +1,4 @@
-import { Card, CardTarget } from "./game";
+import { Card, CardTarget } from "./CombatState";
 
 export module CardPools {
   export const playerStartingCards: Card[] = [

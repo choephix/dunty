@@ -1,7 +1,7 @@
 import { ToolTipFactory } from "@client/combat/display/services/TooltipFactory";
-import { Card, Combatant, CombatantStatus } from "@client/combat/state/game";
+import { Combat } from "@client/combat/logic/Combat";
+import { Card, Combatant, CombatantStatus } from "@client/combat/state/CombatState";
 import { StatusEffectBlueprints } from "@client/combat/state/StatusEffectBlueprints";
-import { game } from "@client/combat/resolveCombatEncounter";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
@@ -219,8 +219,8 @@ export class VCard extends Container {
       pad.addChild(label);
 
       const getCurrentValue =
-        game && this.data.type == "atk"
-          ? () => game.calculateAttackPower(this.data, this.actor)
+        Combat.current && this.data.type == "atk"
+          ? () => Combat.current.faq.calculateAttackPower(this.data, this.actor)
           : () => this.data.value || 0;
       const onEnterFrame = createEnchantedFrameLoop(pad);
       onEnterFrame.watch(

@@ -1,8 +1,11 @@
+import { VCombatantAnimations } from "@client/combat/display/entities/VCombatant.animations";
+import { getStatusEffectEmojiOnly } from "@client/combat/display/entities/VCombatant.emojis";
+import { ToolTipFactory } from "@client/combat/display/services/TooltipFactory";
+import { Card, Combatant, CombatantStatus, CombatState } from "@client/combat/state/CombatState";
+import { StatusEffectBlueprints, StatusEffectImpactAlignment, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
 import { __VERBOSE__ } from "@client/debug/URL_PARAMS";
-import { Card, Combatant, CombatantStatus, Game } from "@client/combat/state/game";
-import { StatusEffectBlueprints, StatusEffectExpiryType, StatusEffectImpactAlignment, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
-import { game } from "@client/combat/resolveCombatEncounter";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
+import { BLEND_MODES } from "@pixi/constants";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
@@ -10,11 +13,8 @@ import { Text } from "@pixi/text";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
-import { ToolTipFactory } from "@client/combat/display/services/TooltipFactory";
-import { VCombatantAnimations } from "@client/combat/display/entities/VCombatant.animations";
-import { getStatusEffectEmojiOnly } from "@client/combat/display/entities/VCombatant.emojis";
-import { BLEND_MODES } from "@pixi/constants";
-import { FontFamily } from "../../../common/display/constants/FontFamily";
+import { FontFamily } from "@client/common/display/constants/FontFamily";
+import { Combat } from "@client/combat/logic/Combat";
 
 export class VCombatant extends Container {
   highlight;
@@ -125,7 +125,7 @@ export class VCombatant extends Container {
       v =>
         typeof v === "string"
           ? intentionIndicator.updateFromText(this.data, v)
-          : intentionIndicator.updateFromUpcomingCards(this.data, game),
+          : intentionIndicator.updateFromUpcomingCards(this.data, Combat.current!),
       true
     );
 
@@ -304,10 +304,10 @@ class IntentionIndicators extends Container {
     this.afterUpdate();
   }
 
-  updateFromUpcomingCards(actor: Combatant, game: Game) {
+  updateFromUpcomingCards(actor: Combatant, game: Combat) {
     this.clear();
 
-    const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(actor);
+    const cardsToDrawCount = game.faq.calculateCardsToDrawOnTurnStart(actor);
     const intentionCards = actor.cards.drawPile.slice(0, cardsToDrawCount);
 
     for (const card of intentionCards) {
@@ -340,12 +340,12 @@ class IntentionIndicators extends Container {
       const { type } = card;
 
       if (type === "atk") {
-        const atk = game.calculateAttackPower(card, actor);
+        const atk = Combat.current!.faq.calculateAttackPower(card, actor);
         return [`⚔${atk}`, 0xf02020];
       }
 
       if (type === "def") {
-        const def = game.calculateBlockPointsToAdd(card, actor);
+        const def = Combat.current!.faq.calculateBlockPointsToAdd(card, actor);
         return [`⛊${def || "?"}`, 0x70b0f0];
       }
 

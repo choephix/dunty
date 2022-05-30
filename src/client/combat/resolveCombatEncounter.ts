@@ -1,4 +1,3 @@
-import { GameSingletons } from "@client/core/GameSingletons";
 import { VHand } from "@client/combat/display/compund/VHand";
 import { VCombatant } from "@client/combat/display/entities/VCombatant";
 import { VCombatantAnimations } from "@client/combat/display/entities/VCombatant.animations";
@@ -6,12 +5,10 @@ import { VCombatScene } from "@client/combat/display/entities/VCombatScene";
 import { CurrentFloorIndicator } from "@client/combat/display/ui/CurrentFloorIndicator";
 import { EndTurnButton } from "@client/combat/display/ui/EndTurnButton";
 import { HandBlockerBlock } from "@client/combat/display/ui/HandBlockerBlock";
+import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup } from "@client/combat/state/CombatState";
 import { getFloorConfig, UserCrossCombatData } from "@client/combat/state/data";
-import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup, Game } from "@client/combat/state/game";
-import { CombatAI } from "@client/combat/state/game.ai";
-import { GameController } from "@client/combat/state/game.controller";
-import { generateBloatCard } from "@client/combat/state/game.factory";
-import { GameFAQ } from "@client/combat/state/game.faq";
+import { generateBloatCard } from "@client/combat/state/StuffFactory";
+import { GameSingletons } from "@client/core/GameSingletons";
 import { CurrentSelectionHelper } from "@client/sdk/CurrentSelectionHelper";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";
@@ -21,17 +18,16 @@ import { Color } from "@sdk/utils/color/Color";
 import { lerp } from "@sdk/utils/math";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
-import { waitForWinner } from "./waitForWinner";
-import { ConsumablesList } from "./display/ui/ConsumablesList";
 import { spawnBling } from "./display/fx/bling";
-
-export let game: Game;
+import { ConsumablesList } from "./display/ui/ConsumablesList";
+import { Combat } from "./logic/Combat";
+import { waitForWinner } from "./waitForWinner";
 
 export async function resolveCombatEncounter() {
   const app = GameSingletons.getPixiApplicaiton();
 
-  game = __window__.game = new Game();
-  game.start(UserCrossCombatData.current, getFloorConfig(UserCrossCombatData.current.currentFloor));
+  const combat = new Combat();
+  combat.ctrl.start(UserCrossCombatData.current, getFloorConfig(UserCrossCombatData.current.currentFloor));
 
   const vscene = new VCombatScene();
   __window__.container = app.stage.addChildAt(vscene, 0);
@@ -91,18 +87,18 @@ export async function resolveCombatEncounter() {
     },
   });
 
-  composeSide(game.groupA, true);
-  composeSide(game.groupB, false);
+  composeSide(combat.state.groupA, true);
+  composeSide(combat.state.groupB, false);
 
   const vhandOrigin = vscene.getFractionalPosition(0.5, 0.8);
   const vhand = new VHand();
-  vhand.cardList = game.groupA.combatants[0].cards.hand;
+  vhand.cardList = combat.state.groupA.combatants[0].cards.hand;
   vhand.position.set(vhandOrigin.x, vhandOrigin.y);
   vscene.addChild(vhand);
   __window__.hand = vhand;
 
   vhand.onCardClick = async card => {
-    const { combatants } = game.groupA;
+    const { combatants } = combat.state.groupA;
     const [actor] = combatants;
 
     if (card.cost > actor.energy) {
@@ -130,7 +126,7 @@ export async function resolveCombatEncounter() {
       const { hand } = actor.cards;
       hand.splice(hand.indexOf(card), 1);
       await resolveCardEffect(card, actor, targets);
-      await GameController.disposeCardAfterPlay(card, actor);
+      await combat.ctrl.disposeCardAfterPlay(card, actor);
     } catch (error) {
       console.error(error);
     }
@@ -142,22 +138,22 @@ export async function resolveCombatEncounter() {
         return [actor];
       }
       case CardTarget.ALL_ENEMIES: {
-        return GameFAQ.getAliveEnemiesArray(actor);
+        return combat.faq.getAliveEnemiesArray(actor);
       }
       case CardTarget.ALL: {
-        return GameFAQ.getAliveAnyoneArray();
+        return combat.faq.getAliveAnyoneArray();
       }
       case CardTarget.FRONT_ENEMY: {
-        const foes = GameFAQ.getAliveEnemiesArray(actor);
+        const foes = combat.faq.getAliveEnemiesArray(actor);
         return foes.length > 0 ? [foes[0]] : [];
       }
       case CardTarget.TARGET_ENEMY: {
-        const candidates = GameFAQ.getAliveEnemiesArray(actor);
+        const candidates = combat.faq.getAliveEnemiesArray(actor);
         const choice = await playerSelectTarget(candidates);
         return choice ? [choice] : [];
       }
       case CardTarget.TARGET_ANYONE: {
-        const candidates = GameFAQ.getAliveAnyoneArray();
+        const candidates = combat.faq.getAliveAnyoneArray();
         const choice = await playerSelectTarget(candidates);
         return choice ? [choice] : [];
       }
@@ -184,7 +180,7 @@ export async function resolveCombatEncounter() {
     if (type === "def") {
       for (const target of targets) {
         await delay(0.1);
-        const amountToAdd = game.calculateBlockPointsToAdd(card, actor);
+        const amountToAdd = combat.faq.calculateBlockPointsToAdd(card, actor);
         target.status.block += amountToAdd;
       }
 
@@ -234,7 +230,7 @@ export async function resolveCombatEncounter() {
     bl.position.set(vhandOrigin.x, vhandOrigin.y - 100);
     vscene.addChild(bl);
 
-    const actor = game.groupA.combatants[0];
+    const actor = combat.state.groupA.combatants[0];
 
     const cleanUp = new Array<Function>();
     const chosen = await new Promise<Combatant>(resolve => {
@@ -283,8 +279,12 @@ export async function resolveCombatEncounter() {
   }
 
   async function performAttack(target: Combatant, attacker: Combatant, card: Card) {
-    const atkPwr = game.calculateAttackPower(card, attacker, target);
-    const { directDamage, blockedDamage, reflectedDamage, healingDamage } = game.calculateDamage(atkPwr, target, attacker);
+    const atkPwr = combat.faq.calculateAttackPower(card, attacker, target);
+    const { directDamage, blockedDamage, reflectedDamage, healingDamage } = combat.faq.calculateDamage(
+      atkPwr,
+      target,
+      attacker
+    );
 
     console.log({ directDamage, blockedDamage, reflectedDamage, healingDamage });
 
@@ -295,7 +295,7 @@ export async function resolveCombatEncounter() {
     await VCombatantAnimations.attack(vatk);
 
     if (target.alive && reflectedDamage > 0) {
-      const { directDamage, blockedDamage } = game.calculateDamage(reflectedDamage, attacker, target);
+      const { directDamage, blockedDamage } = combat.faq.calculateDamage(reflectedDamage, attacker, target);
       dealDamage(attacker, directDamage, blockedDamage);
       await VCombatantAnimations.attack(vdef);
     }
@@ -307,18 +307,18 @@ export async function resolveCombatEncounter() {
   }
 
   async function startPlayerTurn() {
-    await GameController.activateCombatantTurnStartStatusEffects(game.groupA);
-    await GameController.resetCombatantsForTurnStart(game.groupA);
+    await combat.ctrl.activateCombatantTurnStartStatusEffects(combat.state.groupA);
+    await combat.ctrl.resetCombatantsForTurnStart(combat.state.groupA);
 
-    const combatant = game.groupA.combatants[0];
+    const combatant = combat.state.groupA.combatants[0];
     if (!combatant.alive) return;
 
     endTurnButtonBehavior.isDisabled.value = true;
     await delay(0.3);
-    const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(combatant);
-    await GameController.drawCards(cardsToDrawCount, combatant);
+    const cardsToDrawCount = combat.faq.calculateCardsToDrawOnTurnStart(combatant);
+    await combat.ctrl.drawCards(cardsToDrawCount, combatant);
 
-    const energyToAdd = game.calculateEnergyToAddOnTurnStart(combatant);
+    const energyToAdd = combat.faq.calculateEnergyToAddOnTurnStart(combatant);
     for (const _ of range(energyToAdd)) {
       await delay(0.033);
       combatant.energy++;
@@ -333,13 +333,13 @@ export async function resolveCombatEncounter() {
   async function endPlayerTurn() {
     endTurnButtonBehavior.isDisabled.value = true;
 
-    const combatant = game.groupA.combatants[0];
+    const combatant = combat.state.groupA.combatants[0];
 
     if (!combatant.alive) return;
 
     combatant.energy = 0;
 
-    await GameController.discardHand(combatant);
+    await combat.ctrl.discardHand(combatant);
 
     activeCombatant.setCurrent(null);
 
@@ -355,14 +355,14 @@ export async function resolveCombatEncounter() {
   async function resolveEnemyTurn() {
     vscene.ln.visible = true;
 
-    await GameController.activateCombatantTurnStartStatusEffects(game.groupB);
-    await GameController.resetCombatantsForTurnStart(game.groupB);
-    
-    const playerCombatant = game.groupA.combatants[0];
-    if (playerCombatant && game.groupB.combatants.length) {
-      for (const foe of game.groupB.combatants) {
+    await combat.ctrl.activateCombatantTurnStartStatusEffects(combat.state.groupB);
+    await combat.ctrl.resetCombatantsForTurnStart(combat.state.groupB);
+
+    const playerCombatant = combat.state.groupA.combatants[0];
+    if (playerCombatant && combat.state.groupB.combatants.length) {
+      for (const foe of combat.state.groupB.combatants) {
         if (!playerCombatant.alive) break;
-        
+
         activeCombatant.setCurrent(foe);
 
         await delay(0.15);
@@ -370,9 +370,9 @@ export async function resolveCombatEncounter() {
         const vfoe = combatantsDictionary.get(foe)!;
         vfoe.thought = " ";
 
-        const cardsToDrawCount = game.calculateCardsToDrawOnTurnStart(foe);
-        await GameController.drawCards(cardsToDrawCount, foe);
-        
+        const cardsToDrawCount = combat.faq.calculateCardsToDrawOnTurnStart(foe);
+        await combat.ctrl.drawCards(cardsToDrawCount, foe);
+
         if (!playerCombatant.alive) break;
 
         if (foe.cards.hand.length > 0) {
@@ -381,11 +381,11 @@ export async function resolveCombatEncounter() {
             const card = foe.cards.hand[foe.cards.hand.length - 1];
             if (card.isBloat) {
               VCombatantAnimations.spawnFloatyText(vfoe, `skip\naction`, 0xd0d0d0);
-              await GameController.discardCard(card, foe);
+              await combat.ctrl.discardCard(card, foe);
               await delay(0.9);
               // await VCombatantAnimations.skipAction(vfoe, `skip\naction`);
             } else {
-              const targets = CombatAI.chooseCardTargets(foe, card);
+              const targets = combat.ai.chooseCardTargets(foe, card);
               // console.log(`AI plays ${card.type.toUpperCase()} on ${targets}`);
               console.log(`AI plays ${JSON.stringify(card)} on ${targets}`);
               await playCardFromHand(card, foe, targets);
@@ -405,7 +405,7 @@ export async function resolveCombatEncounter() {
 
       await delay(0.4);
 
-      for (const foe of game.groupB.combatants) {
+      for (const foe of combat.state.groupB.combatants) {
         const vfoe = combatantsDictionary.get(foe)!;
         vfoe.thought = undefined;
         await delay(0.1);

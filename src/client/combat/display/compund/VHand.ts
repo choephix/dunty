@@ -1,10 +1,10 @@
-import { Card } from "@client/combat/state/game";
-import { game } from "@client/combat/resolveCombatEncounter";
+import { Card } from "@client/combat/state/CombatState";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { Container } from "@pixi/display";
 import { buttonizeDisplayObject } from "@sdk-pixi/ui-helpers/buttonizeDisplayObject";
 import { VCard } from "@client/combat/display/entities/VCard";
 import { VCardAnimations } from "@client/combat/display/entities/VCard.animations";
+import { Combat } from "@client/combat/logic/Combat";
 
 const CARD_SCALE = 0.4;
 
@@ -35,7 +35,7 @@ export class VHand extends Container {
         cards.forEach(card => {
           if (this.cardSprites.has(card)) return;
           const sprite = new VCard(card);
-          sprite.actor = game.groupA.combatants[0];
+          sprite.actor = Combat.current!.state.groupA.combatants[0];
           buttonizeDisplayObject(sprite, () => this.onCardClick?.(card));
           this.cardSprites.set(card, sprite);
           this.addChild(sprite);

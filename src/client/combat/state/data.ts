@@ -1,8 +1,8 @@
 import { __window__ } from "@debug/__window__";
 import { deepCopy } from "@sdk/helpers/objects";
+import { Card, CardTarget } from "./CombatState";
 import { ConsumableItem } from "./ConsumableItemBlueprints";
 import { CardPools } from "./data.cardpools";
-import { Card, CardTarget } from "./game";
 
 const PLAYER_HEALTH = 3;
 const DECK_SIZE = 14;

@@ -1,4 +1,4 @@
-import { Combatant, Game } from "@client/combat/state/game";
+import { Combatant, CombatState } from "@client/combat/state/CombatState";
 import { StatusEffectBlueprints, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
 
 // export const statusEffectEmojis: Record<keyof CombatantStatus, { icon: string }> = {
@@ -67,7 +67,7 @@ export function getStatusEffectEmojiOnly(statusEffect: StatusEffectKey) {
   return StatusEffectBlueprints[statusEffect].emoji;
 }
 
-export function getStatusEffectEmojifiedString(actor: Combatant, game: Game) {
+export function getStatusEffectEmojifiedString(actor: Combatant, game: CombatState) {
   const { health, ...props } = actor.status;
   const col = [`❤${health}`];
   for (const [k, v] of Object.entries(props) as [keyof typeof props, number][]) {
@@ -78,7 +78,7 @@ export function getStatusEffectEmojifiedString(actor: Combatant, game: Game) {
   return col.join("\n");
 }
 
-export function getIntentionEmojifiedString(actor: Combatant, game: Game): [string, number?] {
+export function getIntentionEmojifiedString(actor: Combatant, game: CombatState): [string, number?] {
   // const emojifySingleCardIntention = (card: Card) => {
   //   const { type } = card;
 
