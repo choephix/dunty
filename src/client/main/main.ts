@@ -29,11 +29,13 @@ export async function main(app: Application) {
 
     console.log("💀 Combat over. Result:", resultIsVictory ? "Victory" : "Defeat");
 
-    if (resultIsVictory) { // VICTORY
+    if (resultIsVictory) {
+      // VICTORY
       UserCrossCombatData.current.health = winnerParty.combatants[0].status.health;
       UserCrossCombatData.current.currentFloor++;
       await resolveVictoryScreen();
-    } else { // DEFEAT
+    } else {
+      // DEFEAT
       await resolveGameOverScreen();
       location.reload();
       break;

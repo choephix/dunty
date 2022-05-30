@@ -2,7 +2,11 @@ import { VCombatantAnimations } from "@client/combat/display/entities/VCombatant
 import { getStatusEffectEmojiOnly } from "@client/combat/display/entities/VCombatant.emojis";
 import { ToolTipFactory } from "@client/combat/display/services/TooltipFactory";
 import { Card, Combatant, CombatantStatus, CombatState } from "@client/combat/state/CombatState";
-import { StatusEffectBlueprints, StatusEffectImpactAlignment, StatusEffectKey } from "@client/combat/state/StatusEffectBlueprints";
+import {
+  StatusEffectBlueprints,
+  StatusEffectImpactAlignment,
+  StatusEffectKey,
+} from "@client/combat/state/StatusEffectBlueprints";
 import { __VERBOSE__ } from "@client/debug/URL_PARAMS";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
@@ -27,6 +31,8 @@ export class VCombatant extends Container {
 
   name = this.data.name;
 
+  readonly breathingOptions = {};
+
   constructor(public readonly data: Combatant) {
     super();
 
@@ -42,18 +48,6 @@ export class VCombatant extends Container {
     this.sprite.anchor.set(0.5, 0.95);
     this.addChild(this.sprite);
 
-    const breathStart = Math.random();
-    Object.assign(this.sprite, {
-      onEnterFrame: () => {
-        if (this.data.alive) {
-          this.sprite.position.y = this.sprite.texture.height * 0.45;
-          this.sprite.scale.y = 1.0 + 0.0125 * Math.sin(breathStart + 2.5 * EnchantmentGlobals.timeTotal);
-        } else {
-          this.sprite.scale.y = 0.9;
-        }
-      },
-    });
-
     this.statusIndicators = this.addStatusIndicators();
     this.energyIndicator = this.addEnergyIndicator();
     this.intentionIndicator = this.addIntentionIndicator();
@@ -64,6 +58,22 @@ export class VCombatant extends Container {
   readonly onEnterFrame = createEnchantedFrameLoop(this);
 
   //// Builder Methods
+
+  public startBreathing({ start = Math.random(), speed = 4 + Math.random(), skew = 0.0 } = {}) {
+    Object.assign(this.sprite, {
+      onEnterFrame: () => {
+        if (this.data.alive) {
+          this.sprite.position.y = this.sprite.texture.height * 0.45;
+
+          const breathTotal = start + speed * EnchantmentGlobals.timeTotal;
+          this.sprite.scale.y = 1.0 + 0.0125 * (skew ? Math.abs(Math.sin(breathTotal)) : Math.sin(breathTotal));
+          this.sprite.skew.x = skew * Math.cos(breathTotal);
+        } else {
+          this.sprite.scale.y = 0.9;
+        }
+      },
+    });
+  }
 
   private intializeAnimationReactors() {
     const { status } = this.data;
@@ -208,9 +218,9 @@ class StatusEffectIndicators extends Container {
     const { displayPriority, impactAlignment } = StatusEffectBlueprints[key];
 
     function getColors(key: StatusEffectKey) {
-      if (key === 'health') return [0x70c050, 0x107010, 0x105010];
-      if (key === 'block') return [0x4050f0, 0x101090];
-      
+      if (key === "health") return [0x70c050, 0x107010, 0x105010];
+      if (key === "block") return [0x4050f0, 0x101090];
+
       if (impactAlignment === StatusEffectImpactAlignment.NEUTRAL) return [0x4050f0, 0x101090];
       if (impactAlignment === StatusEffectImpactAlignment.POSITIVE) return [0x40c0f0, 0x106090];
       if (impactAlignment === StatusEffectImpactAlignment.NEGATIVE) return [0xf04040, 0x901010];

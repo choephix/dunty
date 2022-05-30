@@ -53,6 +53,10 @@ export async function resolveCombatEncounter() {
     for (const [index, char] of state.combatants.entries()) {
       const unit = new VCombatant(char);
       unit.setRightSide(leftSide);
+      unit.startBreathing({
+        speed: leftSide ? 4 + Math.random() : 2,
+        skew: leftSide ? 0.04 : 0.0,
+      });
 
       const ymul = index - (state.combatants.length - 1) / 2;
       unit.position.set(centerUnitPosition.x + sideMul * index * 90, centerUnitPosition.y - ymul * 300 + sideMul * 80);
