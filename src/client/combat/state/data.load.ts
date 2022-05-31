@@ -1,6 +1,6 @@
 import { __window__ } from "@debug/__window__";
 import Airtable from "airtable";
-import { Card, CardTarget } from "./game";
+import { Card, CardTarget } from "./CombatState";
 
 Airtable.configure({ endpointUrl: "https://api.airtable.com", apiKey: "key2I1RjdmmcXn495" });
 const base = Airtable.base("appHBTWLkIxW5MnWu");
