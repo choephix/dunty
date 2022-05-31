@@ -1,4 +1,5 @@
 import { GameSingletons } from "@client/core/GameSingletons";
+import { __DEBUG__ } from "@client/debug/URL_PARAMS";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
@@ -17,11 +18,14 @@ export class VScene extends Container {
   constructor() {
     super();
 
-    const border = new Graphics();
-    border.lineStyle(4, 0xffffff);
-    border.drawRect(0, 0, this.designWidth, this.designHeight);
-    border.alpha = 0.01;
-    this.addChild(border);
+    if (__DEBUG__) {
+      const border = new Graphics();
+      border.lineStyle(4, 0xffffff);
+      border.drawRect(0, 0, this.designWidth, this.designHeight);
+      border.alpha = 0.05;
+      border.zIndex = Number.MAX_SAFE_INTEGER;
+      this.addChild(border);
+    }
   }
 
   onEnterFrame() {

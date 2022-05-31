@@ -1,4 +1,5 @@
 import { GameSingletons } from "@client/core/GameSingletons";
+import { __DEBUG__ } from "@client/debug/URL_PARAMS";
 import { BLEND_MODES } from "@pixi/constants";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
@@ -66,11 +67,13 @@ export class VCombatScene extends Container {
 
     this.ln.visible = false;
 
-    const border = new Graphics();
-    border.lineStyle(4, 0xffffff);
-    border.drawRect(0, 0, this.designWidth, this.designHeight);
-    border.alpha = 0.05;
-    this.addChild(border);
+    if (__DEBUG__) {
+      const border = new Graphics();
+      border.lineStyle(4, 0xffffff);
+      border.drawRect(0, 0, this.designWidth, this.designHeight);
+      border.alpha = 0.05;
+      this.addChild(border);
+    }
   }
 
   onEnterFrame() {
