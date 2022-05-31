@@ -18,6 +18,8 @@ export class VScene extends Container {
   constructor() {
     super();
 
+    this.sortableChildren = true;
+
     if (__DEBUG__) {
       const border = new Graphics();
       border.lineStyle(4, 0xffffff);

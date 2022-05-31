@@ -1,32 +1,20 @@
+import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
 import { __DEBUG__ } from "@client/debug/URL_PARAMS";
 import { BLEND_MODES } from "@pixi/constants";
-import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { Sprite } from "@pixi/sprite";
 import { TilingSprite } from "@pixi/sprite-tiling";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
-
-// const T_BACKDROP = `https://public.cx/dunty/bg-1080x1920/gb60.jpg`;
 
 const BACKDROP_PRESETS = [
   [`https://public.cx/dunty/bg-1920x1920/4.jpg`, 0xc0d0f0, true, BLEND_MODES.SUBTRACT, 0xffffff, 0.2] as const, // Slope
   [`https://public.cx/3/bg/grid2.webp`, 0x404050, true, BLEND_MODES.ADD, 0xf03030, 0.3] as const, // Grid
 ];
 
-const DESIGN_SPECS = {
-  width: 1080,
-  height: 1920,
-};
-
-export class VCombatScene extends Container {
-  readonly designWidth = DESIGN_SPECS.width;
-  readonly designHeight = DESIGN_SPECS.height;
-
+export class VCombatScene extends VScene {
   readonly backdrop;
   readonly ln;
-
-  readonly tweeener = new TemporaryTweeener(this);
 
   constructor() {
     super();
@@ -66,42 +54,5 @@ export class VCombatScene extends Container {
     }
 
     this.ln.visible = false;
-
-    if (__DEBUG__) {
-      const border = new Graphics();
-      border.lineStyle(4, 0xffffff);
-      border.drawRect(0, 0, this.designWidth, this.designHeight);
-      border.alpha = 0.05;
-      this.addChild(border);
-    }
-  }
-
-  onEnterFrame() {
-    const app = GameSingletons.getPixiApplicaiton();
-    const SCALE = Math.min(app.screen.width / this.designWidth, app.screen.height / this.designHeight);
-    this.scale.set(SCALE);
-    this.position.set(
-      0.5 * (app.screen.width - this.designWidth * SCALE),
-      0.5 * (app.screen.height - this.designHeight * SCALE)
-    );
-
-    this.ln.tilePosition.y -= 20;
-  }
-
-  // addChildAtFractionalPosition(child: Sprite, x: number, y: number) {
-  //   child.position.copyFrom(this.getFractionalPosition(x, y));
-  //   this.addChild(child);
-  // }
-
-  getFractionalPosition(x: number, y: number) {
-    return { x: x * this.designWidth, y: y * this.designHeight };
-  }
-
-  playShowAnimation() {
-    return this.tweeener.from(this, { alpha: 0, duration: 0.5 });
-  }
-
-  playHideAnimation() {
-    return this.tweeener.to(this, { alpha: 0, duration: 1.1 });
   }
 }
