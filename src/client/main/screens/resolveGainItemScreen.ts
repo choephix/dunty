@@ -1,6 +1,6 @@
 import { VConsumableItem } from "@client/combat/display/ui/ConsumablesList";
 import { ConsumableItemBlueprints } from "@client/combat/state/ConsumableItemBlueprints";
-import { UserCrossCombatData } from "@client/combat/state/data";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 import { FontFamily } from "@client/common/display/constants/FontFamily";
 import { waitForDocumentClick } from "@client/common/display/utils/waitForDocumentClick";
 import { VScene } from "@client/common/display/VScene";

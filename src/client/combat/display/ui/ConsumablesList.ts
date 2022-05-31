@@ -1,6 +1,6 @@
 import { Combat } from "@client/combat/logic/Combat";
 import { ConsumableItem } from "@client/combat/state/ConsumableItemBlueprints";
-import { UserCrossCombatData } from "@client/combat/state/data";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 import { GameSingletons } from "@client/core/GameSingletons";
 import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";

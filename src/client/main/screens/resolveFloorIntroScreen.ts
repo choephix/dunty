@@ -2,7 +2,7 @@ import { waitForDocumentClick } from "@client/common/display/utils/waitForDocume
 import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
 import { FontFamily } from "@client/common/display/constants/FontFamily";
-import { UserCrossCombatData } from "@client/combat/state/data";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 import { __window__ } from "@debug/__window__";
 import { Texture } from "@pixi/core";
 import { Sprite } from "@pixi/sprite";

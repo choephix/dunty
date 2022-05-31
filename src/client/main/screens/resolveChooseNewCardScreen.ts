@@ -1,5 +1,5 @@
 import { VCard } from "@client/combat/display/entities/VCard";
-import { UserCrossCombatData } from "@client/combat/state/data";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 import { generateRandomPlayerCard } from "@client/combat/state/StuffFactory";
 import { FontFamily } from "@client/common/display/constants/FontFamily";
 import { VScene } from "@client/common/display/VScene";

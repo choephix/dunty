@@ -1,4 +1,4 @@
-import { UserCrossCombatData } from "@client/combat/state/data";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 import { Container } from "@pixi/display";
 import { Text } from "@pixi/text";
 import FontFaceObserver from "fontfaceobserver";

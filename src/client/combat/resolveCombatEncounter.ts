@@ -6,9 +6,10 @@ import { CurrentFloorIndicator } from "@client/combat/display/ui/CurrentFloorInd
 import { EndTurnButton } from "@client/combat/display/ui/EndTurnButton";
 import { HandBlockerBlock } from "@client/combat/display/ui/HandBlockerBlock";
 import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup } from "@client/combat/state/CombatState";
-import { getFloorConfig, UserCrossCombatData } from "@client/combat/state/data";
 import { generateBloatCard } from "@client/combat/state/StuffFactory";
 import { GameSingletons } from "@client/core/GameSingletons";
+import { getFloorConfig } from "@client/run/data";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 import { CurrentSelectionHelper } from "@client/sdk/CurrentSelectionHelper";
 import { drawRect } from "@debug/utils/drawRect";
 import { __window__ } from "@debug/__window__";

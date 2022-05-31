@@ -1,4 +1,3 @@
-import { UserCrossCombatData } from "@client/combat/state/data";
 import { __FLOOR__ } from "@client/debug/URL_PARAMS";
 import { Application } from "@pixi/app";
 import { delay } from "@sdk/utils/promises";
@@ -7,6 +6,7 @@ import { resolveFloorIntroScreen } from "./screens/resolveFloorIntroScreen";
 import { resolveGameOverScreen } from "./screens/resolveGameOverScreen";
 import { resolveVictoryScreen } from "./screens/resolveVictoryScreen";
 import { resolveTitleScreen } from "./screens/resolveTitleScreen";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 
 export async function main(app: Application) {
   await delay(0.5);

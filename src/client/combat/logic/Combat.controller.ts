@@ -3,7 +3,7 @@ import { range } from "@sdk/utils/range";
 import { Card, CardPileType, Combatant, CombatantStatus, CombatGroup } from "@client/combat/state/CombatState";
 import { generateDaggerCard } from "@client/combat/state/StuffFactory";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "@client/combat/state/StatusEffectBlueprints";
-import { FloorConfig, UserCrossCombatData } from "../state/data";
+import { FloorConfig, UserCrossCombatData } from "../../run/data";
 import { CombatDriver } from "./CombatDriver";
 
 /**
