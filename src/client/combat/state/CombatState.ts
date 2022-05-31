@@ -62,8 +62,8 @@ export class Combatant {
   name?: string;
   group!: CombatGroup;
 
-  characterId: string = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
-  textureId: string = `https://public.cx/mock/sugimori/${this.characterId}.png`;
+  characterId: string;
+  textureId: string;
 
   // State
 
@@ -119,7 +119,10 @@ export class Combatant {
     return this.status.health > 0;
   }
 
-  constructor(initialStatus: Partial<CombatantStatus> = {}) {
+  constructor(initialStatus: Partial<CombatantStatus> = {}, characterId = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT)) {
+    this.characterId = characterId;
+    this.textureId = `https://public.cx/mock/sugimori/${this.characterId}.png`;
+
     Object.assign(this.status, initialStatus);
   }
 

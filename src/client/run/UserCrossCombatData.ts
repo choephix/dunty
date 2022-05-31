@@ -1,6 +1,8 @@
+import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@client/combat/display/entities/VCombatant.textures";
 import { ConsumableItem } from "@client/combat/state/ConsumableItemBlueprints";
 import { CardPools } from "@client/run/CardPools";
 import { __window__ } from "@debug/__window__";
+import { getRandomItemFrom } from "@sdk/helpers/arrays";
 
 const PLAYER_HEALTH = 3;
 
@@ -15,6 +17,10 @@ export class UserCrossCombatData {
   readonly deck = CardPools.playerStartingCards.map(c => Object.create(c));
 
   readonly consumables = new Array<ConsumableItem>();
+
+  //// //// //// ////
+
+  playerCharacterId = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
 }
 
 export module UserCrossCombatData {

@@ -8,7 +8,7 @@ import { HandBlockerBlock } from "@client/combat/display/ui/HandBlockerBlock";
 import { Card, CardTarget, Combatant, CombatantStatus, CombatGroup } from "@client/combat/state/CombatState";
 import { generateBloatCard } from "@client/combat/state/StuffFactory";
 import { GameSingletons } from "@client/core/GameSingletons";
-import { getFloorConfig } from "@client/run/data";
+import { getFloorConfig } from "@client/run/FloorConfig";
 import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 import { CurrentSelectionHelper } from "@client/sdk/CurrentSelectionHelper";
 import { drawRect } from "@debug/utils/drawRect";

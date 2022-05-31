@@ -3,8 +3,9 @@ import { range } from "@sdk/utils/range";
 import { Card, CardPileType, Combatant, CombatantStatus, CombatGroup } from "@client/combat/state/CombatState";
 import { generateDaggerCard } from "@client/combat/state/StuffFactory";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "@client/combat/state/StatusEffectBlueprints";
-import { FloorConfig, UserCrossCombatData } from "../../run/data";
+import { FloorConfig } from "../../run/FloorConfig";
 import { CombatDriver } from "./CombatDriver";
+import { UserCrossCombatData } from "@client/run/UserCrossCombatData";
 
 /**
  * Commoon actions and actions steps.
@@ -19,7 +20,7 @@ export class CombatController extends CombatDriver {
     groupA.isPlayer = true;
 
     {
-      const playerCombatant = new Combatant({ health: userRunData.health });
+      const playerCombatant = new Combatant({ health: userRunData.health }, userRunData.playerCharacterId);
       playerCombatant.name = "PLAYER";
       playerCombatant.handReplenishCount = userRunData.handReplenishCount;
       playerCombatant.energyReplenishCount = userRunData.energyReplenishCount;
