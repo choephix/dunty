@@ -3,6 +3,7 @@ import { GameSingletons } from "@client/core/GameSingletons";
 import { BLEND_MODES } from "@pixi/constants";
 import { Sprite } from "@pixi/sprite";
 import { TilingSprite } from "@pixi/sprite-tiling";
+import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 
 const BACKDROP_PRESETS = [
   [`https://public.cx/dunty/bg-1920x1920/4.jpg`, 0xc0d0f0, true, BLEND_MODES.SUBTRACT, 0xffffff, 0.2] as const, // Slope
@@ -17,10 +18,10 @@ export class VCombatScene extends VScene {
     super();
 
     const BACKDROP_PRESET_INDEX = 0;
+    const [backdropTextureId, backdropTint, backdropStretch, lnBlendMode, lnTint, lnAlpha] =
+      BACKDROP_PRESETS[BACKDROP_PRESET_INDEX];
 
     {
-      const [backdropTextureId, backdropTint, backdropStretch, lnBlendMode, lnTint, lnAlpha] =
-        BACKDROP_PRESETS[BACKDROP_PRESET_INDEX];
       this.backdrop = Sprite.from(backdropTextureId);
       this.backdrop.anchor.set(0.5);
       this.backdrop.position.set(this.designWidth / 2, this.designHeight / 2);
@@ -39,17 +40,25 @@ export class VCombatScene extends VScene {
           }
         },
       });
-
-      const lnTextureId = "https://public.cx/mock/ln2.jpg";
-      this.ln = TilingSprite.from(lnTextureId, { width: this.designWidth, height: this.designHeight });
-      this.ln.blendMode = lnBlendMode;
-      this.ln.tint = lnTint;
-      this.ln.scale.y = 2;
-      this.ln.tileScale.y = 4;
-      this.ln.alpha = lnAlpha;
-      this.addChild(this.ln);
     }
 
-    this.ln.visible = false;
+    {
+      this.ln = this.addStreakyEffect({ lnBlendMode, lnTint, lnAlpha });
+      this.ln.visible = false;
+    }
+  }
+
+  addStreakyEffect({ lnBlendMode = BLEND_MODES.SUBTRACT, lnTint = 0x808080, lnAlpha = 1.0 } = {}) {
+    const lnTextureId = "https://public.cx/mock/ln2.jpg";
+    const sprite = TilingSprite.from(lnTextureId, { width: this.designWidth, height: this.designHeight });
+    sprite.blendMode = lnBlendMode;
+    sprite.tint = lnTint;
+    sprite.scale.y = 2;
+    sprite.tileScale.y = 10;
+    sprite.alpha = lnAlpha;
+    this.addChild(sprite);
+    return Object.assign(sprite, {
+      onEnterFrame: () => (sprite.tilePosition.y -= EnchantmentGlobals.timeDelta60 * 80),
+    });
   }
 }
