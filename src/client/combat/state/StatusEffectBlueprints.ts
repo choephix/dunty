@@ -40,7 +40,8 @@ const __StatusEffectBlueprints = {
   reflect: {
     emoji: "⮎",
     expiryType: StatusEffectExpiryType.RESET_BEFORE_TURN,
-    description: "Reflect up to X blocked damage back to attacker.",
+    // description: "Reflect up to X blocked damage back to attacker.",
+    description: "Reflect all damage back to attacker.",
     displayName: "Reflect",
     impactAlignment: StatusEffectImpactAlignment.POSITIVE,
   },
