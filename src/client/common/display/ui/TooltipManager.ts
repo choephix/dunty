@@ -118,10 +118,10 @@ export class TooltipManager {
     const mousePosition = interaction.mouse.global;
 
     const getDefaultHorizontalAnchor = () => {
-      return (mousePosition.x / app.view.width) * 2 - 1;
+      return mousePosition.x / (app.view.width / app.renderer.resolution) * 2 - 1;
     };
     const getDefaultVerticalAnchor = () => {
-      return mousePosition.y > app.view.height * 0.9 ? -1 : 1;
+      return mousePosition.y > (app.view.height / app.renderer.resolution) * 0.9 ? -1 : 1;
     };
 
     const { horizontalAlign = getDefaultHorizontalAnchor(), verticalAlign = getDefaultVerticalAnchor() } = options;

@@ -19,7 +19,7 @@ export async function resolveVictoryScreen() {
 
   await resolveCongrats(vscene);
 
-  if (UserCrossCombatData.current.currentFloor % 4 === 2) {
+  if (UserCrossCombatData.current.currentFloor % 3 === 2) {
     await resolveGainItemScreen();
   }
 
