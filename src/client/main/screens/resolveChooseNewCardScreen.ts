@@ -5,7 +5,7 @@ import { FontFamily } from "@client/common/display/constants/FontFamily";
 import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
-import { createAnimatedButtonBehavior } from "@game/asorted/createAnimatedButtonBehavior";
+import { createAnimatedButtonBehavior } from "@sdk-pixi/asorted/createAnimatedButtonBehavior";
 import { Text } from "@pixi/text";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";

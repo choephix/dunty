@@ -1,4 +1,4 @@
-import { TooltipManager } from "@client/common/display/ui/TooltipManager";
+import { TooltipManager } from "@sdk-pixi/TooltipManager";
 import { Application } from "@pixi/app";
 
 let bucket: ReturnType<typeof createGameSingletonsBucket> = null!;

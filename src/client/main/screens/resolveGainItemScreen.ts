@@ -6,7 +6,7 @@ import { waitForDocumentClick } from "@client/common/display/utils/waitForDocume
 import { VScene } from "@client/common/display/VScene";
 import { GameSingletons } from "@client/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
-import { spawnSpriteWave } from "@game/asorted/animations/spawnSpriteWave";
+import { spawnSpriteWave } from "@sdk-pixi/asorted/animations/spawnSpriteWave";
 import { BLEND_MODES } from "@pixi/constants";
 import { Texture } from "@pixi/core";
 import { Text } from "@pixi/text";

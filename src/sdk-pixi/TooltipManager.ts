@@ -1,5 +1,5 @@
 import { GameSingletons } from "@client/core/GameSingletons";
-import { ToolTipComponent } from "@game/ui/popups/components/ToolTipComponent";
+import { ToolTipComponent } from "@sdk-pixi/ToolTipComponent";
 import { Container, DisplayObject } from "@pixi/display";
 import type { InteractionManager } from "@pixi/interaction";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";

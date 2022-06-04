@@ -1,5 +1,5 @@
 import { GameSingletons } from "@client/core/GameSingletons";
-import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
+import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
 import { Combat } from "./logic/Combat";
 
 export async function waitForWinner() {

@@ -2,7 +2,7 @@
   "include": ["src", "vite.config.ts"],
   "compilerOptions": {
     "declaration": true,
-    "module": "commonjs",
+    "module": "es2020",
     "moduleResolution": "node",
     "outDir": "dist",
     "sourceMap": true,

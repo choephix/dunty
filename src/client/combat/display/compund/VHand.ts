@@ -1,5 +1,5 @@
 import { Card } from "@client/combat/state/CombatState";
-import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
+import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
 import { Container } from "@pixi/display";
 import { buttonizeDisplayObject } from "@sdk-pixi/ui-helpers/buttonizeDisplayObject";
 import { VCard } from "@client/combat/display/entities/VCard";

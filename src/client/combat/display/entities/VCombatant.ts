@@ -8,7 +8,7 @@ import {
   StatusEffectKey,
 } from "@client/combat/state/StatusEffectBlueprints";
 import { __VERBOSE__ } from "@client/debug/URL_PARAMS";
-import { createEnchantedFrameLoop } from "@game/asorted/createEnchangedFrameLoop";
+import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
