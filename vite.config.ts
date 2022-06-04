@@ -17,7 +17,7 @@ const alias = getDirectories("./src").map(dir => {
 });
 
 export default defineConfig({
-  root: "src/surface",
+  root: "src/client",
   resolve: { alias },
   base: "/www/dunty/",
   build: {

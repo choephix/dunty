@@ -1,4 +1,4 @@
-import "@client/index.css";
+import "./index.css";
 
 import { Application } from "@pixi/app";
 

@@ -1,4 +1,4 @@
-import { GameSingletons } from "@client/core/GameSingletons";
+import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { ToolTipComponent } from "@sdk-pixi/ToolTipComponent";
 import { Container, DisplayObject } from "@pixi/display";
 import type { InteractionManager } from "@pixi/interaction";
