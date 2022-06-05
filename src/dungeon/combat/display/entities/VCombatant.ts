@@ -19,6 +19,7 @@ import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 import { FontFamily } from "@dungeon/common/display/constants/FontFamily";
 import { Combat } from "@dungeon/combat/logic/Combat";
+import { spawnSpriteWave } from "@sdk-pixi/asorted/animations/spawnSpriteWave";
 
 export class VCombatant extends Container {
   highlight;
@@ -394,11 +395,19 @@ class IntentionIndicators extends Container {
   }
 
   private animateInNewChildren() {
-    for (const [_, sprite] of this.sprites) {
+    for (const [card, sprite] of this.sprites) {
       if (sprite.isNew) {
         sprite.isNew = false;
         const tweeener = new TemporaryTweeener(sprite);
         tweeener.from(sprite, { pixi: { scale: 0 }, ease: "back.out" });
+         
+        const waveColor = card.type === "atk" ? 0xf02020 : card.type === "def" ? 0x70b0f0 : 0x00ffff;
+        const fx = spawnSpriteWave(
+          "https://public.cx/3/radial-4.png",
+          { pixi: { scale: 2 }, duration: 2 },
+          { scale: 0, tint: waveColor, blendMode: BLEND_MODES.ADD }
+        );
+        return sprite.addChild(fx);
       }
     }
   }

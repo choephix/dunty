@@ -2,7 +2,9 @@ import { Texture } from "@pixi/core";
 import { Sprite } from "@pixi/sprite";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 
-export function spawnSpriteWave<T extends Sprite, TMods extends Partial<T> = {}>(
+type TModBase<T> = Partial<Omit<T, "scale"> & { scale: number }>;
+
+export function spawnSpriteWave<T extends Sprite, TMods extends TModBase<T> = {}>(
   textureId: string,
   tweenVars?: gsap.TweenVars,
   mods?: TMods
@@ -26,9 +28,14 @@ export function spawnSpriteWave<T extends Sprite, TMods extends Partial<T> = {}>
       mods.parent.addChild(sprite);
       delete mods.parent;
     }
+    if (mods.scale) {
+      sprite.scale.set(mods.scale);
+      delete mods.scale;
+    }
     Object.assign(sprite, mods);
   }
 
-  return Object.assign(sprite, { tween });
-  // return sprite as T & TMods;
+  const result = Object.assign(sprite, { tween }) as any as typeof sprite & Omit<TMods, "scale">;
+  
+  return result;
 }
