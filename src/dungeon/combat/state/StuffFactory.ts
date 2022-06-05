@@ -1,5 +1,6 @@
 import { Card, CardPileType, CardTarget, Combatant, CombatantStatus } from "@dungeon/combat/state/CombatState";
 import { StatusEffectBlueprints, StatusEffectImpactAlignment } from "@dungeon/combat/state/StatusEffectBlueprints";
+import { createRandomizedFactory } from "@sdk/createRandomizedFactory";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import { Combat } from "../logic/Combat";
@@ -39,65 +40,60 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
   };
 }
 
-export function generateRandomPlayerCard(): Card {
-  return getRandomItemFrom<Card>([
-    // generateStatusEffectCard("stunned"),
-    // generateStatusEffectCard("frozen"),
-    { cost: randomIntBetweenIncluding(0, 3), type: "atk", value: 1, target: CardTarget.ALL_ENEMIES },
-    { cost: randomIntBetweenIncluding(0, 3), type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
-    { cost: randomIntBetweenIncluding(0, 3), type: "def", value: 2, target: CardTarget.SELF },
-    { cost: randomIntBetweenIncluding(0, 3), type: "def", value: 3, target: CardTarget.SELF },
-    { cost: randomIntBetweenIncluding(0, 3), type: "func", mods: { health: 2 }, target: CardTarget.SELF },
-    generateStatusEffectCard(),
-    generateStatusEffectCard(),
-    generateStatusEffectCard(),
-  ]);
-}
-
-export function generateRandomEnemyCard(): Card {
-  return getRandomItemFrom<Card>([
-    { cost: 1, type: "atk", value: 1, target: CardTarget.TARGET_ENEMY },
-    { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
-    { cost: 1, type: "def", value: 2, target: CardTarget.SELF },
-    // generateStatusEffectCard(),
-    // generateStatusEffectCard(),
-    // generateStatusEffectCard(),
-    // generateStatusEffectCard(),
-    // generateStatusEffectCard(),
-    // generateStatusEffectCard(),
-    // generateStatusEffectCard("frozen"),
-  ]);
-}
+export const generateRandomPlayerCard = createRandomizedFactory<() => Card>([
+  [
+    10,
+    () => {
+      const pow = randomIntBetweenIncluding(0, 3);
+      return { cost: pow, type: "atk", value: 1 + pow * 2, target: CardTarget.TARGET_ENEMY };
+    },
+  ],
+  [
+    10,
+    () => {
+      const pow = randomIntBetweenIncluding(0, 3);
+      return { cost: pow, type: "def", value: 2 + pow * 2, target: CardTarget.SELF };
+    },
+  ],
+  [
+    5,
+    () => {
+      const pow = randomIntBetweenIncluding(0, 3);
+      return { cost: pow, type: "func", mods: { health: 1 + pow * 2 }, target: CardTarget.SELF };
+    },
+  ],
+  [20, generateStatusEffectCard],
+]);
 
 function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card {
-  const ignore = ["cold", "oiled", "warm", "wet", "taunt"];
+  const ignore = ["cold", "oiled", "warm", "wet", "taunt", "health", "block"];
 
   const xMap = {
-    health: 2,
-    block: 2,
-    parry: 2,
-    reflect: 2,
-    retaliation: 2,
-    protection: 2,
-    brittle: 2,
-    exposed: 2,
-    doomed: 2,
-    leech: 2,
-    regeneration: 3,
-    strength: 2,
-    rage: 2,
-    fury: 2,
-    haste: 2,
-    tactical: 2,
-    daggers: 2,
+    // health: 1,
+    // block: 1,
+    parry: 1,
+    reflect: 1,
+    retaliation: 1,
+    protection: 1,
+    brittle: 1,
+    exposed: 1,
+    doomed: 1,
+    leech: 1,
+    strength: 1,
+    rage: 1,
+    fury: 1,
+    haste: 1,
+    tactical: 1,
+    daggers: 1,
     defensive: 1,
-    weak: 2,
-    burning: 3,
-    poisoned: 3,
-    bleeding: 3,
-    stunned: 2,
-    frozen: 2,
-  }
+    weak: 1,
+    stunned: 1,
+    frozen: 1,
+    burning: 2,
+    poisoned: 2,
+    bleeding: 2,
+    regeneration: 2,
+  };
   console.log(`generateStatusEffectCard`, statusProperty, xMap[statusProperty!]);
   const value = xMap[statusProperty!] || randomIntBetweenIncluding(1, 3, 2);
 
@@ -116,5 +112,7 @@ function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card 
     ]),
   };
 
-  return { cost: 1, type: "func", mods: { [key]: value }, target: TARGET_MAP[impactAlignment] || CardTarget.ALL };
+  const pow = randomIntBetweenIncluding(0, 3);
+
+  return { cost: pow, type: "func", mods: { [key]: 1 + pow * value }, target: TARGET_MAP[impactAlignment] || CardTarget.ALL };
 }
