@@ -61,4 +61,9 @@ export class VCombatScene extends VScene {
       onEnterFrame: () => (sprite.tilePosition.y -= EnchantmentGlobals.timeDelta60 * 80),
     });
   }
+
+  focusOn(target: number) {
+    
+
+  }
 }

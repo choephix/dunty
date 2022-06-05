@@ -42,27 +42,34 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
 
 export const generateRandomPlayerCard = createRandomizedFactory<() => Card>([
   [
-    10,
+    8,
     () => {
       const pow = randomIntBetweenIncluding(0, 3);
       return { cost: pow, type: "atk", value: 1 + pow * 2, target: CardTarget.TARGET_ENEMY };
     },
   ],
   [
-    10,
+    4,
+    () => {
+      const pow = randomIntBetweenIncluding(0, 3);
+      return { cost: pow, type: "atk", value: 1 + pow, target: CardTarget.ALL_ENEMIES };
+    },
+  ],
+  [
+    8,
     () => {
       const pow = randomIntBetweenIncluding(0, 3);
       return { cost: pow, type: "def", value: 2 + pow * 2, target: CardTarget.SELF };
     },
   ],
   [
-    5,
+    4,
     () => {
       const pow = randomIntBetweenIncluding(0, 3);
       return { cost: pow, type: "func", mods: { health: 1 + pow * 2 }, target: CardTarget.SELF };
     },
   ],
-  [20, generateStatusEffectCard],
+  [24, generateStatusEffectCard],
 ]);
 
 function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card {
