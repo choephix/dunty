@@ -28,6 +28,7 @@ import { PixiPlugin } from "gsap/PixiPlugin";
 import { callOnEnterFrameRecursively } from "@sdk/pixi/enchant/oef/callOnEnterFrameRecursively";
 
 import { settings } from "@pixi/settings";
+import { initDebugging } from "@debug";
 settings.FILTER_RESOLUTION = window.devicePixelRatio || 1;
 
 PixiPlugin.registerPIXI(PIXI);
@@ -40,6 +41,8 @@ skipHello();
 
 const APP_DIV_ID = "app";
 const CANVAS_ID = "canvas";
+
+initDebugging()
 
 export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   const parentElement = document.getElementById(APP_DIV_ID) ?? document.body;
