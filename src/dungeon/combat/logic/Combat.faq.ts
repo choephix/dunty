@@ -31,7 +31,7 @@ export class CombatFAQ extends CombatDriver {
     return value;
   }
 
-  calculateAttackPower(card: Card, attacker?: Combatant, target?: Combatant) {
+  calculateAttackPower(card: Card, attacker?: Combatant) {
     if (card.type !== "atk") return 0;
 
     let value = card.value || 0;
@@ -42,18 +42,12 @@ export class CombatFAQ extends CombatDriver {
       value -= attacker.status.weak || 0;
     }
 
-    if (target) {
-      value += target.status.brittle || 0;
-      value *= target.status.exposed > 0 ? 2.0 : 1;
-      value *= target.status.doomed > 0 ? 2.0 : 1;
-    }
-
     return value;
   }
 
   calculateDamage(damage: number, target: Combatant, attacker: Combatant) {
     let blockedDamage = 0;
-    let reflectedDamage = 0;
+    let returnedDamage = 0;
     let directDamage = 0;
     let healingDamage = 0;
 
@@ -64,7 +58,7 @@ export class CombatFAQ extends CombatDriver {
       return {
         directDamage: 0,
         blockedDamage: 0,
-        reflectedDamage: damage,
+        returnedDamage: damage,
         healingDamage: 0,
       };
     }
@@ -77,14 +71,19 @@ export class CombatFAQ extends CombatDriver {
     }
 
     if (parry > 0) {
-      reflectedDamage = Math.min(parry, damage);
-      directDamage -= reflectedDamage;
+      returnedDamage = Math.min(parry, damage);
+      directDamage -= returnedDamage;
     }
 
-    reflectedDamage += retaliation;
+    returnedDamage += retaliation;
 
     if (directDamage < 0) {
       directDamage = 0;
+    } else {
+      const { brittle = 0, exposed = 0, doomed = 0 } = target.status;
+      directDamage += brittle || 0;
+      directDamage *= exposed > 0 ? 2.0 : 1;
+      directDamage *= doomed > 0 ? 2.0 : 1;
     }
 
     healingDamage = Math.min(directDamage, leech, health);
@@ -93,7 +92,7 @@ export class CombatFAQ extends CombatDriver {
       damage,
       directDamage,
       blockedDamage,
-      reflectedDamage,
+      returnedDamage,
       healingDamage,
       block,
       retaliation,
@@ -102,7 +101,7 @@ export class CombatFAQ extends CombatDriver {
       target,
     });
 
-    return { directDamage, blockedDamage, reflectedDamage, healingDamage };
+    return { directDamage, blockedDamage, returnedDamage, healingDamage };
   }
   
   getEnemiesSide(actor: Combatant) {

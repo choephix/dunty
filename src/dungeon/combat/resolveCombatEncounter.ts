@@ -172,12 +172,17 @@ export async function resolveCombatEncounter() {
     const { type, mods, onPlay: func } = card;
 
     if (type === "atk") {
-      const [target] = targets;
+      if (targets.length === 0) return;
 
-      await performAttack(target, actor, card);
+      if (targets.length === 1) {
+        const [target] = targets;
+        await performTargetedAttack(target, actor, card);
+      } else {
+        await performSpreadAttack(targets, actor, card);
+      }
 
-      if (!actor.alive) actor.group.combatants.splice(actor.group.combatants.indexOf(target), 1);
-      if (!target.alive) target.group.combatants.splice(target.group.combatants.indexOf(target), 1);
+      // if (!actor.alive) actor.group.combatants.splice(actor.group.combatants.indexOf(target), 1);
+      // if (!target.alive) target.group.combatants.splice(target.group.combatants.indexOf(target), 1);
 
       return;
     }
@@ -283,13 +288,14 @@ export async function resolveCombatEncounter() {
     target.status.health -= directDamage;
   }
 
-  async function performAttack(target: Combatant, attacker: Combatant, card: Card) {
-    const atkPwr = combat.faq.calculateAttackPower(card, attacker, target);
-    const { directDamage, blockedDamage, reflectedDamage, healingDamage } = combat.faq.calculateDamage(
-      atkPwr,
-      target,
-      attacker
-    );
+  async function performTargetedAttack(target: Combatant, attacker: Combatant, card: Card) {
+    const atkPwr = combat.faq.calculateAttackPower(card, attacker);
+    const {
+      directDamage,
+      blockedDamage,
+      returnedDamage: reflectedDamage,
+      healingDamage,
+    } = combat.faq.calculateDamage(atkPwr, target, attacker);
 
     console.log({ directDamage, blockedDamage, reflectedDamage, healingDamage });
 
@@ -299,13 +305,46 @@ export async function resolveCombatEncounter() {
     const vdef = combatantsDictionary.get(target)!;
     await VCombatantAnimations.attack(vatk);
 
+    if (healingDamage > 0) {
+      attacker.status.health += healingDamage;
+      await VCombatantAnimations.buffHealth(vatk);
+    }
+
     if (target.alive && reflectedDamage > 0) {
       const { directDamage, blockedDamage } = combat.faq.calculateDamage(reflectedDamage, attacker, target);
       dealDamage(attacker, directDamage, blockedDamage);
       await VCombatantAnimations.attack(vdef);
     }
+  }
 
-    if (healingDamage > 0) {
+  async function performSpreadAttack(targets: Combatant[], attacker: Combatant, card: Card) {
+    const atkPwr = combat.faq.calculateAttackPower(card, attacker);
+
+    const damageResults = targets.map(
+      target => [target, combat.faq.calculateDamage(atkPwr, target, attacker)] as const
+    );
+
+    const vatk = combatantsDictionary.get(attacker)!;
+    await VCombatantAnimations.attack(vatk);
+
+    for (const [target, { directDamage, blockedDamage }] of damageResults) {
+      dealDamage(target, directDamage, blockedDamage);
+    }
+
+    for (const [target, { returnedDamage }] of damageResults) {
+      if (!target.alive) continue;
+      if (!returnedDamage) continue;
+
+      const vdef = combatantsDictionary.get(target)!;
+      await VCombatantAnimations.attack(vdef);
+
+      const { directDamage, blockedDamage } = combat.faq.calculateDamage(returnedDamage, attacker, target);
+      dealDamage(attacker, directDamage, blockedDamage);
+    }
+
+    for (const [, { healingDamage }] of damageResults) {
+      if (!healingDamage) continue;
+
       attacker.status.health += healingDamage;
       await VCombatantAnimations.buffHealth(vatk);
     }
@@ -366,6 +405,8 @@ export async function resolveCombatEncounter() {
     const playerCombatant = combat.state.groupA.combatants[0];
     if (playerCombatant && combat.state.groupB.combatants.length) {
       for (const foe of combat.state.groupB.combatants) {
+        if (!foe.alive) continue;
+
         if (!playerCombatant.alive) break;
 
         activeCombatant.setCurrent(foe);
@@ -412,7 +453,7 @@ export async function resolveCombatEncounter() {
 
       for (const foe of combat.state.groupB.combatants) {
         const vfoe = combatantsDictionary.get(foe)!;
-        vfoe.thought = undefined;
+        vfoe.thought = foe.alive ? undefined : ' ';
         await delay(0.1);
       }
     }
