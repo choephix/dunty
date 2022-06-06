@@ -208,9 +208,16 @@ class StatusEffectIndicators extends Container {
 
     const spritesArray = Array.from(this.sprites.values());
     spritesArray.sort((a, b) => b.priority - a.priority);
+
+    const froms = spritesArray.map(child => [child, child.position.clone()] as const);
+
     arrangeInStraightLine(spritesArray, { vertical: true, alignment: [0.5, 1.0] });
 
-    this.pivot.y = this.height / this.scale.y;
+    new TemporaryTweeener(this).to(this, { pixi: { pivotY: this.height / this.scale.y }, duration: 0.15 });
+
+    froms.forEach(
+      ([child, { x, y }]) => !child.isNew && new TemporaryTweeener(child).from(child, { x, y, duration: 0.15 })
+    );
 
     this.animateInNewChildren();
   }
@@ -251,6 +258,7 @@ class StatusEffectIndicators extends Container {
 
     return Object.assign(label, {
       isNew: true,
+      from: { x: 0, y: 0 },
       key,
       value,
       priority: displayPriority,
@@ -287,9 +295,11 @@ class IntentionIndicators extends Container {
   }
 
   private afterUpdate() {
-    // this.children.reverse();
+    const froms = [...this.sprites.values()].map(child => [child, child.position.clone()] as const);
 
     arrangeInStraightLine(this.children, { vertical: true, alignment: [0.5, 1.0] });
+
+    froms.forEach(([child, { x, y }]) => !child.isNew && new TemporaryTweeener(child).from(child, { x, y }));
 
     this.animateInNewChildren();
   }
@@ -400,7 +410,7 @@ class IntentionIndicators extends Container {
         sprite.isNew = false;
         const tweeener = new TemporaryTweeener(sprite);
         tweeener.from(sprite, { pixi: { scale: 0 }, ease: "back.out" });
-         
+
         const waveColor = card.type === "atk" ? 0xf02020 : card.type === "def" ? 0x70b0f0 : 0x00ffff;
         const fx = spawnSpriteWave(
           "https://public.cx/3/radial-4.png",

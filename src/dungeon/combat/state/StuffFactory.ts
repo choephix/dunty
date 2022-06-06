@@ -28,9 +28,8 @@ export function generateBloatCard(key: "stunned" | "frozen"): Card {
     gotoAfterPlay: CardPileType.VOID,
     gotoAfterDiscard: CardPileType.VOID,
 
-    onDraw(actor: Combatant) {
-      actor.status[key] = -1;
-      if (actor.status[key] < 0) actor.status[key] = 0;
+    onDraw(actor: Combatant, combat: Combat) {
+      combat.ctrl.decrementStatus(actor, key);
     },
     onPlay(actor: Combatant) {
       Combat.current!.ctrl.drawCards(1, actor);
@@ -121,5 +120,10 @@ function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card 
 
   const pow = randomIntBetweenIncluding(0, 3);
 
-  return { cost: pow, type: "func", mods: { [key]: 1 + pow * value }, target: TARGET_MAP[impactAlignment] || CardTarget.ALL };
+  return {
+    cost: pow,
+    type: "func",
+    mods: { [key]: 1 + pow * value },
+    target: TARGET_MAP[impactAlignment] || CardTarget.ALL,
+  };
 }

@@ -23,6 +23,7 @@ import { spawnBling } from "./display/fx/bling";
 import { ConsumablesList } from "./display/ui/ConsumablesList";
 import { Combat } from "./logic/Combat";
 import { waitForWinner } from "./waitForWinner";
+import { StatusEffectBlueprints, StatusEffectExpiryType } from "./state/StatusEffectBlueprints";
 
 export async function resolveCombatEncounter() {
   const app = GameSingletons.getPixiApplicaiton();
@@ -191,7 +192,7 @@ export async function resolveCombatEncounter() {
       for (const target of targets) {
         await delay(0.1);
         const amountToAdd = combat.faq.calculateBlockPointsToAdd(card, actor);
-        target.status.block += amountToAdd;
+        combat.ctrl.changeStatus(target, "block", amountToAdd);
       }
 
       await delay(0.35);
@@ -209,15 +210,14 @@ export async function resolveCombatEncounter() {
       }
 
       if (mods) {
-        for (const [key, mod] of CombatantStatus.entries(mods)) {
+        for (const [key, delta] of CombatantStatus.entries(mods)) {
           for (const target of targets) {
             await delay(0.1);
 
-            target.status[key] += mod;
-            if (target.status[key] < 0) target.status[key] = 0;
+            combat.ctrl.changeStatus(target, key, delta);
 
             if (key === "stunned" || key === "frozen") {
-              for (const _ of range(mod)) target.cards.addCardTo(generateBloatCard(key), target.cards.drawPile);
+              for (const _ of range(delta)) target.cards.addCardTo(generateBloatCard(key), target.cards.drawPile);
             }
 
             await delay(0.1);
@@ -283,11 +283,6 @@ export async function resolveCombatEncounter() {
     return chosen;
   }
 
-  async function dealDamage(target: Combatant, directDamage: number, blockDamage: number) {
-    target.status.block -= blockDamage;
-    target.status.health -= directDamage;
-  }
-
   async function performTargetedAttack(target: Combatant, attacker: Combatant, card: Card) {
     const atkPwr = combat.faq.calculateAttackPower(card, attacker);
     const {
@@ -299,20 +294,20 @@ export async function resolveCombatEncounter() {
 
     console.log({ directDamage, blockedDamage, reflectedDamage, healingDamage });
 
-    dealDamage(target, directDamage, blockedDamage);
+    combat.ctrl.dealDamage(target, directDamage, blockedDamage);
 
     const vatk = combatantsDictionary.get(attacker)!;
     const vdef = combatantsDictionary.get(target)!;
     await VCombatantAnimations.attack(vatk);
 
     if (healingDamage > 0) {
-      attacker.status.health += healingDamage;
+      combat.ctrl.heal(attacker, healingDamage);
       await VCombatantAnimations.buffHealth(vatk);
     }
 
     if (target.alive && reflectedDamage > 0) {
       const { directDamage, blockedDamage } = combat.faq.calculateDamage(reflectedDamage, attacker, target);
-      dealDamage(attacker, directDamage, blockedDamage);
+      combat.ctrl.dealDamage(attacker, directDamage, blockedDamage);
       await VCombatantAnimations.attack(vdef);
     }
   }
@@ -328,7 +323,7 @@ export async function resolveCombatEncounter() {
     await VCombatantAnimations.attack(vatk);
 
     for (const [target, { directDamage, blockedDamage }] of damageResults) {
-      dealDamage(target, directDamage, blockedDamage);
+      combat.ctrl.dealDamage(target, directDamage, blockedDamage);
     }
 
     for (const [target, { returnedDamage }] of damageResults) {
@@ -339,13 +334,13 @@ export async function resolveCombatEncounter() {
       await VCombatantAnimations.attack(vdef);
 
       const { directDamage, blockedDamage } = combat.faq.calculateDamage(returnedDamage, attacker, target);
-      dealDamage(attacker, directDamage, blockedDamage);
+      combat.ctrl.dealDamage(attacker, directDamage, blockedDamage);
     }
 
     for (const [, { healingDamage }] of damageResults) {
       if (!healingDamage) continue;
 
-      attacker.status.health += healingDamage;
+      combat.ctrl.heal(attacker, healingDamage);
       await VCombatantAnimations.buffHealth(vatk);
     }
   }
@@ -453,7 +448,7 @@ export async function resolveCombatEncounter() {
 
       for (const foe of combat.state.groupB.combatants) {
         const vfoe = combatantsDictionary.get(foe)!;
-        vfoe.thought = foe.alive ? undefined : ' ';
+        vfoe.thought = foe.alive ? undefined : " ";
         await delay(0.1);
       }
     }

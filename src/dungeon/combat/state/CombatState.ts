@@ -1,5 +1,6 @@
 import { COMBATANT_TEXTURES_LOOKING_RIGHT } from "@dungeon/combat/display/entities/VCombatant.textures";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
+import { Combat } from "../logic/Combat";
 
 /**
  * Single instance of a combat encounter.
@@ -153,7 +154,7 @@ export interface Card {
   gotoAfterDiscard?: CardPileType;
 
   onPlay?: (actor: Combatant, targets?: Combatant[]) => void;
-  onDraw?: (actor: Combatant) => void;
+  onDraw?: (actor: Combatant, combat: Combat) => void;
 
   textureUrl?: string;
   description?: string;

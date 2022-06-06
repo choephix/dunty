@@ -2,10 +2,12 @@ import { map } from "@sdk/helpers/objects";
 
 export enum StatusEffectExpiryType {
   NULL,
-  DECREMENT_BEFORE_TURN,
-  RESET_BEFORE_TURN,
   RESET_AFTER_ENCOUNTER,
+  RESET_BEFORE_TURN,
+  DECREMENT_BEFORE_TURN,
+  RESET_AFTER_HURT,
   DECREMENT_AFTER_HURT,
+  SUBTRACT_HURT,
 }
 
 export enum StatusEffectImpactAlignment {
