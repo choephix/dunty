@@ -1,12 +1,32 @@
 import "@client/index.css";
 
 import { Application } from "@pixi/app";
-
-import { boot } from "@dungeon/core/boot";
-import { main } from "@dungeon/main/main";
-import { initializeGameSingletons } from "@dungeon/core/GameSingletons";
+import { boot } from "@sdk-pixi/core/boot";
 
 const __window__ = window as any;
+
+const greateApp = () => {
+  if (!__window__.APP) __window__.APP = boot();
+  return __window__.APP as Application;
+};
+
+const LAUNCHERS = {
+  async dungeon() {
+    const app = greateApp();
+
+    const { initializeGameSingletons } = await import("@dungeon/core/GameSingletons");
+    initializeGameSingletons(app);
+
+    const { main } = await import("@dungeon/main/main");
+    main(app);
+  },
+  async surface() {
+    const app = greateApp();
+
+    const { initializeSurfaceWorld } = await import("@surface/initializeSurfaceWorld");
+    initializeSurfaceWorld(app);
+  },
+};
 
 if (__window__.__DUNTY_INITIALIZED__) {
   console.warn(`An instance of the game already exists.`, __window__.main);
@@ -15,14 +35,6 @@ if (__window__.__DUNTY_INITIALIZED__) {
 
   __window__.__DUNTY_INITIALIZED__ = true;
 
-  const greateApp = () => {
-    if (!__window__.APP) __window__.APP = boot();
-    return __window__.APP as Application;
-  };
-
-  const app = greateApp();
-
-  initializeGameSingletons(app);
-
-  main(app);
+  // LAUNCHERS.dungeon();
+  LAUNCHERS.surface();
 }
