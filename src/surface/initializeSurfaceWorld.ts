@@ -175,7 +175,11 @@ export class TileBase extends Container {
       this.scale.y = 0.5;
 
       this.inner.texture = texture;
-      this.inner.scale.set(0.95);
+      // this.inner.scale.set(0.95);
+      
+      this.outline.scale.set(0.96);
+      this.inner.y -= 4;
+      this.inner.x -= 4;
     });
   }
 }

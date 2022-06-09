@@ -80,7 +80,7 @@ export function testTheTest() {
     points[1].x = interaction.mouse.global.x / app.renderer.view.width;
     points[1].y = interaction.mouse.global.y / app.renderer.view.height;
     spotlights.updateSpotlights(points);
-  }, 50);
+  }, 100);
 
   return spotlights;
 }
