@@ -23,6 +23,9 @@ const LAUNCHERS = {
   async surface() {
     const app = greateApp();
 
+    const { initializeGameSingletons } = await import("@dungeon/core/GameSingletons");
+    initializeGameSingletons(app);
+
     const { initializeSurfaceWorld } = await import("@surface/initializeSurfaceWorld");
     initializeSurfaceWorld(app);
   },

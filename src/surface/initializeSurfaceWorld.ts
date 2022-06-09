@@ -9,6 +9,7 @@ import { Viewport } from "pixi-viewport";
 import { gsap } from "gsap";
 import { BLEND_MODES } from "@pixi/constants";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
+import { testTheTest } from "./__experiments";
 
 const BASE = "https://public.cx/mock/surfaces/";
 const TILES = [
@@ -100,6 +101,8 @@ export function initializeSurfaceWorld(app: Application) {
   }
 
   __window__.tiles = viewport;
+
+  app.stage.addChild(testTheTest());
 }
 
 const TILE_SIZE = 128;
