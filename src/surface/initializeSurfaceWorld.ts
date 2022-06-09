@@ -27,11 +27,11 @@ const TILES = [
   "15178a6071d9423e95984aa0d766ecff.jpg",
   "246217a3a77e1425584e62a85c7a9f1f.jpg",
   "4e472ba64c599c02e2c090c282cc9a30.jpg", // rocks
-  "a89ef1e0c2150f88a29b41d691fa5dac.jpg",
+  "bb20a73666858391998efea343c2fdb8.jpg",
   "fb9aedbc837487559b0682add892d1a6.jpg",
-  "f0566f2cf7de8c6d134a2986e9cc0a96.jpg",
+  "af8753c5bbbb6310baad7b8f8d8847e1.jpg",
   "edae1e04b01a9c63e46b4060ac5e552a.jpg",
-  "20739dedf5a3baec10487205f509dbf6.jpg",
+  "fc8b4afdd3753a775e252514ddf1bf09.jpg",
   "bfec9c57d9f67f5d34336323a38aca41.jpg",
   "3767d2aaa55ae0afe5db1b75683293de.jpg",
   "1aeda412a19030b51ab42fc3e3da363b.jpg",
@@ -48,31 +48,53 @@ export function initializeSurfaceWorld(app: Application) {
   const tiles = new Array<Tile>();
 
   const GROUP_SIZE = 5;
+  const GR = Math.floor(GROUP_SIZE / 2);
   for (let [gx, gy] of range2D.fromToIncluding(-4, -4, 4, 4)) {
+    if (gx === 0 && gy === 0) {
+      for (let [dx, dy] of range2D.fromToIncluding(-GR, -GR, GR, GR)) {
+        const file = `79780337e003fd1cab5db4775c5516f8.jpg`;
+        const tile = new Tile(BASE + file);
+        viewport.addChild(tile);
 
-    if (gx === 0 && gy === 0) continue;
+        const ix = gx * GROUP_SIZE + dx;
+        const iy = gy * GROUP_SIZE + dy;
+        const p = worldToIsometricPosition(ix, iy);
+        tile.isDungeonTile = true;
+        tile.position.set(p.x * TILE_SIZE, p.y * TILE_SIZE);
+        tile.zIndex = tile.x + tile.y * 10;
 
-    const variety = 3;
-    const rand = randomInt(TILES.length - variety);
-    const tilePool = TILES.slice(rand, rand + variety);
+        tiles.push(tile);
+      }
+    } else {
+      const variety = 3;
+      const rand = randomInt(TILES.length - variety);
+      const tilePool = TILES.slice(rand, rand + variety);
 
-    const DXY = Math.floor(GROUP_SIZE / 2);
-    for (let [dx, dy] of range2D.fromToIncluding(-DXY, -DXY, DXY, DXY)) {
-      const file = getRandomItemFrom(tilePool);
-      const tile = new Tile(BASE + file);
-      viewport.addChild(tile);
+      for (let [dx, dy] of range2D.fromToIncluding(-GR, -GR, GR, GR)) {
+        const file = getRandomItemFrom(tilePool);
+        const tile = new Tile(BASE + file);
+        viewport.addChild(tile);
 
-      const ix = gx * GROUP_SIZE + dx;
-      const iy = gy * GROUP_SIZE + dy;
-      const p = worldToIsometricPosition(ix, iy);
-      tile.position.set(p.x * TILE_SIZE, p.y * TILE_SIZE);
-      tile.zIndex = tile.x + tile.y * 10;
+        const ix = gx * GROUP_SIZE + dx;
+        const iy = gy * GROUP_SIZE + dy;
+        const p = worldToIsometricPosition(ix, iy);
+        tile.position.set(p.x * TILE_SIZE, p.y * TILE_SIZE);
+        tile.zIndex = tile.x + tile.y * 10;
 
-      tiles.push(tile);
+        tiles.push(tile);
+      }
     }
   }
 
+  const dungeon = Sprite.from("https://public.cx/dunty/dungeon.png");
+  dungeon.position.set(0, -7);
+  dungeon.anchor.set(0.5);
+  dungeon.scale.set(0.735);
+  dungeon.zIndex = Number.MAX_SAFE_INTEGER;
+  viewport.addChild(dungeon);
+
   for (const tile of tiles) {
+    if (tile.isDungeonTile) continue;
     gsap.from(tile, {
       pixi: { pivotY: 100 },
       alpha: 0,
@@ -84,9 +106,11 @@ export function initializeSurfaceWorld(app: Application) {
 
   const holo = new TileHolo();
   holo.visible = false;
+  holo.zIndex = Number.MAX_SAFE_INTEGER;
   viewport.addChild(holo);
 
   for (const tile of tiles) {
+    if (tile.isDungeonTile) continue;
     const btn = tile.base.inner;
     btn.interactive = true;
     btn.buttonMode = true;
@@ -118,8 +142,7 @@ function worldToIsometricPosition(x: number, y: number) {
 export class Tile extends Container {
   base: TileBase;
 
-  // constructor(typeIndex: number) {
-    // this.base = new TileBase(BASE + TILES[typeIndex]);
+  isDungeonTile: boolean = false;
 
   constructor(textureURL: string) {
     super();
@@ -170,12 +193,13 @@ export class TileHolo extends Container {
     this.addChild(holo);
 
     const spawnHolo = async () => {
+      if (this.children.length > 40) return;
       const holo = Sprite.from(holoTextureId);
       holo.anchor.set(0.5);
       holo.tint = 0x00f0d0;
       holo.blendMode = BLEND_MODES.SCREEN;
       this.addChild(holo);
-      await gsap.to(holo, { y: -64, x: -64, alpha: 0, duration: 3.5, ease: 'power1.in' });
+      await gsap.to(holo, { y: -64, x: -64, alpha: 0, duration: 3.5, ease: "power1.in" });
       holo.destroy();
     };
 
