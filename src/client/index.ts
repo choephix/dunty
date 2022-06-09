@@ -38,6 +38,6 @@ if (__window__.__DUNTY_INITIALIZED__) {
 
   __window__.__DUNTY_INITIALIZED__ = true;
 
-  // LAUNCHERS.dungeon();
-  LAUNCHERS.surface();
+  LAUNCHERS.dungeon();
+  // LAUNCHERS.surface();
 }

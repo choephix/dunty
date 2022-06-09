@@ -58,3 +58,9 @@ export function createEnchantedFrameLoop<T extends EnchantableInstance>(this: T 
 
   return result;
 }
+
+export module createEnchantedFrameLoop {
+  export function andAssignTo<T extends EnchantableInstance>(target: T) {
+    return Object.assign(target, { onEnterFrame: createEnchantedFrameLoop(target) });
+  }
+}

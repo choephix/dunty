@@ -24,6 +24,10 @@ import { ConsumablesList } from "./display/ui/ConsumablesList";
 import { Combat } from "./logic/Combat";
 import { waitForWinner } from "./waitForWinner";
 import { StatusEffectBlueprints, StatusEffectExpiryType } from "./state/StatusEffectBlueprints";
+import { Spotlights } from "@surface/__experiments";
+import { BLEND_MODES } from "@pixi/constants";
+import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
+import { Point } from "@pixi/math";
 
 export async function resolveCombatEncounter() {
   const app = GameSingletons.getPixiApplicaiton();
@@ -475,6 +479,39 @@ export async function resolveCombatEncounter() {
       disableProgress: 1,
     }
   );
+
+  function addSpotlightEffect() {
+    const spotlights = createEnchantedFrameLoop.andAssignTo(new Spotlights());
+    spotlights.tint = 0x0;
+    spotlights.alpha = 0.6;
+    spotlights.onEnterFrame.watch(
+      () => activeCombatant.current,
+      combatant => {
+        if (!combatant || !combatant.alive) {
+          spotlights.visible = false;
+          return;
+        }
+
+        const vcombatant = combatantsDictionary.get(combatant)!;
+        const vcombatantGlobalPosition = vcombatant.toGlobal(new Point());
+        const vcombatantSpotlightProps = {
+          x: vcombatantGlobalPosition.x / window.innerWidth,
+          y: vcombatantGlobalPosition.y / window.innerHeight,
+          radius: 0.2,
+          lean: 1,
+        };
+        spotlights.visible = true;
+        spotlights.updateSpotlights([vcombatantSpotlightProps]);
+        console.log({
+          vcombatantGlobalPosition,
+          vcombatantSpotlightProps,
+        });
+      },
+      true
+    );
+    app.stage.addChild(spotlights);
+  }
+  // addSpotlightEffect();
 
   await delay(0.6);
 
