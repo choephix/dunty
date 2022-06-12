@@ -53,8 +53,6 @@ export function makeWatchService(ticker: ITicker) {
       const newValues = getValues();
       let changed = prevValues.length != newValues.length;
 
-      __window__.foo = [prevValues, newValues];
-
       if (!changed) {
         const len = newValues.length > prevValues.length ? newValues.length : prevValues.length;
         for (let i = 0; i < len; i++) {
