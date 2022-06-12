@@ -161,7 +161,7 @@ export class TileBase extends Container {
 
     this.outline = new Sprite();
     this.outline.anchor.set(0.5);
-    this.outline.tint = 0x909090;
+    this.outline.tint = 0xb0b0b0;
     this.addChild(this.outline);
 
     this.inner = new Sprite();
