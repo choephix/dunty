@@ -9,11 +9,10 @@ import { resolveTitleScreen } from "./screens/resolveTitleScreen";
 import { UserCrossCombatData } from "@dungeon/run/UserCrossCombatData";
 
 export async function main(app: Application) {
-  await delay(0.5);
-
   UserCrossCombatData.current.currentFloor = __FLOOR__;
-
+  
   if (__FLOOR__ === 1) {
+    await delay(0.5);
     await resolveTitleScreen();
     await delay(0.5);
   }
