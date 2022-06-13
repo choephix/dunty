@@ -98,13 +98,16 @@ export function initializeDungeonFloor(app: Application) {
         const dy = node.ry - otherNode.ry;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance > 380 + 5 * node.circleIndex) continue;
+        if (distance > 380 + 8 * node.circleIndex) continue;
 
-        g.lineStyle(16, 0x102040, 0.5);
+        //// Draw random arc between nodes
+        g.lineStyle(32, 0x202040, 0.25);
         g.moveTo(node.x, node.y);
         g.lineTo(otherNode.x, otherNode.y);
-
-        g.lineStyle(6, 0x204080, 0.35);
+        g.lineStyle(18, 0x202040, 0.35);
+        g.moveTo(node.x, node.y);
+        g.lineTo(otherNode.x, otherNode.y);
+        g.lineStyle(4, 0x202040, 0.8);
         g.moveTo(node.x, node.y);
         g.lineTo(otherNode.x, otherNode.y);
       }

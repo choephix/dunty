@@ -127,7 +127,7 @@ export class RegularNode extends Node {
   }
 
   setSelected(selected: boolean) {
-    gsap.to(this, { duration: 0.4, selectedness: selected ? 1 : 0, ease: "power1.out", overwrite: true });
+    gsap.to(this, { duration: 0.55, selectedness: selected ? 1 : 0, ease: "power1.out", overwrite: true });
   }
 }
 
