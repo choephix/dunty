@@ -10,11 +10,17 @@ import { gsap } from "gsap";
 import { BLEND_MODES } from "@pixi/constants";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
+import { EnchantmentCallbacksList } from "@sdk/pixi/enchant/core/EnchantmentCallbacksList";
+import { MultipleCallbacks } from "@sdk/MultipleCallbacks";
+import { createRandomizedFactory } from "@sdk/createRandomizedFactory";
 
 export class Node extends Container {
   circleIndex: number = 0;
   rayIndex: number = 0;
   fi: number = 0;
+  linkRange = 0;
+  rx = 0;
+  ry = 0;
 
   onEnterFrame() {
     this.rotation = -this.parent.rotation;
@@ -33,25 +39,40 @@ export class Node extends Container {
 export class RegularNode extends Node {
   readonly holos = new Array<Sprite & { visibility?: number }>();
 
+  readonly #setSelectedness = new MultipleCallbacks<(n: number) => void>();
+  _selectedness = 0;
+  set selectedness(value: number) {
+    this._selectedness = value;
+    this.#setSelectedness.callAll(this, value);
+  }
+  get selectedness() {
+    return this._selectedness;
+  }
+
+  static readonly getRandomIcon = createRandomizedFactory([
+    [2, () => "icon_skull"],
+    [1, () => "icon_swords"],
+    [1, () => "icon_shield"],
+    [1, () => "icon_storm"],
+    [1, () => "icon_star"],
+  ]);
+
   init() {
     {
       const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/ornament_wings.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.21);
       this.holos.push(sprite);
-
-      Object.assign(sprite, {
-        set visibility(value: number) {
-          sprite.alpha = value;
-        },
-      });
+      this.#setSelectedness.add(n => (sprite.alpha = n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.26 * n * n * n));
     }
-
+    
     {
       const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_silver.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.2);
       sprite.tint = 0x7080a0;
+      this.#setSelectedness.add(n => sprite.scale.set(0.2 + 0.05 * n));
     }
 
     {
@@ -61,59 +82,46 @@ export class RegularNode extends Node {
       sprite.tint = 0xf08010;
       sprite.blendMode = BLEND_MODES.ADD;
       this.holos.push(sprite);
-
-      Object.assign(sprite, {
-        set visibility(value: number) {
-          sprite.alpha = value;
-        },
-      });
+      this.#setSelectedness.add(n => (sprite.alpha = n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.2 + 0.05 * n));
     }
 
     // {
     //   const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/icon_swords.png"));
     //   sprite.anchor.set(0.5);
-    //   sprite.scale.set(1.4);
-    //   sprite.tint = 0x7080a0;
+    //   sprite.scale.set(1.3);
+    //   sprite.tint = 0xc0c0c0;
+    //   this.#setVisibility.add(n => {
+    //     sprite.alpha = n;
+    //     sprite.scale.set(1.3 * n * n * n * n);
+    //   });
     // }
 
+    const icon = RegularNode.getRandomIcon();
+
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/icon_skull.png"));
+      const sprite = this.addChild(Sprite.from(`https://public.cx/mock/ui/ranks-1/${icon}.png`));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.9);
       sprite.tint = 0xa0c0f0;
+      this.#setSelectedness.add(n => sprite.scale.set(0.9 + 0.2 * n));
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/icon_skull.png"));
+      const sprite = this.addChild(Sprite.from(`https://public.cx/mock/ui/ranks-1/${icon}.png`));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.9);
       sprite.blendMode = BLEND_MODES.SCREEN;
       this.holos.push(sprite);
-
-      Object.assign(sprite, {
-        set visibility(value: number) {
-          sprite.alpha = value;
-        },
-      });
+      this.#setSelectedness.add(n => (sprite.alpha = n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.9 + 0.2 * n));
     }
 
-    // {
-    //   const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/folo.png"));
-    //   sprite.anchor.set(0.5);
-    //   sprite.scale.set(0.61);
-    //   sprite.angle = 270;
-    //   sprite.blendMode = BLEND_MODES.ADD;
-    // }
+    this.selectedness = 0;
   }
 
   setSelected(selected: boolean) {
-    // this.holos.forEach((holo) => {
-    //   gsap.to(holo, { duration: 0.4, visibility: selected ? 1 : 0 });
-    // });
-
-    this.holos.forEach(holo => {
-      holo.visible = selected;
-    });
+    gsap.to(this, { duration: 0.4, selectedness: selected ? 1 : 0, ease: "power1.out", overwrite: true });
   }
 }
 
@@ -142,7 +150,7 @@ export class BossNode extends Node {
     {
       const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/wings_blue.png"));
       sprite.anchor.set(0.5, 0.589);
-      sprite.scale.set(0.25);
+      sprite.scale.set(0.255);
       sprite.tint = 0x909090;
     }
 
