@@ -38,8 +38,6 @@ export class Node extends Container {
 }
 
 export class RegularNode extends Node {
-  readonly holos = new Array<Sprite & { visibility?: number }>();
-
   readonly #setSelectedness = new MultipleCallbacks<(n: number) => void>();
   _selectedness = 0;
   set selectedness(value: number) {
@@ -60,16 +58,28 @@ export class RegularNode extends Node {
 
   init() {
     {
+      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/crown_blue.png"));
+      sprite.anchor.set(0.5, 1.375);
+      this.#setSelectedness.add(n => (sprite.alpha = n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.245 * n * n));
+    }
+
+    {
       const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/ornament_wings.png"));
-      sprite.anchor.set(0.5);
-      sprite.scale.set(0.21);
-      this.holos.push(sprite);
+      sprite.anchor.set(0.5, 0.43);
       this.#setSelectedness.add(n => (sprite.alpha = n));
       this.#setSelectedness.add(n => sprite.scale.set(0.31 * n * n));
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_bronze.png"));
+      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/ribbon_blue.png"));
+      sprite.anchor.set(0.5, -0.55);
+      this.#setSelectedness.add(n => (sprite.alpha = n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.25 * n * n * n));
+    }
+
+    {
+      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_gold.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.25);
       this.#setSelectedness.add(n => sprite.scale.set(0.31 * n));
@@ -87,21 +97,9 @@ export class RegularNode extends Node {
       const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_gold.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.2);
-      this.holos.push(sprite);
       this.#setSelectedness.add(n => (sprite.alpha = n));
       this.#setSelectedness.add(n => sprite.scale.set(0.2 + 0.05 * Ease.OutSine(n)));
     }
-
-    // {
-    //   const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/icon_swords.png"));
-    //   sprite.anchor.set(0.5);
-    //   sprite.scale.set(1.3);
-    //   sprite.tint = 0xc0c0c0;
-    //   this.#setVisibility.add(n => {
-    //     sprite.alpha = n;
-    //     sprite.scale.set(1.3 * n * n * n * n);
-    //   });
-    // }
 
     const icon = RegularNode.getRandomIcon();
 
@@ -118,7 +116,6 @@ export class RegularNode extends Node {
       sprite.anchor.set(0.5);
       sprite.scale.set(0.9);
       sprite.blendMode = BLEND_MODES.SCREEN;
-      this.holos.push(sprite);
       this.#setSelectedness.add(n => (sprite.alpha = n));
       this.#setSelectedness.add(n => sprite.scale.set(0.9 + 0.45 * Ease.OutBack(n)));
     }
