@@ -49,11 +49,11 @@ export class RegularNode extends Node {
   }
 
   static readonly getRandomIcon = createRandomizedFactory([
-    [2, () => "icon_skull"],
+    [4, () => "icon_skull"],
+    [2, () => "icon_star"],
     [1, () => "icon_swords"],
     [1, () => "icon_shield"],
     [1, () => "icon_storm"],
-    [1, () => "icon_star"],
   ]);
 
   init() {
