@@ -72,11 +72,18 @@ export class RegularNode extends Node {
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/ribbon_blue.png"));
-      sprite.anchor.set(0.5, -0.55);
+      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-4/ribbon_blue.png"));
+      sprite.anchor.set(0.5, -0.42);
       this.#setSelectedness.add(n => (sprite.alpha = n));
-      this.#setSelectedness.add(n => sprite.scale.set(0.25 * n * n * n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.5 * n * n * n));
     }
+
+    // {
+    //   const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/ribbon_blue.png"));
+    //   sprite.anchor.set(0.5, -0.55);
+    //   this.#setSelectedness.add(n => (sprite.alpha = n));
+    //   this.#setSelectedness.add(n => sprite.scale.set(0.25 * n * n * n));
+    // }
 
     {
       const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_gold.png"));
