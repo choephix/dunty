@@ -30,7 +30,7 @@ export function initializeDungeonFloor(app: Application) {
   boss.v2();
   nodesParent.addChild(boss);
 
-  const circlesCount = 5;
+  const circlesCount = 7;
 
   for (const circleIndex of range(circlesCount)) {
     const nodesCount = 6 * (circleIndex + 1);
@@ -98,7 +98,7 @@ export function initializeDungeonFloor(app: Application) {
         const dy = node.ry - otherNode.ry;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance > 400 + 20 * node.circleIndex) continue;
+        if (distance > 380 + 5 * node.circleIndex) continue;
 
         g.lineStyle(16, 0x102040, 0.5);
         g.moveTo(node.x, node.y);

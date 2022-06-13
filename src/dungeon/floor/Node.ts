@@ -13,6 +13,7 @@ import { range } from "@sdk/utils/range";
 import { EnchantmentCallbacksList } from "@sdk/pixi/enchant/core/EnchantmentCallbacksList";
 import { MultipleCallbacks } from "@sdk/MultipleCallbacks";
 import { createRandomizedFactory } from "@sdk/createRandomizedFactory";
+import { Ease } from "@sdk/animation/Ease";
 
 export class Node extends Container {
   circleIndex: number = 0;
@@ -64,26 +65,31 @@ export class RegularNode extends Node {
       sprite.scale.set(0.21);
       this.holos.push(sprite);
       this.#setSelectedness.add(n => (sprite.alpha = n));
-      this.#setSelectedness.add(n => sprite.scale.set(0.26 * n * n * n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.31 * n * n));
     }
-    
+
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_silver.png"));
+      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_bronze.png"));
       sprite.anchor.set(0.5);
-      sprite.scale.set(0.2);
-      sprite.tint = 0x7080a0;
-      this.#setSelectedness.add(n => sprite.scale.set(0.2 + 0.05 * n));
+      sprite.scale.set(0.25);
+      this.#setSelectedness.add(n => sprite.scale.set(0.31 * n));
     }
 
     {
       const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_silver.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.2);
-      sprite.tint = 0xf08010;
-      sprite.blendMode = BLEND_MODES.ADD;
+      sprite.tint = 0x7080a0;
+      this.#setSelectedness.add(n => sprite.scale.set(0.2 + 0.05 * Ease.OutSine(n)));
+    }
+
+    {
+      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_gold.png"));
+      sprite.anchor.set(0.5);
+      sprite.scale.set(0.2);
       this.holos.push(sprite);
       this.#setSelectedness.add(n => (sprite.alpha = n));
-      this.#setSelectedness.add(n => sprite.scale.set(0.2 + 0.05 * n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.2 + 0.05 * Ease.OutSine(n)));
     }
 
     // {
@@ -104,7 +110,7 @@ export class RegularNode extends Node {
       sprite.anchor.set(0.5);
       sprite.scale.set(0.9);
       sprite.tint = 0xa0c0f0;
-      this.#setSelectedness.add(n => sprite.scale.set(0.9 + 0.2 * n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.9 + 0.45 * Ease.OutBack(n)));
     }
 
     {
@@ -114,7 +120,7 @@ export class RegularNode extends Node {
       sprite.blendMode = BLEND_MODES.SCREEN;
       this.holos.push(sprite);
       this.#setSelectedness.add(n => (sprite.alpha = n));
-      this.#setSelectedness.add(n => sprite.scale.set(0.9 + 0.2 * n));
+      this.#setSelectedness.add(n => sprite.scale.set(0.9 + 0.45 * Ease.OutBack(n)));
     }
 
     this.selectedness = 0;
