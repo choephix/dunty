@@ -49,6 +49,7 @@ if (__window__.__DUNTY_INITIALIZED__) {
 
   __window__.__DUNTY_INITIALIZED__ = true;
 
-  LAUNCHERS.floor();
-  // LAUNCHERS.surface();
+  // LAUNCHERS.combat();
+  // LAUNCHERS.floor();
+  LAUNCHERS.surface();
 }
