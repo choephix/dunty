@@ -266,7 +266,7 @@ export async function resolveCombatEncounter() {
           {
             onUpdate({ hoverProgress }) {
               glow.filter.outerStrength = 1 + hoverProgress;
-              glow.filter.color = Color.lerp(0xff7050, 0xff0000, hoverProgress).toInt();
+              glow.filter.color = Color.lerp(0xff7050, 0xff0000, hoverProgress).toInteger();
 
               vCombatant.highlight.alpha = 0.3 + hoverProgress;
             },

@@ -40,7 +40,7 @@ export class Color {
     this.b = other.b;
   }
 
-  toInt(): number {
+  toInteger(): number {
     return (this.r << 16) + (this.g << 8) + this.b;
   }
 

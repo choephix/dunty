@@ -7,7 +7,7 @@ import { gsap } from "gsap";
 export const TILE_SIZE = 128;
 
 export class Tile extends Container {
-  base: TileBase;
+  readonly base: TileBase;
 
   isDungeonTile: boolean = false;
 

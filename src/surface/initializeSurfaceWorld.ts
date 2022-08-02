@@ -1,9 +1,8 @@
 import { __window__ } from "@debug/__window__";
 import { Application } from "@pixi/app";
 import { Sprite } from "@pixi/sprite";
-import { getRandomItemFrom } from "@sdk/helpers/arrays";
-import { range2D } from "@sdk/math/range2d";
-import { randomInt, randomIntBetweenIncluding } from "@sdk/utils/random";
+import { Color } from "@sdk/utils/color/Color";
+import { lerp } from "@sdk/utils/math";
 import { gsap } from "gsap";
 import { Viewport } from "pixi-viewport";
 import { getWorldGridNaturalData } from "./getWorldGridNaturalData";
@@ -27,8 +26,14 @@ export function initializeSurfaceWorld(app: Application) {
     const p = worldToIsometricPosition(tileData.gridPositionX, tileData.gridPositionY);
     tile.position.set(p.x * TILE_SIZE, p.y * TILE_SIZE);
     tile.textureFileName = tileData.textureFileName;
+    tile.isDungeonTile = tileData.isDungeonTile;
 
     tiles.push(tile);
+
+    const brightness = lerp(0.8, 1.0, Math.random());
+    const tint = Color.lerp(0x000000, 0xffffff, brightness).toInteger();
+    tile.base.inner.tint = tint;
+    tile.base.outline.tint = tint;
   }
 
   const dungeon = Sprite.from("https://public.cx/dunty/dungeon.png");
@@ -44,36 +49,38 @@ export function initializeSurfaceWorld(app: Application) {
       pixi: { pivotY: 100 },
       alpha: 0,
       delay: Math.random(),
-      ease: "back.out",
+      ease: "bounce.out",
       duration: 0.4,
     });
   }
 
-  const holo = new TileHolo();
-  holo.visible = false;
-  holo.zIndex = Number.MAX_SAFE_INTEGER;
-  viewport.addChild(holo);
-
-  for (const tile of tiles) {
-    if (tile.isDungeonTile) continue;
-    const btn = tile.base.inner;
-    btn.interactive = true;
-    btn.buttonMode = true;
-    btn.on("pointerover", () => {
-      tile.base.outline.addChild(holo);
-      holo.scale.set(2 / holo.parent.scale.x);
-      holo.visible = true;
-    });
-    btn.on("pointerout", () => {
-      holo.visible = false;
-    });
-    btn.on("click", () => {
-      console.log(tile.textureFileName);
-      navigator.clipboard.writeText(tile.textureFileName);
-    });
-  }
-
   __window__.tiles = viewport;
+
+  function addHoloShit() {
+    const holo = new TileHolo();
+    holo.visible = false;
+    holo.zIndex = Number.MAX_SAFE_INTEGER;
+    viewport.addChild(holo);
+
+    for (const tile of tiles) {
+      if (tile.isDungeonTile) continue;
+      const btn = tile.base.inner;
+      btn.interactive = true;
+      btn.buttonMode = true;
+      btn.on("pointerover", () => {
+        tile.base.outline.addChild(holo);
+        holo.scale.set(2 / holo.parent.scale.x);
+        holo.visible = true;
+      });
+      btn.on("pointerout", () => {
+        holo.visible = false;
+      });
+      btn.on("click", () => {
+        console.log(tile.textureFileName);
+        navigator.clipboard.writeText(tile.textureFileName);
+      });
+    }
+  }
 
   function sortWorldObjectsZIndex() {
     for (const child of viewport.children) {
@@ -82,6 +89,8 @@ export function initializeSurfaceWorld(app: Application) {
     dungeon.zIndex += 1.5 * TILE_SIZE;
     viewport.sortChildren();
   }
+
+  addHoloShit();
 
   sortWorldObjectsZIndex();
 
