@@ -9,7 +9,7 @@ import { getWorldGridNaturalData } from "./getWorldGridNaturalData";
 import { Tile, TileHolo, TILE_SIZE } from "./tiles";
 
 export function initializeSurfaceWorld(app: Application) {
-  console.log("Initializing surface world...");
+  console.log("Initializing surface world . . .");
 
   const viewport = new Viewport();
   viewport.drag().wheel().pinch().decelerate();
@@ -33,7 +33,8 @@ export function initializeSurfaceWorld(app: Application) {
     const brightness = lerp(0.8, 1.0, Math.random());
     const tint = Color.lerp(0x000000, 0xffffff, brightness).toInteger();
     tile.base.inner.tint = tint;
-    tile.base.outline.tint = tint;
+    const tint2 = Color.lerp(0x000000, 0xffffff, brightness * .6).toInteger();
+    tile.base.outline.tint = tint2;
   }
 
   const dungeon = Sprite.from("https://public.cx/dunty/dungeon.png");
