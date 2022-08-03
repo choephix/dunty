@@ -30,11 +30,9 @@ export function initializeSurfaceWorld(app: Application) {
 
     tiles.push(tile);
 
-    const brightness = lerp(0.8, 1.0, Math.random());
-    const tint = Color.lerp(0x000000, 0xffffff, brightness).toInteger();
-    tile.base.inner.tint = tint;
-    const tint2 = Color.lerp(0x000000, 0xffffff, brightness * .6).toInteger();
-    tile.base.outline.tint = tint2;
+    // const brightness = lerp(0.8, 1.0, Math.random());
+    // const tint = Color.lerp(0x000000, 0xffffff, brightness).toInteger();
+    // tile.sprite.tint = tint;
   }
 
   const dungeon = Sprite.from("https://public.cx/dunty/dungeon.png");
@@ -47,10 +45,10 @@ export function initializeSurfaceWorld(app: Application) {
   for (const tile of tiles) {
     if (tile.isDungeonTile) continue;
     gsap.from(tile, {
-      pixi: { pivotY: 100 },
+      pixi: { pivotY: -100 },
       alpha: 0,
       delay: Math.random(),
-      ease: "bounce.out",
+      ease: "back.out",
       duration: 0.4,
     });
   }
@@ -65,11 +63,11 @@ export function initializeSurfaceWorld(app: Application) {
 
     for (const tile of tiles) {
       if (tile.isDungeonTile) continue;
-      const btn = tile.base.inner;
+      const btn = tile.sprite;
       btn.interactive = true;
       btn.buttonMode = true;
       btn.on("pointerover", () => {
-        tile.base.outline.addChild(holo);
+        tile.sprite.addChild(holo);
         holo.scale.set(2 / holo.parent.scale.x);
         holo.visible = true;
       });
@@ -91,7 +89,7 @@ export function initializeSurfaceWorld(app: Application) {
     viewport.sortChildren();
   }
 
-  addHoloShit();
+  // addHoloShit();
 
   sortWorldObjectsZIndex();
 

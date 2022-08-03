@@ -1,14 +1,13 @@
 import { BLEND_MODES } from "@pixi/constants";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
-import { OutlineFilter } from "@pixi/filter-outline";
 import { Sprite } from "@pixi/sprite";
 import { gsap } from "gsap";
 
 export const TILE_SIZE = 128;
 
 export class Tile extends Container {
-  readonly sprite: Sprite;
+  readonly base: TileBase;
 
   isDungeonTile: boolean = false;
 
@@ -17,32 +16,40 @@ export class Tile extends Container {
   constructor(public readonly textureURL: string) {
     super();
 
-    this.sprite = new Sprite();
-    this.addChild(this.sprite);
-
-    this.initialize();
+    this.base = new TileBase(textureURL);
+    this.addChild(this.base);
   }
+}
 
-  async initialize() {
-    const texture = await Texture.fromURL(this.textureURL);
-    this.sprite.texture = texture;
-    this.sprite.pivot.set(texture.width / 2, texture.height - 195);
-    this.sprite.scale.set(0.2575, 0.2325);
-    // this.sprite.filters = [new GlowFilter({
-    //   distance: 40,
-    //   color: 0xffffff,
-    //   innerStrength: 1,
-    //   quality: .1,
-    //   outerStrength: 0,
-    // })];
-    // this.sprite.filters = [new OutlineFilter(3, 0x0, .2)];
-  }
+export class TileBase extends Container {
+  readonly outline: Sprite;
+  readonly inner: Sprite;
 
-  debug() {
-    const sq = this.addChild(new Sprite(Texture.WHITE));
-    const tint = ~~(Math.random() * 0xffffff);
-    this.sprite.tint = tint;
-    sq.tint = tint;
+  constructor(textureURL: string) {
+    super();
+
+    this.outline = new Sprite();
+    this.outline.anchor.set(0.5);
+    this.outline.tint = 0xb0b0b0;
+    this.addChild(this.outline);
+
+    this.inner = new Sprite();
+    this.inner.anchor.set(0.5);
+    this.outline.addChild(this.inner);
+
+    Texture.fromURL(textureURL).then(texture => {
+      this.outline.texture = texture;
+      this.outline.scale.set(TILE_SIZE / texture.width);
+      this.outline.angle = 45;
+      this.scale.y = 0.5;
+
+      this.inner.texture = texture;
+      // this.inner.scale.set(0.95);
+
+      this.outline.scale.set(0.96);
+      this.inner.y -= 4;
+      this.inner.x -= 4;
+    });
   }
 }
 

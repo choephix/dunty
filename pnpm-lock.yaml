@@ -25,6 +25,7 @@ specifiers:
   '@pixi/filter-glow': ^4.1.5
   '@pixi/filter-kawase-blur': ^4.1.5
   '@pixi/filter-old-film': ^4.1.5
+  '@pixi/filter-outline': ^4.1.5
   '@pixi/filter-rgb-split': ^4.1.3
   '@pixi/filter-shockwave': ^4.1.5
   '@pixi/filter-twist': ^4.1.5
@@ -120,6 +121,7 @@ dependencies:
   '@pixi/filter-glow': 4.1.5_p2ssohnibza45knmnnmt4mulyi
   '@pixi/filter-kawase-blur': 4.1.5_fv4okqsbtrztbmecnfawyfgxza
   '@pixi/filter-old-film': 4.1.5_sizoj22js3dlf2wj73ynyy3l7y
+  '@pixi/filter-outline': 4.1.5_4uds32wtplxjalwfkfrl6xmjvy
   '@pixi/filter-rgb-split': 4.1.3_cbiow4gaef47du2usngr54ks3m
   '@pixi/filter-shockwave': 4.1.5_fv4okqsbtrztbmecnfawyfgxza
   '@pixi/filter-twist': 4.1.5_cbiow4gaef47du2usngr54ks3m
