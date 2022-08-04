@@ -72,6 +72,7 @@ specifiers:
   firebase: ^9.8.1
   firebase-admin: ^10.3.0
   firebase-functions: ^3.21.2
+  fontfaceobserver: ^2.3.0
   gsap: ^3.10.4
   html-loader: ^3.1.0
   html-webpack-plugin: ^5.5.0
@@ -151,6 +152,7 @@ dependencies:
   airtable: 0.11.4
   dotenv: 16.0.1
   firebase: 9.9.1
+  fontfaceobserver: 2.3.0
   gsap: 3.10.4
   pixi-filters: 4.1.6_qtsljr22l7yg4nnr372zxy7z5u
   pixi-scrollbox: 2.3.1_pixi-viewport@4.34.4
@@ -4367,6 +4369,10 @@ packages:
       debug:
         optional: true
     dev: true
+
+  /fontfaceobserver/2.3.0:
+    resolution: {integrity: sha512-6FPvD/IVyT4ZlNe7Wcn5Fb/4ChigpucKYSvD6a+0iMoLn2inpo711eyIcKjmDtE5XNcgAkSH9uN/nfAeZzHEfg==}
+    dev: false
 
   /forwarded/0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
