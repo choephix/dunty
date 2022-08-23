@@ -11,7 +11,7 @@ import { __VERBOSE__ } from "@dungeon/debug/URL_PARAMS";
 import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
 import { BLEND_MODES } from "@pixi/constants";
 import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
+import { Container, DisplayObject } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { Text } from "@pixi/text";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
@@ -23,7 +23,7 @@ import { spawnSpriteWave } from "@sdk-pixi/asorted/animations/spawnSpriteWave";
 
 export class VCombatant extends Container {
   highlight;
-  sprite;
+  sprite: Sprite;
   statusIndicators;
   intentionIndicator;
   energyIndicator;
@@ -31,6 +31,8 @@ export class VCombatant extends Container {
   thought?: string;
 
   name = this.data.name;
+
+  flipped = false;
 
   readonly breathingOptions = {};
 
@@ -45,9 +47,12 @@ export class VCombatant extends Container {
     this.highlight.visible = false;
     this.addChild(this.highlight);
 
-    this.sprite = new Sprite(Texture.from(data.textureId));
+    const texture = Texture.from(data.textureId);
+    this.sprite = new Sprite(texture);
     this.sprite.anchor.set(0.5, 0.95);
     this.addChild(this.sprite);
+
+    Object.assign(texture.baseTexture, { resolution: 2.5 });
 
     this.statusIndicators = this.addStatusIndicators();
     this.energyIndicator = this.addEnergyIndicator();
@@ -171,13 +176,15 @@ export class VCombatant extends Container {
   setRightSide(rightSide: boolean) {
     const sign = rightSide ? -1 : 1;
 
-    this.sprite.scale.x = sign;
+    this.sprite.scale.x = -sign;
 
     this.statusIndicators.position.set(sign * 200, 140);
 
     this.intentionIndicator.position.set(sign * -200, -100);
 
     this.energyIndicator.position.set(sign * 190, 160);
+
+    this.flipped = rightSide;
   }
 
   waitUntilLoaded() {

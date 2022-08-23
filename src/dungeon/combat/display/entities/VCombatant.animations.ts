@@ -51,7 +51,7 @@ async function blinkThought(vunit: VCombatant, thought: string) {
 
 export module VCombatantAnimations {
   export function enter(unit: VCombatant) {
-    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
+    const direction = unit.flipped ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     return tweeener.from(unit, {
       pixi: { pivotX: direction * 200 },
@@ -59,7 +59,7 @@ export module VCombatantAnimations {
   }
 
   export async function attack(unit: VCombatant) {
-    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
+    const direction = unit.flipped ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
       pixi: { pivotX: -direction * 140 },
@@ -132,7 +132,7 @@ export module VCombatantAnimations {
   export async function hurt(unit: VCombatant) {
     console.log(`${unit.name} is hurt`);
 
-    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
+    const direction = unit.flipped ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
     await tweeener.to(unit, {
       pixi: { alpha: 0.6, pivotX: direction * 40 },
@@ -155,7 +155,7 @@ export module VCombatantAnimations {
     unit.sprite.filters = [filter];
     tweeener.to(filter, { brightness: 0.2, saturation: 0.1, duration: 1 });
 
-    const direction = unit.sprite.scale.x < 0 ? 1 : -1;
+    const direction = unit.flipped ? 1 : -1;
     await tweeener.to(unit, { pixi: { alpha: 0.8, pivotX: direction * 150 } });
     await tweeener.to(unit.statusIndicators, { alpha: 0.0 });
   }

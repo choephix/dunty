@@ -131,8 +131,8 @@ export function getWorldGridNaturalData() {
         const x = gx * GROUP_SIZE + dx;
         const y = gy * GROUP_SIZE + dy;
 
-        // const noise = noise2D(noiseScale * x, noiseScale * y) * 0.5 + 0.5;
-        const noise = Math.abs(noise2D(noiseScale * x, noiseScale* y)) ** 1.5;
+        const noise = (noise2D(noiseScale * x, noiseScale * y) * 0.5 + 0.5);
+        // const noise = Math.abs(noise2D(noiseScale * x, noiseScale* y)) ** 1.0;
         const typeIndex = Math.floor(noise * TILES.length);
         const file = TILES[typeIndex];
 
