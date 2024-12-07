@@ -54,6 +54,8 @@ jobs:
         run: pnpm install
 
       - name: Build
+        env:
+          URL_BASE: /dunty/
         run: pnpm run build
 
       - name: Setup Pages
