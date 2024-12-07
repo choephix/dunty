@@ -57,7 +57,7 @@ export class TileHolo extends Container {
   constructor() {
     super();
 
-    const holoTextureId = "https://public.cx/dunty/asorted/tile-holo.png";
+    const holoTextureId = "https://undroop.web.app/dunty/asorted/tile-holo.png";
 
     const holo = Sprite.from(holoTextureId);
     holo.anchor.set(0.5);
