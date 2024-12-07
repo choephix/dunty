@@ -33,11 +33,11 @@ export function spawnBling(position: IPointData, container: Container) {
   }
 
   wave({
-    //texture: `https://public.cx/3/rays-10.png`,
-    texture: `https://public.cx/2/flare-rb.png`,
-    //texture: `https://public.cx/2/boom-w2.png`,
-    //texture: `https://public.cx/2/ring-w.png`,
-    //texture: `https://public.cx/2/plus-x3b.png`,
+    //texture: `https://undroop-assets.web.app/davinci/3/rays-10.png`,
+    texture: `https://undroop-assets.web.app/davinci/2/flare-rb.png`,
+    //texture: `https://undroop-assets.web.app/davinci/2/boom-w2.png`,
+    //texture: `https://undroop-assets.web.app/davinci/2/ring-w.png`,
+    //texture: `https://undroop-assets.web.app/davinci/2/plus-x3b.png`,
     parent: container,
     x: position.x,
     y: position.y,
@@ -48,7 +48,7 @@ export function spawnBling(position: IPointData, container: Container) {
 
   wave(
     {
-      texture: `https://public.cx/2/plus-x3b.png`,
+      texture: `https://undroop-assets.web.app/davinci/2/plus-x3b.png`,
       parent: container,
       x: position.x,
       y: position.y,

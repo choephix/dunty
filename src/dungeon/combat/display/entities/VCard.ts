@@ -70,7 +70,7 @@ export class VCard extends Container {
       : isToken
       ? "front-sneak"
       : { atk: "front-red", def: "front-grand", func: "front-pink" }[type];
-    const sprite = Sprite.from(`https://public.cx/mock/cards/${filename}.png`);
+    const sprite = Sprite.from(`https://undroop.web.app/ccgu/${filename}.png`);
     sprite.anchor.set(0.5);
     this.addChild(sprite);
     return sprite;
@@ -131,7 +131,7 @@ export class VCard extends Container {
         def: [this.data.cost * 9 + (this.data.value || 0)],
       }[this.data.type]!;
 
-      return [`https://public.cx/mock/${cfg.textureCategory}/${num}.png`, cfg.scale];
+      return [`https://undroop-assets.web.app/confucius/${cfg.textureCategory}/${num}.png`, cfg.scale];
     };
     const [textureUrl, scale] = getStuff();
     const sprite = Sprite.from(textureUrl);
@@ -197,8 +197,8 @@ export class VCard extends Container {
 
     if (!cfg) return Sprite.from(Texture.EMPTY);
 
-    // const sprite = Sprite.from(`https://public.cx/dunty/asorted/slot.png`);
-    const pad = Sprite.from(`https://public.cx/dunty/asorted/${cfg.file}.png`);
+    // const sprite = Sprite.from(`https://undroop.web.app/dunty/asorted/slot.png`);
+    const pad = Sprite.from(`https://undroop.web.app/dunty/asorted/${cfg.file}.png`);
     pad.anchor.set(0.5);
     pad.position.set(0, 300);
     pad.scale.set(cfg.scale);
@@ -255,7 +255,7 @@ export class VCard extends Container {
   }
 
   addGlow() {
-    const sprite = Sprite.from("https://public.cx/mock/cards/fx-glow-orange.png");
+    const sprite = Sprite.from("https://undroop.web.app/ccgu/fx-glow-orange.png");
     sprite.anchor.set(0.5);
     sprite.blendMode = BLEND_MODES.ADD;
     sprite.scale.set(2.15);

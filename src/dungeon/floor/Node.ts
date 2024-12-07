@@ -58,42 +58,42 @@ export class RegularNode extends Node {
 
   init() {
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/crown_blue.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-2/crown_blue.png"));
       sprite.anchor.set(0.5, 1.375);
       this.#setSelectedness.add(n => (sprite.alpha = n));
       this.#setSelectedness.add(n => sprite.scale.set(0.245 * n * n));
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/ornament_wings.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-2/ornament_wings.png"));
       sprite.anchor.set(0.5, 0.43);
       this.#setSelectedness.add(n => (sprite.alpha = n));
       this.#setSelectedness.add(n => sprite.scale.set(0.31 * n * n));
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-4/ribbon_blue.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-4/ribbon_blue.png"));
       sprite.anchor.set(0.5, -0.42);
       this.#setSelectedness.add(n => (sprite.alpha = n));
       this.#setSelectedness.add(n => sprite.scale.set(0.5 * n * n * n));
     }
 
     // {
-    //   const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/ribbon_blue.png"));
+    //   const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-2/ribbon_blue.png"));
     //   sprite.anchor.set(0.5, -0.55);
     //   this.#setSelectedness.add(n => (sprite.alpha = n));
     //   this.#setSelectedness.add(n => sprite.scale.set(0.25 * n * n * n));
     // }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_gold.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-2/frame_gold.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.25);
       this.#setSelectedness.add(n => sprite.scale.set(0.31 * n));
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_silver.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-2/frame_silver.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.2);
       sprite.tint = 0x7080a0;
@@ -101,7 +101,7 @@ export class RegularNode extends Node {
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_gold.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-2/frame_gold.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.2);
       this.#setSelectedness.add(n => (sprite.alpha = n));
@@ -111,7 +111,7 @@ export class RegularNode extends Node {
     const icon = RegularNode.getRandomIcon();
 
     {
-      const sprite = this.addChild(Sprite.from(`https://public.cx/mock/ui/ranks-1/${icon}.png`));
+      const sprite = this.addChild(Sprite.from(`https://undroop-assets.web.app/confucius/ui/ranks-1/${icon}.png`));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.9);
       sprite.tint = 0xa0c0f0;
@@ -119,7 +119,7 @@ export class RegularNode extends Node {
     }
 
     {
-      const sprite = this.addChild(Sprite.from(`https://public.cx/mock/ui/ranks-1/${icon}.png`));
+      const sprite = this.addChild(Sprite.from(`https://undroop-assets.web.app/confucius/ui/ranks-1/${icon}.png`));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.9);
       sprite.blendMode = BLEND_MODES.SCREEN;
@@ -138,40 +138,40 @@ export class RegularNode extends Node {
 export class BossNode extends Node {
   v1() {
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/wings_blue.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-1/wings_blue.png"));
       sprite.anchor.set(0.5, 0.589);
       sprite.scale.set(0.25);
     }
 
     {
-      // const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-4/frame_gold.png"));
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-2/frame_bronze.png"));
+      // const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-4/frame_gold.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-2/frame_bronze.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(1 / 3);
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/icon_skull_2.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-1/icon_skull_2.png"));
       sprite.anchor.set(0.5);
     }
   }
 
   v2() {
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/wings_blue.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-1/wings_blue.png"));
       sprite.anchor.set(0.5, 0.589);
       sprite.scale.set(0.255);
       sprite.tint = 0x909090;
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-4/frame_gold.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-4/frame_gold.png"));
       sprite.anchor.set(0.5);
       sprite.scale.set(0.5);
     }
 
     {
-      const sprite = this.addChild(Sprite.from("https://public.cx/mock/ui/ranks-1/icon_skull_2.png"));
+      const sprite = this.addChild(Sprite.from("https://undroop-assets.web.app/confucius/ui/ranks-1/icon_skull_2.png"));
       sprite.anchor.set(0.5);
     }
   }

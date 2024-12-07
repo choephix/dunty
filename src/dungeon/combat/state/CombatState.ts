@@ -122,7 +122,7 @@ export class Combatant {
 
   constructor(initialStatus: Partial<CombatantStatus> = {}, characterId = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT)) {
     this.characterId = characterId;
-    this.textureId = `https://public.cx/mock/sugimori/${this.characterId}.png`;
+    this.textureId = `https://undroop-assets.web.app/enigma/sugimori/${this.characterId}.png`;
 
     Object.assign(this.status, initialStatus);
   }

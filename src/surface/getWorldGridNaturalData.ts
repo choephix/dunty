@@ -1,7 +1,7 @@
 import { range2D } from "@sdk/math/range2d";
 import { createNoise2D } from "simplex-noise";
 
-const BASE = "https://public.cx/mock/surfaces/";
+const BASE = "https://undroop-assets.web.app/blackbeard/surfaces/";
 const TILES = [
   `023b60bbc3877990a3b1ff4d805513a8.jpg`, // grass
   // `c412de6208fca6ab77ad117eb74c6387.jpg`, // grass dk
