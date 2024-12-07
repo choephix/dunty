@@ -18,4 +18,8 @@ export default defineConfig({
   root: "src/client",
   resolve: { alias },
   base: process.env.URL_BASE || "/",
+  build: {
+    outDir: "../../dist",
+    emptyOutDir: true
+  }
 });
