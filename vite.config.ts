@@ -18,18 +18,4 @@ export default defineConfig({
   root: "src/client",
   resolve: { alias },
   base: process.env.URL_BASE || "/",
-  build: {
-    outDir: "/www/public/www/dunty",
-    emptyOutDir: true,
-    // rollupOptions: {
-    //   input: {
-    //     // client: resolve(__dirname, "src/client/index.ts"),
-    //     // mainjs: resolve(__dirname, "src/surface/index.ts"),
-    //     // main: resolve(__dirname, "src/surface/index.html"),
-    //     // nested: resolve(__dirname, "src/surface/nested/index.html"),
-    //     // client: fileURLToPath(new URL("./src/client/index.html", import.meta.url)),
-    //     // surface: fileURLToPath(new URL("./src/surface/index.html", import.meta.url)),
-    //   },
-    // },
-  },
 });
