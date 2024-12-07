@@ -1,8 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
-import { fileURLToPath } from "url";
-const { resolve } = require("path");
 
 const getDirectories = (source: string) => {
   const rd = fs.readdirSync(source, { withFileTypes: true });
@@ -19,7 +17,7 @@ const alias = getDirectories("./src").map(dir => {
 export default defineConfig({
   root: "src/client",
   resolve: { alias },
-  // base: "/www/dunty/",
+  base: process.env.URL_BASE || "/",
   build: {
     outDir: "/www/public/www/dunty",
     emptyOutDir: true,
