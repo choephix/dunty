@@ -1,0 +1,42 @@
+import "@client/index.css";
+import { boot } from "@sdk-pixi/core/boot";
+const __window__ = window;
+const greateApp = () => {
+    if (!__window__.APP)
+        __window__.APP = boot();
+    return __window__.APP;
+};
+const LAUNCHERS = {
+    async combat() {
+        const app = greateApp();
+        const { initializeGameSingletons } = await import("@dungeon/core/GameSingletons");
+        initializeGameSingletons(app);
+        const { main } = await import("@dungeon/main/main");
+        main(app);
+    },
+    async floor() {
+        const app = greateApp();
+        const { initializeGameSingletons } = await import("@dungeon/core/GameSingletons");
+        initializeGameSingletons(app);
+        const { initializeDungeonFloor } = await import("@dungeon/floor/testFloor");
+        initializeDungeonFloor(app);
+    },
+    async surface() {
+        const app = greateApp();
+        const { initializeGameSingletons } = await import("@dungeon/core/GameSingletons");
+        initializeGameSingletons(app);
+        const { initializeSurfaceWorld } = await import("@surface/initializeSurfaceWorld");
+        initializeSurfaceWorld(app);
+    },
+};
+if (__window__.__DUNTY_INITIALIZED__) {
+    console.warn(`An instance of the game already exists.`, __window__.main);
+}
+else {
+    console.log("Client initializing...");
+    __window__.__DUNTY_INITIALIZED__ = true;
+    LAUNCHERS.combat();
+    // LAUNCHERS.floor();
+    // LAUNCHERS.surface();
+}
+//# sourceMappingURL=index.js.map

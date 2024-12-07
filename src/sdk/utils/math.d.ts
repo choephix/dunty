@@ -1,0 +1,14 @@
+export declare function lerp<T extends number>(from: T, to: T, frac: T): number;
+export declare function lerpClamped<T extends number>(from: T, to: T, frac: T): number;
+export declare function unlerp<T extends number>(from: T, to: T, value: T): number;
+export declare function unlerpClamped<T extends number>(from: T, to: T, value: T): number;
+export declare function clamp<T extends number>(value: T, min: T, max: T): T;
+export declare function loop<T extends number>(value: T, min: T, max: T): number;
+export declare function loopFromZero<T extends number>(value: T, max: T): number;
+export declare function yoyo<T extends number>(value: T, max: T): number;
+export declare function sum<T extends number>(...values: T[]): T;
+export declare function signFrom<T extends number>(signSource: T, target?: T): number;
+export declare function maxAbs<T extends number>(...values: T[]): T;
+export declare function minAbs<T extends number>(...values: T[]): T;
+export declare function roundTo<T extends number>(value: T, step: T): number;
+export declare function splitNumberByWeights<T extends number>(value: T, weights: T[], total?: T): number[];

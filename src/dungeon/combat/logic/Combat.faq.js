@@ -1,0 +1,132 @@
+import { CardPileType, CardTarget } from "@dungeon/combat/state/CombatState";
+import { CombatDriver } from "./CombatDriver";
+/**
+ * Commoon getters, comparison logic, etc.
+ *
+ * No method here will mutate the combat state.
+ */
+export class CombatFAQ extends CombatDriver {
+    isGroupAlive(g) {
+        return g.combatants.some(c => c.status.health > 0);
+    }
+    calculateCardsToDrawOnTurnStart(target) {
+        return target.handReplenishCount + target.status.tactical;
+    }
+    calculateEnergyToAddOnTurnStart(target) {
+        return target.energyReplenishCount + target.status.haste;
+    }
+    calculateBlockPointsToAdd(card, target) {
+        if (card.type !== "def")
+            return 0;
+        let value = card.value || 0;
+        if (target) {
+            value += target.status.defensive || 0;
+        }
+        return value;
+    }
+    calculateAttackPower(card, attacker) {
+        if (card.type !== "atk")
+            return 0;
+        let value = card.value || 0;
+        if (attacker) {
+            value += attacker.status.strength || 0;
+            value += attacker.status.rage || 0;
+            value += attacker.status.fury || 0;
+            value -= attacker.status.weak || 0;
+        }
+        return value;
+    }
+    calculateDamage(damage, target, attacker) {
+        let blockedDamage = 0;
+        let returnedDamage = 0;
+        let directDamage = 0;
+        let healingDamage = 0;
+        const { leech = 0 } = attacker.status;
+        const { block = 0, retaliation = 0, parry = 0, reflect = 0, health } = target.status;
+        if (reflect > 0) {
+            return {
+                directDamage: 0,
+                blockedDamage: 0,
+                returnedDamage: damage,
+                healingDamage: 0,
+            };
+        }
+        directDamage = damage;
+        if (target.status.block > 0) {
+            blockedDamage = Math.min(block, damage);
+            directDamage -= blockedDamage;
+        }
+        if (parry > 0) {
+            returnedDamage = Math.min(parry, damage);
+            directDamage -= returnedDamage;
+        }
+        returnedDamage += retaliation;
+        if (directDamage < 0) {
+            directDamage = 0;
+        }
+        else {
+            const { brittle = 0, exposed = 0, doomed = 0 } = target.status;
+            directDamage += brittle || 0;
+            directDamage *= exposed > 0 ? 2.0 : 1;
+            directDamage *= doomed > 0 ? 2.0 : 1;
+        }
+        healingDamage = Math.min(directDamage, leech, health);
+        console.log({
+            damage,
+            directDamage,
+            blockedDamage,
+            returnedDamage,
+            healingDamage,
+            block,
+            retaliation,
+            parry,
+            leech,
+            target,
+        });
+        return { directDamage, blockedDamage, returnedDamage, healingDamage };
+    }
+    getEnemiesSide(actor) {
+        return this.state.groupA === actor.group ? this.state.groupB : this.state.groupA;
+    }
+    getAliveAlliesArray(actor) {
+        return actor.group.combatants.filter(u => u.alive);
+    }
+    getAliveEnemiesArray(actor) {
+        return this.getEnemiesSide(actor).combatants.filter(u => u.alive);
+    }
+    getAliveAnyoneArray() {
+        return [...this.state.groupA.combatants, ...this.state.groupB.combatants].filter(u => u.alive);
+    }
+    getValidTargetsArray(actor, card) {
+        switch (card.target) {
+            case CardTarget.SELF:
+                return [actor];
+            case CardTarget.ALL_ENEMIES:
+                return this.getAliveEnemiesArray(actor);
+            case CardTarget.ALL:
+                return this.getAliveAnyoneArray();
+            case CardTarget.FRONT_ENEMY:
+                const foes = this.getAliveEnemiesArray(actor);
+                return foes.length > 0 ? [foes[0]] : [];
+            case CardTarget.TARGET_ENEMY:
+                return this.getAliveEnemiesArray(actor);
+            case CardTarget.ALL_ALLIES:
+                return this.getAliveAlliesArray(actor);
+            default:
+                throw new Error(`getValidTargetsArray: invalid target ${card.target}`);
+        }
+    }
+    getPileType(actor, type) {
+        switch (type) {
+            case CardPileType.DRAW:
+                return actor.cards.drawPile;
+            case CardPileType.HAND:
+                return actor.cards.hand;
+            case CardPileType.DISCARD:
+                return actor.cards.discardPile;
+            case CardPileType.VOID:
+                return actor.cards.void;
+        }
+    }
+}
+//# sourceMappingURL=Combat.faq.js.map
