@@ -1,24 +1,16 @@
 steps:
-  # Install pnpm globally
-  - name: 'node:18'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        npm install -g pnpm
+  # Use buildpacks to build and deploy the app
+  - name: 'gcr.io/cloud-builders/pack'
+    args: ['build', 'gcr.io/nilo-temp/nilo-temp-app', '--builder', 'gcr.io/buildpacks/builder']
 
-  # Install dependencies using pnpm
-  - name: 'node:18'
-    entrypoint: 'pnpm'
-    args: ['install']
-
-  # Build the application
-  - name: 'node:18'
-    entrypoint: 'pnpm'
-    args: ['build']
-
-  # Deploy to Cloud Run (or other service)
+  # Deploy to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['run', 'deploy', 'nilo-temp-app', '--image', 'gcr.io/nilo-temp/dunty', '--region', 'us-central1']
+    args: [
+      'run', 'deploy', 'nilo-temp-app',
+      '--image', 'gcr.io/nilo-temp/nilo-temp-app',
+      '--region', 'us-central1',
+      '--platform', 'managed',
+      '--allow-unauthenticated'
+    ]
 
-timeout: '1800s' # Extend timeout if needed
+timeout: '1800s'
