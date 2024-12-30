@@ -35,7 +35,7 @@ export function initializeSurfaceWorld(app: Application) {
     // tile.sprite.tint = tint;
   }
 
-  const dungeon = Sprite.from("https://public.cx/dunty/dungeon.png");
+  const dungeon = Sprite.from("https://undroop.web.app/dunty/dungeon.png");
   dungeon.position.set(0, -7);
   dungeon.anchor.set(0.5);
   dungeon.scale.set(0.735);

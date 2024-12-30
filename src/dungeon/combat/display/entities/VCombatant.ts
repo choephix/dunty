@@ -39,7 +39,7 @@ export class VCombatant extends Container {
   constructor(public readonly data: Combatant) {
     super();
 
-    this.highlight = new Sprite(Texture.from("https://public.cx/3/radial-4.png"));
+    this.highlight = new Sprite(Texture.from("https://undroop-assets.web.app/davinci/3/radial-4.png"));
     this.highlight.anchor.set(0.45, 0.35);
     this.highlight.position.set(0, -50);
     this.highlight.scale.set(2.8, 0.7);
@@ -420,7 +420,7 @@ class IntentionIndicators extends Container {
 
         const waveColor = card.type === "atk" ? 0xf02020 : card.type === "def" ? 0x70b0f0 : 0x00ffff;
         const fx = spawnSpriteWave(
-          "https://public.cx/3/radial-4.png",
+          "https://undroop-assets.web.app/davinci/3/radial-4.png",
           { pixi: { scale: 2 }, duration: 2 },
           { scale: 0, tint: waveColor, blendMode: BLEND_MODES.ADD }
         );

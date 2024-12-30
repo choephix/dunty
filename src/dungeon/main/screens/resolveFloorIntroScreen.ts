@@ -14,7 +14,7 @@ import FontFaceObserver from "fontfaceobserver";
 export async function resolveFloorIntroScreen() {
   await new FontFaceObserver("Jolly Lodger").load();
 
-  const swordTextureId = `https://public.cx/mock/swords/${randomIntBetweenIncluding(1, 48)}.png`;
+  const swordTextureId = `https://undroop-assets.web.app/confucius/swords/${randomIntBetweenIncluding(1, 48)}.png`;
   const texture = await Texture.fromURL(swordTextureId);
 
   const app = GameSingletons.getPixiApplicaiton();

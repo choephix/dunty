@@ -9,7 +9,7 @@ import { AdjustmentFilter } from "@pixi/filter-adjustment";
 
 function spawnBlobOfLight(parent: Container, tint: number) {
   const fx = spawnSpriteWave(
-    "https://public.cx/3/radial-4.png",
+    "https://undroop-assets.web.app/davinci/3/radial-4.png",
     { pixi: { scale: 2.7 }, duration: 2 },
     { tint: tint, blendMode: BLEND_MODES.ADD }
   );
@@ -18,7 +18,7 @@ function spawnBlobOfLight(parent: Container, tint: number) {
 
 function spawnFlazma(parent: Container, tint: number, scale: number = 0.7) {
   const fx = spawnSpriteWave(
-    "https://public.cx/3/plazmo-6.png",
+    "https://undroop-assets.web.app/davinci/3/plazmo-6.png",
     { pixi: { scale } },
     { tint: tint, blendMode: BLEND_MODES.ADD }
   );
@@ -27,7 +27,7 @@ function spawnFlazma(parent: Container, tint: number, scale: number = 0.7) {
 
 function spawnFlare1(parent: Container, tint: number) {
   const fx = spawnSpriteWave(
-    "https://public.cx/2/ring-w.png",
+    "https://undroop-assets.web.app/davinci/2/ring-w.png",
     { pixi: { scale: 0.99 }, duration: 3 },
     { tint: tint, blendMode: BLEND_MODES.ADD }
   );
@@ -113,7 +113,7 @@ export module VCombatantAnimations {
     console.log(`${unit.name} is buffing block`);
 
     const fx = spawnSpriteWave(
-      "https://public.cx/dunty/asorted/shield-blur.png",
+      "https://undroop.web.app/dunty/asorted/shield-blur.png",
       { pixi: { scale: 0.95 }, duration: 1.2, ease: "power5.out" },
       { tint: 0x3060a0, blendMode: BLEND_MODES.SCREEN }
     );

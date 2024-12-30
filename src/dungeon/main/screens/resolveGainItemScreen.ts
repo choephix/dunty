@@ -77,8 +77,8 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
   await delay(0.4);
 }
 
-// const waveTextureUrl = `https://public.cx/3/rays-1.png`;
-// const waveTextureUrl = `https://public.cx/3/plazmo-5.png`;
-// const waveTextureUrl = `https://public.cx/2/flare-11.2.png`;
-const waveTextureUrl = `https://public.cx/2/boom-w1.png`;
-// const waveTextureUrl = `https://public.cx/3/flare-24.png`;
+// const waveTextureUrl = `https://undroop-assets.web.app/davinci/3/rays-1.png`;
+// const waveTextureUrl = `https://undroop-assets.web.app/davinci/3/plazmo-5.png`;
+// const waveTextureUrl = `https://undroop-assets.web.app/davinci/2/flare-11.2.png`;
+const waveTextureUrl = `https://undroop-assets.web.app/davinci/2/boom-w1.png`;
+// const waveTextureUrl = `https://undroop-assets.web.app/davinci/3/flare-24.png`;

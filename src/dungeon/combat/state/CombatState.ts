@@ -123,9 +123,10 @@ export class Combatant {
   constructor(initialStatus: Partial<CombatantStatus> = {}, characterId = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT)) {
     this.characterId = characterId;
     // this.textureId = `https://public.cx/mock/sugimori/${this.characterId}.png`;
-
-    const num = Math.floor(Math.random() * 350);
-    this.textureId = `https://public.cx/dunty/monsters/_____${String(num).padStart(4, '0')}.webp`;
+    this.textureId = `https://undroop-assets.web.app/enigma/sugimori/${this.characterId}.png`;
+    
+    // const num = Math.floor(Math.random() * 350);
+    // this.textureId = `https://public.cx/dunty/monsters/_____${String(num).padStart(4, '0')}.webp`;
 
     Object.assign(this.status, initialStatus);
   }

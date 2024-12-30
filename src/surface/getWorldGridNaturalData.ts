@@ -1,7 +1,8 @@
 import { range2D } from "@sdk/math/range2d";
 import { createNoise2D } from "simplex-noise";
 
-const BASE = "https://public.cx/dunty/tiles-ar-separated/";
+// const BASE = "https://public.cx/dunty/tiles-ar-separated/";
+const BASE = "https://undroop-assets.web.app/blackbeard/surfaces/";
 const TILES = [
   `0155.webp`, // grass
   `0161.webp`, // grass

@@ -13,7 +13,7 @@ export async function resolveTitleScreen() {
   const vscene = new VScene();
   __window__.container = app.stage.addChild(vscene);
   
-  const titleTextureId = `https://public.cx/dunty/titlecard.png`;
+  const titleTextureId = `https://undroop.web.app/dunty/titlecard.png`;
   const titleTexture = await Texture.fromURL(titleTextureId);
   const titleSprite = new Sprite(titleTexture);
   titleSprite.anchor.set(0.5);

@@ -6,8 +6,8 @@ import { TilingSprite } from "@pixi/sprite-tiling";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 
 const BACKDROP_PRESETS = [
-  [`https://public.cx/dunty/bg-1920x1920/4.jpg`, 0xc0d0f0, true, BLEND_MODES.SUBTRACT, 0xffffff, 0.2] as const, // Slope
-  [`https://public.cx/3/bg/grid2.webp`, 0x404050, true, BLEND_MODES.ADD, 0xf03030, 0.3] as const, // Grid
+  [`https://undroop-assets.web.app/blackbeard/bg-1920x1920/4.jpg`, 0xc0d0f0, true, BLEND_MODES.SUBTRACT, 0xffffff, 0.2] as const, // Slope
+  [`https://undroop-assets.web.app/davinci/3/bg/grid2.webp`, 0x404050, true, BLEND_MODES.ADD, 0xf03030, 0.3] as const, // Grid
 ];
 
 export class VCombatScene extends VScene {
@@ -49,7 +49,7 @@ export class VCombatScene extends VScene {
   }
 
   addStreakyEffect({ lnBlendMode = BLEND_MODES.SUBTRACT, lnTint = 0x808080, lnAlpha = 1.0 } = {}) {
-    const lnTextureId = "https://public.cx/mock/ln2.jpg";
+    const lnTextureId = "https://undroop-assets.web.app/confucius/ln2.jpg";
     const sprite = TilingSprite.from(lnTextureId, { width: this.designWidth, height: this.designHeight });
     sprite.blendMode = lnBlendMode;
     sprite.tint = lnTint;
