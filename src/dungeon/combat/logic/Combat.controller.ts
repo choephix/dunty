@@ -161,6 +161,11 @@ export class CombatController extends CombatDriver {
       for (const [key] of CombatantStatus.entries(target.status)) {
         updateStatusExpiryAfterHurt.call(this, key);
       }
+
+      // Add cleanup of dead combatants
+      if (!target.alive) {
+        this.removeDeadCombatants(target.group);
+      }
     }
   }
 
@@ -188,6 +193,16 @@ export class CombatController extends CombatDriver {
     }
 
     status[key] = 0;
+  }
+
+  removeDeadCombatants(group: CombatGroup) {
+    const deadCombatants = group.combatants.filter(c => !c.alive);
+    for (const dead of deadCombatants) {
+      const index = group.combatants.indexOf(dead);
+      if (index !== -1) {
+        group.combatants.splice(index, 1);
+      }
+    }
   }
 }
 
