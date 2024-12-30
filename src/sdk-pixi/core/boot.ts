@@ -18,7 +18,7 @@ Application.registerPlugin(AppLoaderPlugin);
 Loader.registerPlugin(SpritesheetLoader);
 
 import "@pixi/math-extras";
-import { Ticker } from "@pixi/ticker";
+import { Ticker, UPDATE_PRIORITY } from "@pixi/ticker";
 
 import { skipHello } from "@pixi/utils";
 
@@ -42,7 +42,7 @@ skipHello();
 const APP_DIV_ID = "app";
 const CANVAS_ID = "canvas";
 
-initDebugging()
+initDebugging();
 
 export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   const parentElement = document.getElementById(APP_DIV_ID) ?? document.body;
@@ -71,12 +71,12 @@ export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   ticker.add(
     onlyIfPageVisible(() => app.render()),
     null,
-    -100
+    UPDATE_PRIORITY.LOW
   );
   ticker.add(
     onlyIfPageVisible(() => callOnEnterFrameRecursively(app.stage)),
     null,
-    99
+    UPDATE_PRIORITY.HIGH
   );
   app.ticker = ticker;
 
