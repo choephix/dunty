@@ -2,6 +2,7 @@ import "@client/index.css";
 
 import { Application } from "@pixi/app";
 import { boot } from "@sdk-pixi/core/boot";
+import { launcherKey } from "./lib/urlParams";
 
 const __window__ = window as any;
 
@@ -49,7 +50,6 @@ if (__window__.__DUNTY_INITIALIZED__) {
 
   __window__.__DUNTY_INITIALIZED__ = true;
 
-  LAUNCHERS.combat();
-  // LAUNCHERS.floor();
-  // LAUNCHERS.surface();
+  const launch = launcherKey in LAUNCHERS ? LAUNCHERS[launcherKey as keyof typeof LAUNCHERS] : LAUNCHERS.combat;
+  launch();
 }
