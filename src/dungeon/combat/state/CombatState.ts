@@ -120,9 +120,12 @@ export class Combatant {
     return this.status.health > 0;
   }
 
-  constructor(initialStatus: Partial<CombatantStatus> = {}, characterId = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT)) {
+  constructor(
+    initialStatus: Partial<CombatantStatus> = {},
+    characterId: string
+  ) {
     this.characterId = characterId;
-    this.textureId = `https://undroop-assets.web.app/enigma/sugimori/${this.characterId}.png`;
+    this.textureId = getRandomPokemonSpriteUrl();
 
     Object.assign(this.status, initialStatus);
   }
@@ -175,4 +178,15 @@ export enum CardPileType {
   HAND = "HAND",
   DISCARD = "DISCARD",
   VOID = "VOID",
+}
+
+function getRandomPokemonSpriteUrl() {
+  const useUndroopAssets = true;
+  if (useUndroopAssets) {
+    const characterId = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
+    return `https://undroop-assets.web.app/enigma/sugimori/${characterId}.png`;
+  }
+
+  const num = Math.floor(Math.random() * 1025);
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${num}.png`;
 }
