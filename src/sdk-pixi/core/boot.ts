@@ -1,21 +1,21 @@
 import { Application, IApplicationOptions } from "@pixi/app";
-import { Renderer } from "@pixi/core";
+import { Renderer, extensions } from "@pixi/core";
 
 import "@pixi/events";
 
 import { InteractionManager } from "@pixi/interaction";
-Renderer.registerPlugin("interaction", InteractionManager);
+extensions.add(InteractionManager);
 
 import { BatchRenderer } from "@pixi/core";
-Renderer.registerPlugin("batch", BatchRenderer);
+extensions.add(BatchRenderer);
 
 import { TilingSpriteRenderer } from "@pixi/sprite-tiling";
-Renderer.registerPlugin("tilingSprite", TilingSpriteRenderer);
+extensions.add(TilingSpriteRenderer);
 
 import { AppLoaderPlugin, Loader } from "@pixi/loaders";
 import { SpritesheetLoader } from "@pixi/spritesheet";
-Application.registerPlugin(AppLoaderPlugin);
-Loader.registerPlugin(SpritesheetLoader);
+extensions.add(AppLoaderPlugin);
+extensions.add(SpritesheetLoader);
 
 import "@pixi/math-extras";
 import { Ticker, UPDATE_PRIORITY } from "@pixi/ticker";
