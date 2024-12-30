@@ -44,9 +44,13 @@ const LAUNCHERS = {
   },
 };
 
-ensureSingleInstance();
+function getLauncher(key: keyof typeof LAUNCHERS | null | undefined | string) {
+  if (key in LAUNCHERS) return LAUNCHERS[key as keyof typeof LAUNCHERS];
+  return LAUNCHERS.combat;
+}
 
+ensureSingleInstance();
 console.log("Client initializing...");
 
-const launch = launcherKey in LAUNCHERS ? LAUNCHERS[launcherKey as keyof typeof LAUNCHERS] : LAUNCHERS.combat;
+const launch = getLauncher(launcherKey);
 launch();
