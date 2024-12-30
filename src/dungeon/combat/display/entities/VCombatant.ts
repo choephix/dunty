@@ -233,10 +233,13 @@ class StatusEffectIndicators extends Container {
       if (impactAlignment === StatusEffectImpactAlignment.POSITIVE) return [0x40c0f0, 0x106090];
       if (impactAlignment === StatusEffectImpactAlignment.NEGATIVE) return [0xf04040, 0x901010];
     }
-    const colors = {
+    const colorsByKey = {
       health: [0x70c050, 0x107010, 0x105010],
       block: [0x4050f0, 0x101090],
-    }[key] ?? [0x405080, 0x202020];
+    } as Record<StatusEffectKey, number[] | undefined>;
+    
+    const colors = colorsByKey[key] ?? [0x405080, 0x202020];
+
     const label = new Text(``, {
       fill: colors,
       fontFamily: FontFamily.NumericIndicators,

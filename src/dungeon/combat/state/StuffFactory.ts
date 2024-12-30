@@ -99,7 +99,8 @@ function generateStatusEffectCard(statusProperty?: keyof CombatantStatus): Card 
     poisoned: 2,
     bleeding: 2,
     regeneration: 2,
-  };
+  } as Record<keyof CombatantStatus, number>;
+
   console.log(`generateStatusEffectCard`, statusProperty, xMap[statusProperty!]);
   const value = xMap[statusProperty!] || randomIntBetweenIncluding(1, 3, 2);
 
