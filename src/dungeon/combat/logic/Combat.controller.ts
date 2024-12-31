@@ -43,7 +43,7 @@ export class CombatController extends CombatDriver {
           energyReplenishCount = 0,
           deck = [],
         } = foeConfig;
-        const foe = new Combatant({ health });
+        const foe = new Combatant({ health }, `foe-${index}`);
         foe.name = name;
         foe.handReplenishCount = handReplenishCount;
         foe.energyReplenishCount = energyReplenishCount;
