@@ -2,6 +2,8 @@ import "@client/index.css";
 
 import { Application } from "@pixi/app";
 import { boot } from "@sdk-pixi/core/boot";
+import { launcherKey } from "./lib/urlParams";
+import { ensureSingleInstance } from "./lib/ensureSingleInstance";
 
 const __window__ = window as any;
 
@@ -42,14 +44,13 @@ const LAUNCHERS = {
   },
 };
 
-if (__window__.__DUNTY_INITIALIZED__) {
-  console.warn(`An instance of the game already exists.`, __window__.main);
-} else {
-  console.log("Client initializing...");
-
-  __window__.__DUNTY_INITIALIZED__ = true;
-
-  LAUNCHERS.combat();
-  // LAUNCHERS.floor();
-  // LAUNCHERS.surface();
+function getLauncher(key: keyof typeof LAUNCHERS | null | undefined | string) {
+  if (key in LAUNCHERS) return LAUNCHERS[key as keyof typeof LAUNCHERS];
+  return LAUNCHERS.combat;
 }
+
+ensureSingleInstance();
+console.log("Client initializing...");
+
+const launch = getLauncher(launcherKey);
+launch();

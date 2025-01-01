@@ -13,13 +13,13 @@ export module ToolTipFactory {
     const blueprint = StatusEffectBlueprints[statusEffect];
     const { displayName = statusEffect.toUpperCase(), description = `Unknown status effect` } = blueprint || {};
 
-    const expiryHint = {
+    const expiryHint = ({
       [StatusEffectExpiryType.DECREMENT_AFTER_HURT]: `Decrements after taking damage.`,
       [StatusEffectExpiryType.DECREMENT_BEFORE_TURN]: `Decrements before next turn.`,
       [StatusEffectExpiryType.RESET_AFTER_ENCOUNTER]: `Resets after the combat encounter.`,
       [StatusEffectExpiryType.RESET_BEFORE_TURN]: `Resets before next turn.`,
       [StatusEffectExpiryType.NULL]: `Does not expire.`,
-    }[blueprint.expiryType] || ``;
+    } as Record<StatusEffectExpiryType, string>)[blueprint.expiryType] || ``;
 
     return `${displayName.toUpperCase()}\n${description}\n(${expiryHint})`.trim().replace(/ X /g, ` ${value} `);
   }
@@ -29,14 +29,14 @@ export module ToolTipFactory {
       return card.description;
     }
 
-    const TARGET = {
+    const TARGET = ({
       [CardTarget.ALL]: "everyone",
       [CardTarget.ALL_ENEMIES]: "all enemies",
       [CardTarget.FRONT_ENEMY]: "front enemy",
       [CardTarget.SELF]: "self",
       [CardTarget.TARGET_ENEMY]: "selected enemy",
       [CardTarget.TARGET_ANYONE]: "any target",
-    }[card.target];
+    } as Record<CardTarget, string>)[card.target];
 
     switch (card.type) {
       case "atk":
@@ -62,14 +62,14 @@ export module ToolTipFactory {
     if (typeof card === "string") {
       return card;
     }
-    const TARGET = {
+    const TARGET = ({
       [CardTarget.ALL]: "everyone",
       [CardTarget.ALL_ENEMIES]: "you",
       [CardTarget.FRONT_ENEMY]: "you",
       [CardTarget.SELF]: "self",
       [CardTarget.TARGET_ENEMY]: "you",
       [CardTarget.TARGET_ANYONE]: "someone",
-    }[card.target];
+    } as Record<CardTarget, string>)[card.target];
 
     switch (card.type) {
       case "atk":

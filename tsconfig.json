@@ -9,8 +9,10 @@
     "target": "es2020",
 
     "skipLibCheck": true,
-
     "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strictPropertyInitialization": false,
+
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-jsx",

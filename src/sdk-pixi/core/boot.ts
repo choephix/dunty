@@ -1,24 +1,24 @@
 import { Application, IApplicationOptions } from "@pixi/app";
-import { Renderer } from "@pixi/core";
+import { Renderer, extensions } from "@pixi/core";
 
 import "@pixi/events";
 
 import { InteractionManager } from "@pixi/interaction";
-Renderer.registerPlugin("interaction", InteractionManager);
+extensions.add(InteractionManager);
 
 import { BatchRenderer } from "@pixi/core";
-Renderer.registerPlugin("batch", BatchRenderer);
+extensions.add(BatchRenderer);
 
 import { TilingSpriteRenderer } from "@pixi/sprite-tiling";
-Renderer.registerPlugin("tilingSprite", TilingSpriteRenderer);
+extensions.add(TilingSpriteRenderer);
 
 import { AppLoaderPlugin, Loader } from "@pixi/loaders";
 import { SpritesheetLoader } from "@pixi/spritesheet";
-Application.registerPlugin(AppLoaderPlugin);
-Loader.registerPlugin(SpritesheetLoader);
+extensions.add(AppLoaderPlugin);
+extensions.add(SpritesheetLoader);
 
 import "@pixi/math-extras";
-import { Ticker } from "@pixi/ticker";
+import { Ticker, UPDATE_PRIORITY } from "@pixi/ticker";
 
 import { skipHello } from "@pixi/utils";
 
@@ -42,7 +42,7 @@ skipHello();
 const APP_DIV_ID = "app";
 const CANVAS_ID = "canvas";
 
-initDebugging()
+initDebugging();
 
 export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   const parentElement = document.getElementById(APP_DIV_ID) ?? document.body;
@@ -71,12 +71,12 @@ export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   ticker.add(
     onlyIfPageVisible(() => app.render()),
     null,
-    -100
+    UPDATE_PRIORITY.LOW
   );
   ticker.add(
     onlyIfPageVisible(() => callOnEnterFrameRecursively(app.stage)),
     null,
-    99
+    UPDATE_PRIORITY.HIGH
   );
   app.ticker = ticker;
 

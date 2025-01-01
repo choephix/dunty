@@ -11,8 +11,8 @@ import { Sprite } from "@pixi/sprite";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 
 export class ConsumablesList extends Container {
-  readonly pad;
-  readonly label;
+  // readonly pad;
+  // readonly label;
 
   readonly onEnterFrame = createEnchantedFrameLoop(this);
 
