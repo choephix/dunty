@@ -31,6 +31,7 @@
     "@pixi/filter-glow": "^4.2.0",
     "@pixi/filter-kawase-blur": "^4.2.0",
     "@pixi/filter-old-film": "^4.2.0",
+    "@pixi/filter-outline": "^4.2.0",
     "@pixi/filter-rgb-split": "^4.2.0",
     "@pixi/filter-shockwave": "^4.2.0",
     "@pixi/filter-twist": "^4.2.0",
