@@ -20,6 +20,10 @@ export default defineConfig({
   base: process.env.URL_BASE || "/",
   build: {
     outDir: "../../dist",
-    emptyOutDir: true
-  }
+    emptyOutDir: true,
+  },
+  server: {
+    port: 14445,
+    host: "0.0.0.0",
+  },
 });
