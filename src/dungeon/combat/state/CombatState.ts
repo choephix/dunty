@@ -120,15 +120,13 @@ export class Combatant {
     return this.status.health > 0;
   }
 
-  constructor(
-    initialStatus: Partial<CombatantStatus> = {},
-    characterId: string
-  ) {
+  constructor(initialStatus: Partial<CombatantStatus> = {}, characterId: string) {
     this.characterId = characterId;
     // this.textureId = `https://undroop-assets.web.app/enigma/sugimori/${this.characterId}.png`;
-    
+
     // const num = Math.floor(Math.random() * 350);
     // this.textureId = `https://public.cx/dunty/monsters/_____${String(num).padStart(4, '0')}.webp`;
+
     this.textureId = getRandomPokemonSpriteUrl();
 
     Object.assign(this.status, initialStatus);
