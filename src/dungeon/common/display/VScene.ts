@@ -1,7 +1,7 @@
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { __DEBUG__ } from "@dungeon/debug/URL_PARAMS";
-import { Container } from "@pixi/display";
-import { Graphics } from "@pixi/graphics";
+import { Container } from "pixi.js";
+import { Graphics } from "pixi.js";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 
 const DESIGN_SPECS = {

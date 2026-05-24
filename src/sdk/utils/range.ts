@@ -3,7 +3,7 @@ export function range(count: number) {
   return new Array(count).fill(0).map((_, i) => i) as number[];
 }
 
-export module range {
+export namespace range {
   export function onlyNulls(count: number) {
     if (count <= 0) return [];
     return new Array(count).fill(null);

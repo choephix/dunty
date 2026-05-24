@@ -1,7 +1,8 @@
-import { BLEND_MODES } from "@pixi/constants";
-import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
-import { Sprite } from "@pixi/sprite";
+import { loadTexture, spriteFromUrl } from "@sdk-pixi/assets/loadTexture";
+
+import { Texture } from "pixi.js";
+import { Container } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { gsap } from "gsap";
 
 export const TILE_SIZE = 128;
@@ -37,7 +38,7 @@ export class TileBase extends Container {
     this.inner.anchor.set(0.5);
     this.outline.addChild(this.inner);
 
-    Texture.fromURL(textureURL).then(texture => {
+    loadTexture(textureURL).then(texture => {
       this.outline.texture = texture;
       this.outline.scale.set(TILE_SIZE / texture.width);
       this.outline.angle = 45;
@@ -59,18 +60,18 @@ export class TileHolo extends Container {
 
     const holoTextureId = "https://undroop.web.app/dunty/asorted/tile-holo.png";
 
-    const holo = Sprite.from(holoTextureId);
+    const holo = spriteFromUrl(holoTextureId);
     holo.anchor.set(0.5);
     holo.tint = 0x00f0d0;
-    holo.blendMode = BLEND_MODES.ADD;
+    holo.blendMode = "add";
     this.addChild(holo);
 
     const spawnHolo = async () => {
       if (this.children.length > 40) return;
-      const holo = Sprite.from(holoTextureId);
+      const holo = spriteFromUrl(holoTextureId);
       holo.anchor.set(0.5);
       holo.tint = 0x00f0d0;
-      holo.blendMode = BLEND_MODES.SCREEN;
+      holo.blendMode = "screen";
       this.addChild(holo);
       await gsap.to(holo, { y: -64, x: -64, alpha: 0, duration: 3.5, ease: "power1.in" });
       holo.destroy();

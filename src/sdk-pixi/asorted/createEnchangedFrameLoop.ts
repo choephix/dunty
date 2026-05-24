@@ -1,9 +1,8 @@
-import { DisplayObject } from "@pixi/display";
 import { makeImitateService } from "@sdk/pixi/enchant/services/imitate";
 import { makeWaitUntilService } from "@sdk/pixi/enchant/services/waitUntil";
 import { makeWatchService } from "@sdk/pixi/enchant/services/watch";
 
-export type EnchantableInstance = Pick<DisplayObject, "updateTransform" | "render" | "destroy">;
+export type EnchantableInstance = { destroy(...args: any[]): void };
 export type TFn = () => unknown;
 
 export function createEnchantedFrameLoop<T extends EnchantableInstance>(this: T | void, target: T) {
@@ -59,7 +58,7 @@ export function createEnchantedFrameLoop<T extends EnchantableInstance>(this: T 
   return result;
 }
 
-export module createEnchantedFrameLoop {
+export namespace createEnchantedFrameLoop {
   export function andAssignTo<T extends EnchantableInstance>(target: T) {
     return Object.assign(target, { onEnterFrame: createEnchantedFrameLoop(target) });
   }

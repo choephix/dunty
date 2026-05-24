@@ -2,8 +2,8 @@ import { waitForDocumentClick } from "@dungeon/common/display/utils/waitForDocum
 import { VScene } from "@dungeon/common/display/VScene";
 import { FontFamily } from "@dungeon/common/display/constants/FontFamily";
 import { __window__ } from "@debug/__window__";
-import { Application } from "@pixi/app";
-import { Text } from "@pixi/text";
+import { Application } from "pixi.js";
+import { Text } from "pixi.js";
 import FontFaceObserver from "fontfaceobserver";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 
@@ -18,8 +18,7 @@ export async function resolveGameOverScreen() {
     fill: 0xffffff,
     fontFamily: FontFamily.GameOver,
     fontSize: 160,
-    stroke: 0x0,
-    strokeThickness: 2,
+    stroke: { color: 0x0, width: 2 },
     lineHeight: 160,
   });
   text.anchor.set(0.5);

@@ -1,24 +1,21 @@
-import { Application } from "@pixi/app";
-import { BLEND_MODES } from "@pixi/constants";
-import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
-import { IPointData } from "@pixi/math";
-import { Sprite } from "@pixi/sprite";
+import { loadTexture } from "@sdk-pixi/assets/loadTexture";
+import { Container } from "pixi.js";
+import { PointData } from "pixi.js";
+import { Sprite } from "pixi.js";
 import gsap from "gsap";
 
-export function spawnBling(position: IPointData, container: Container) {
-  async function wave(mods: Omit<Partial<Sprite>, "texture"> & { texture: string; duration?: number }, ani: any = {}) {
-    const textureId = mods.texture;
-    delete mods.texture;
+export function spawnBling(position: PointData, container: Container) {
+  async function wave(
+    mods: Omit<Partial<Sprite>, "texture" | "parent"> & { texture: string; parent?: Container; duration?: number },
+    ani: any = {}
+  ) {
+    const { texture: textureId, parent, ...spriteMods } = mods;
 
-    const texture = await Texture.fromURL(textureId);
+    const texture = await loadTexture(textureId);
     const sprite = new Sprite(texture);
     sprite.anchor.set(0.5);
-    if (mods.parent) {
-      mods.parent.addChild(sprite);
-      delete mods.parent;
-    }
-    Object.assign(sprite, mods);
+    parent?.addChild(sprite);
+    Object.assign(sprite, spriteMods);
 
     await tween(mods.duration || 1, p => {
       sprite.alpha = Math.sin(p * Math.PI);
@@ -41,7 +38,7 @@ export function spawnBling(position: IPointData, container: Container) {
     parent: container,
     x: position.x,
     y: position.y,
-    blendMode: BLEND_MODES.ADD,
+    blendMode: "add",
     angle: Math.random() * 360,
     duration: 2,
   });
@@ -52,7 +49,7 @@ export function spawnBling(position: IPointData, container: Container) {
       parent: container,
       x: position.x,
       y: position.y,
-      blendMode: BLEND_MODES.ADD,
+      blendMode: "add",
       angle: Math.random() * 360,
       duration: 1.5,
     },

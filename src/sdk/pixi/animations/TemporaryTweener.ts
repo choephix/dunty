@@ -1,7 +1,10 @@
 import { gsap } from "gsap/gsap-core";
-import { DisplayObject } from "@pixi/display";
 
-export type DestroyableDisplayObject = Pick<DisplayObject, "destroy" | "destroyed" | "addListener">;
+export type DestroyableDisplayObject = {
+  destroyed?: boolean;
+  addListener(event: "removed", callback: () => void): unknown;
+  destroy(...args: any[]): unknown;
+};
 
 export type TweenTarget = null | (gsap.TweenTarget & { destroyed?: boolean });
 

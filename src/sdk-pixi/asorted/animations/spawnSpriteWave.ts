@@ -1,5 +1,5 @@
-import { Texture } from "@pixi/core";
-import { Sprite } from "@pixi/sprite";
+import { spriteFromUrl } from "@sdk-pixi/assets/loadTexture";
+import { Sprite } from "pixi.js";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 
 type TModBase<T> = Partial<Omit<T, "scale"> & { scale: number }>;
@@ -9,7 +9,7 @@ export function spawnSpriteWave<T extends Sprite, TMods extends TModBase<T> = {}
   tweenVars?: gsap.TweenVars,
   mods?: TMods
 ) {
-  const sprite = new Sprite(Texture.from(textureId));
+  const sprite = spriteFromUrl(textureId);
   sprite.anchor.set(0.5);
 
   const tweeener = new TemporaryTweeener(sprite);

@@ -6,7 +6,7 @@ import { VScene } from "@dungeon/common/display/VScene";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
 import { createAnimatedButtonBehavior } from "@sdk-pixi/asorted/createAnimatedButtonBehavior";
-import { Text } from "@pixi/text";
+import { Text } from "pixi.js";
 import { delay } from "@sdk/utils/promises";
 import { range } from "@sdk/utils/range";
 import FontFaceObserver from "fontfaceobserver";
@@ -20,8 +20,7 @@ export async function resolveChooseNewCardScreen(cardsCount: number) {
     fill: 0x909090,
     fontFamily: FontFamily.CardPickScreen,
     fontSize: 60,
-    stroke: 0x0,
-    strokeThickness: 8,
+    stroke: { color: 0x0, width: 8 },
     lineHeight: 80,
     align: "center",
   });
@@ -30,7 +29,7 @@ export async function resolveChooseNewCardScreen(cardsCount: number) {
   vscene.addChild(hint);
   vscene.tweeener.from(hint, { alpha: 0, duration: 1.5 });
 
-  new FontFaceObserver("Irish Grover").load().then(() => hint.updateText(false));
+  new FontFaceObserver("Irish Grover").load().then(() => void (hint.text = hint.text));
 
   const cards = range(cardsCount).map(c => generateRandomPlayerCard());
   const vcards = cards.map(c => vscene.addChild(new VCard(c)));

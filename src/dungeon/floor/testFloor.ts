@@ -1,22 +1,22 @@
 import { __window__ } from "@debug/__window__";
-import { Application } from "@pixi/app";
-import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
-import { Sprite } from "@pixi/sprite";
+import { Application } from "pixi.js";
+import { Texture } from "pixi.js";
+import { Container } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { range2D } from "@sdk/math/range2d";
 import { randomInt, randomSigned } from "@sdk/utils/random";
 import { Viewport } from "pixi-viewport";
 import { gsap } from "gsap";
-import { BLEND_MODES } from "@pixi/constants";
+
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { range } from "@sdk/utils/range";
 import { BossNode, RegularNode, Node } from "./Node";
-import { Graphics } from "@pixi/graphics";
+import { Graphics } from "pixi.js";
 
 export function initializeDungeonFloor(app: Application) {
   console.log("Initializing surface world...");
 
-  const viewport = new Viewport();
+  const viewport = new Viewport({ events: app.renderer.events });
   viewport.drag().wheel().pinch().decelerate();
   viewport.position.set(window.innerWidth / 2, window.innerHeight / 2);
   __window__.viewport = viewport;

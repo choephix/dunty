@@ -1,6 +1,6 @@
-import { Container } from "@pixi/display";
-import { Graphics } from "@pixi/graphics";
-import { Rectangle } from "@pixi/math";
+import { Container } from "pixi.js";
+import { Graphics } from "pixi.js";
+import { Rectangle } from "pixi.js";
 
 export function drawRect(container: Container, rect: Partial<Rectangle>, color: number = ~~(0xffffff * Math.random())) {
   const graphics = new Graphics();

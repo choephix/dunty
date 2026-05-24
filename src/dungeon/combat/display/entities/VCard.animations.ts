@@ -1,7 +1,7 @@
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { VCard } from "@dungeon/combat/display/entities/VCard";
 
-export module VCardAnimations {
+export namespace VCardAnimations {
   export function playShowAnimation(card: VCard) {
     const tweeener = new TemporaryTweeener(card);
     return tweeener.from(card, { alpha: 0 });

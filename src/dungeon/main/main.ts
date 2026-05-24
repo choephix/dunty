@@ -1,5 +1,5 @@
 import { __FLOOR__ } from "@dungeon/debug/URL_PARAMS";
-import { Application } from "@pixi/app";
+import { Application } from "pixi.js";
 import { delay } from "@sdk/utils/promises";
 import { resolveCombatEncounter } from "../combat/resolveCombatEncounter";
 import { resolveFloorIntroScreen } from "./screens/resolveFloorIntroScreen";

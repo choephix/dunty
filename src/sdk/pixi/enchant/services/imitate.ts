@@ -1,4 +1,4 @@
-import { Container } from "@pixi/display";
+import { Container } from "pixi.js";
 import { EnchantedInstance } from "../interfaces";
 
 type CleanUpFunction = () => unknown;

@@ -1,5 +1,4 @@
-import { DisplayObject } from "@pixi/display";
-import { InteractionData, InteractionEvent } from "@pixi/interaction";
+import type { Container, FederatedPointerEvent } from "pixi.js";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 
 export class ObservableValue<T> {
@@ -29,10 +28,10 @@ type UpdateProperties = {
   disableProgress: number;
 };
 
-export function createAnimatedButtonBehavior<T extends DisplayObject>(
+export function createAnimatedButtonBehavior<T extends Container>(
   target: T,
   callbacks: {
-    onClick?: (e: InteractionData) => unknown;
+    onClick?: (e: FederatedPointerEvent) => unknown;
     onUpdate?: (this: T, state: UpdateProperties) => void;
   },
   initialUpdate: boolean | Partial<UpdateProperties> = false,
@@ -57,14 +56,14 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
     highlightProgress: 0,
   };
 
-  target.interactive = true;
-  target.buttonMode = true;
+  target.eventMode = "static";
+  target.cursor = "pointer";
 
   if (onUpdate) {
     let dirty = false;
     const dirtify = (): any => void (dirty = true);
     const makeTweenFunc = (property: keyof typeof state, duration: number) =>
-      tweeener.quickTo(state, property, { duration: duration, onUpdate: dirtify, onComplete: dirtify });
+      tweeener.quickTo(state, property, { duration, onUpdate: dirtify, onComplete: dirtify });
 
     const tweeener = new TemporaryTweeener(target);
     const tweenPress = makeTweenFunc("pressProgress", tweenPressDuration);
@@ -81,19 +80,19 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
     state.isDisabled.onChange = value => tweenDisabled(value ? 1 : 0);
     state.isHighlighted.onChange = value => tweenHightlight(value ? 1 : 0);
 
-    target.on("pointerdown", function (e: InteractionEvent) {
+    target.on("pointerdown", () => {
       state.isPressed.value = true;
     });
-    target.on("pointerup", function (e: InteractionEvent) {
+    target.on("pointerup", () => {
       state.isPressed.value = false;
     });
-    target.on("pointerupoutside", function (e: InteractionEvent) {
+    target.on("pointerupoutside", () => {
       state.isPressed.value = false;
     });
-    target.on("pointerover", function (e: InteractionEvent) {
+    target.on("pointerover", () => {
       state.isHovered.value = true;
     });
-    target.on("pointerout", function (e: InteractionEvent) {
+    target.on("pointerout", () => {
       state.isHovered.value = false;
       state.isPressed.value = false;
     });
@@ -107,8 +106,7 @@ export function createAnimatedButtonBehavior<T extends DisplayObject>(
   }
 
   if (onClick) {
-    target.on("click", e => !state.isDisabled.value && onClick(e.data));
-    target.on("tap", e => !state.isDisabled.value && onClick(e.data));
+    target.on("pointertap", e => !state.isDisabled.value && onClick(e));
   }
 
   return state;

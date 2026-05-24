@@ -1,6 +1,6 @@
-import { DisplayObject } from "@pixi/display";
+import type { Container } from "pixi.js";
 
-export function buttonizeDisplayObject<T extends DisplayObject>(
+export function buttonizeDisplayObject<T extends Container>(
   target: T,
   callbacks: ((this: T) => void) | { onTrigger?: (this: T) => void }
 ) {
@@ -10,22 +10,17 @@ export function buttonizeDisplayObject<T extends DisplayObject>(
 
   const { onTrigger } = callbacks;
 
-  target.interactive = true;
-  target.buttonMode = true;
+  target.eventMode = "static";
+  target.cursor = "pointer";
 
   if (onTrigger) {
     callbacks.onTrigger = onTrigger.bind(target);
-    target.on("click", onTrigger);
-    target.on("tap", onTrigger);
+    target.on("pointertap", callbacks.onTrigger);
   }
 
-  /**
-   * Clean up function to remove any events added by `buttonizeDisplayObject()`.
-   */
   return function () {
-    target.interactive = false;
-    target.buttonMode = false;
-    target.off("click", onTrigger);
-    target.off("tap", onTrigger);
+    target.eventMode = "none";
+    target.cursor = "default";
+    target.off("pointertap", callbacks.onTrigger);
   };
 }

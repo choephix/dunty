@@ -136,7 +136,7 @@ export class Combatant {
 }
 
 export type CombatantStatus = Omit<Combatant["status"], "energy">;
-export module CombatantStatus {
+export namespace CombatantStatus {
   export function entries<T>(obj: Partial<Record<keyof CombatantStatus, T>>) {
     return Object.entries(obj) as [keyof CombatantStatus, T][];
   }

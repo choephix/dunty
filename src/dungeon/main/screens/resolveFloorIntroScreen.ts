@@ -1,12 +1,13 @@
+import { loadTexture } from "@sdk-pixi/assets/loadTexture";
 import { waitForDocumentClick } from "@dungeon/common/display/utils/waitForDocumentClick";
 import { VScene } from "@dungeon/common/display/VScene";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { FontFamily } from "@dungeon/common/display/constants/FontFamily";
 import { UserCrossCombatData } from "@dungeon/run/UserCrossCombatData";
 import { __window__ } from "@debug/__window__";
-import { Texture } from "@pixi/core";
-import { Sprite } from "@pixi/sprite";
-import { Text } from "@pixi/text";
+import { Texture } from "pixi.js";
+import { Sprite } from "pixi.js";
+import { Text } from "pixi.js";
 import { delay } from "@sdk/utils/promises";
 import { randomIntBetweenIncluding } from "@sdk/utils/random";
 import FontFaceObserver from "fontfaceobserver";
@@ -15,7 +16,7 @@ export async function resolveFloorIntroScreen() {
   await new FontFaceObserver("Jolly Lodger").load();
 
   const swordTextureId = `https://undroop-assets.web.app/confucius/swords/${randomIntBetweenIncluding(1, 48)}.png`;
-  const texture = await Texture.fromURL(swordTextureId);
+  const texture = await loadTexture(swordTextureId);
 
   const app = GameSingletons.getPixiApplicaiton();
 
@@ -27,8 +28,7 @@ export async function resolveFloorIntroScreen() {
     fill: 0xff0050,
     fontFamily: FontFamily.FloorIndicator,
     fontSize: 160,
-    stroke: 0x0,
-    strokeThickness: 18,
+    stroke: { color: 0x0, width: 18 },
     lineHeight: 160,
   });
   text.anchor.set(0.5);

@@ -1,11 +1,11 @@
-import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
-import { Sprite } from "@pixi/sprite";
-import { Text } from "@pixi/text";
+import { Texture } from "pixi.js";
+import { Container } from "pixi.js";
+import { Sprite } from "pixi.js";
+import { Text } from "pixi.js";
 
 export class HandBlockerBlock extends Container {
   pad;
-  label;
+  labelText;
 
   constructor(str: string) {
     super();
@@ -18,16 +18,15 @@ export class HandBlockerBlock extends Container {
     this.pad.anchor.set(0.5);
     this.addChild(this.pad);
 
-    this.label = new Text(str.toUpperCase(), {
+    this.labelText = new Text(str.toUpperCase(), {
       fill: 0xffffff,
       fontFamily: "Impact, fantasy",
       fontSize: 60,
-      stroke: 0x0,
-      strokeThickness: 8,
+      stroke: { color: 0x0, width: 8 },
     });
-    this.label.anchor.set(0.5);
-    this.addChild(this.label);
+    this.labelText.anchor.set(0.5);
+    this.addChild(this.labelText);
 
-    this.pad.interactive = true;
+    this.pad.eventMode = "static";
   }
 }

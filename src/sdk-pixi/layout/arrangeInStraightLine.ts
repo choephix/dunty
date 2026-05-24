@@ -1,7 +1,6 @@
-import { DisplayObject } from "@pixi/display";
-import { Rectangle } from "@pixi/math";
+import { Container, Rectangle } from "pixi.js";
 
-type Target = DisplayObject & { width?: number; height?: number };
+type Target = Container & { width?: number; height?: number };
 type IPointInput = number | [number, number] | { x?: number; y?: number };
 type IOptions = {
   x?: number;
@@ -12,7 +11,6 @@ type IOptions = {
   vertical?: boolean;
 };
 
-const __bounds = new Rectangle();
 
 function processPointInput(p: IPointInput | undefined) {
   if (p == undefined) return { x: 0, y: 0 };
@@ -40,7 +38,7 @@ export function arrangeInStraightLine(targets: readonly Target[], options?: IOpt
   let largestSide = 0;
   let posHead = 0;
   for (const o of targets) {
-    const bounds = o.getLocalBounds(__bounds);
+    const bounds = o.getLocalBounds();
     bounds.width *= o.scale.x;
     bounds.height *= o.scale.y;
     bounds.x -= o.pivot.x;

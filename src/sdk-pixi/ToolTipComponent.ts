@@ -1,8 +1,8 @@
 import { FontFamily } from "@dungeon/common/display/constants/FontFamily";
-import { Container } from "@pixi/display";
-import { Graphics } from "@pixi/graphics";
-import { Point } from "@pixi/math";
-import { Text } from "@pixi/text";
+import { Container } from "pixi.js";
+import { Graphics } from "pixi.js";
+import { Point } from "pixi.js";
+import { Text } from "pixi.js";
 import { LiteralUnion } from "type-fest";
 
 export type ToolTipComponentHorizontalAlignment = LiteralUnion<-1 | 0 | 1, number>;

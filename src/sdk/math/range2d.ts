@@ -6,7 +6,7 @@ export function* range2D(X: number, Y: number) {
   }
 }
 
-export module range2D {
+export namespace range2D {
   export function* fromToIncluding(xFrom: number, yFrom: number, xTo: number, yTo: number) {
     for (let ix = xFrom; ix <= xTo; ix++) {
       for (let iy = yFrom; iy <= yTo; iy++) {
