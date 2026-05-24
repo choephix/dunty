@@ -1,9 +1,10 @@
+import { loadTexture } from "@sdk-pixi/assets/loadTexture";
 import { waitForDocumentClick } from "@dungeon/common/display/utils/waitForDocumentClick";
 import { VScene } from "@dungeon/common/display/VScene";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
-import { Texture } from "@pixi/core";
-import { Sprite } from "@pixi/sprite";
+import { Texture } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { delay } from "@sdk/utils/promises";
 
 export async function resolveTitleScreen() {
@@ -14,7 +15,7 @@ export async function resolveTitleScreen() {
   __window__.container = app.stage.addChild(vscene);
   
   const titleTextureId = `https://undroop.web.app/dunty/titlecard.png`;
-  const titleTexture = await Texture.fromURL(titleTextureId);
+  const titleTexture = await loadTexture(titleTextureId);
   const titleSprite = new Sprite(titleTexture);
   titleSprite.anchor.set(0.5);
   titleSprite.position.copyFrom(vscene.getFractionalPosition(0.5, 0.4));

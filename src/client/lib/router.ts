@@ -1,5 +1,5 @@
 import Navigo from "navigo";
-import { Application } from "@pixi/app";
+import { Application } from "pixi.js";
 
 const __window__ = window as any;
 

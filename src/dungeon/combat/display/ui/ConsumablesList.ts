@@ -1,13 +1,14 @@
+import { loadTexture, setTextureFromUrl } from "@sdk-pixi/assets/loadTexture";
 import { Combat } from "@dungeon/combat/logic/Combat";
 import { ConsumableItem } from "@dungeon/combat/state/ConsumableItemBlueprints";
 import { UserCrossCombatData } from "@dungeon/run/UserCrossCombatData";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { createAnimatedButtonBehavior } from "@sdk-pixi/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
-import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
-import { Rectangle } from "@pixi/math";
-import { Sprite } from "@pixi/sprite";
+import { Texture } from "pixi.js";
+import { Container } from "pixi.js";
+import { Rectangle } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 
 export class ConsumablesList extends Container {
@@ -35,7 +36,7 @@ export class ConsumablesList extends Container {
   async update() {
     console.log("update");
 
-    await Promise.all(this.consumables.map(o => Texture.fromURL(o.iconTextureUrl)));
+    await Promise.all(this.consumables.map(o => loadTexture(o.iconTextureUrl)));
 
     for (const [index, item] of this.consumables.entries()) {
       let sprite = this.sprites.get(item);
@@ -70,7 +71,7 @@ export class ConsumablesList extends Container {
     icon.buttonize(() => {
       consumables.splice(consumables.indexOf(item), 1);
 
-      const game = Combat.current!
+      const game = Combat.current!;
       item.onPlay(game.state.groupA.combatants[0], game);
     });
     return icon;
@@ -85,11 +86,11 @@ export class VConsumableItem extends Sprite {
   constructor(readonly data: ConsumableItem) {
     super(Texture.WHITE);
 
-    this.texture = Texture.from(data.iconTextureUrl);
+    setTextureFromUrl(this, data.iconTextureUrl);
     this.hitArea = new Rectangle(-50, -50, 100, 100);
     this.anchor.set(0.5);
 
-    this.buttonMode = true;
+    this.cursor = "pointer";
 
     GameSingletons.getTooltipManager().registerTarget(this, { content: data.hint, delay: .17 });
   }

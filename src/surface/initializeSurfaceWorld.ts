@@ -1,6 +1,7 @@
+import { spriteFromUrl } from "@sdk-pixi/assets/loadTexture";
 import { __window__ } from "@debug/__window__";
-import { Application } from "@pixi/app";
-import { Sprite } from "@pixi/sprite";
+import { Application } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { Color } from "@sdk/utils/color/Color";
 import { lerp } from "@sdk/utils/math";
 import { gsap } from "gsap";
@@ -11,7 +12,7 @@ import { Tile, TileHolo, TILE_SIZE } from "./tiles";
 export function initializeSurfaceWorld(app: Application) {
   console.log("Initializing surface world . . .");
 
-  const viewport = new Viewport();
+  const viewport = new Viewport({ events: app.renderer.events });
   viewport.drag().wheel().pinch().decelerate();
   viewport.position.set(window.innerWidth / 2, window.innerHeight / 2);
   app.stage.addChild(viewport);
@@ -37,7 +38,7 @@ export function initializeSurfaceWorld(app: Application) {
     tile.base.outline.tint = tint2;
   }
 
-  const dungeon = Sprite.from("https://undroop.web.app/dunty/dungeon.png");
+  const dungeon = spriteFromUrl("https://undroop.web.app/dunty/dungeon.png");
   dungeon.position.set(0, -7);
   dungeon.anchor.set(0.5);
   dungeon.scale.set(0.735);
@@ -66,11 +67,11 @@ export function initializeSurfaceWorld(app: Application) {
     for (const tile of tiles) {
       if (tile.isDungeonTile) continue;
       const btn = tile.base.inner;
-      btn.interactive = true;
-      btn.buttonMode = true;
+      btn.eventMode = "static";
+      btn.cursor = "pointer";
       btn.on("pointerover", () => {
         tile.base.outline.addChild(holo);
-        holo.scale.set(2 / holo.parent.scale.x);
+        holo.scale.set(2 / (holo.parent?.scale.x ?? 1));
         holo.visible = true;
       });
       btn.on("pointerout", () => {
@@ -78,7 +79,7 @@ export function initializeSurfaceWorld(app: Application) {
       });
       btn.on("click", () => {
         console.log(tile.textureFileName);
-        navigator.clipboard.writeText(tile.textureFileName);
+        if (tile.textureFileName) navigator.clipboard.writeText(tile.textureFileName);
       });
     }
   }

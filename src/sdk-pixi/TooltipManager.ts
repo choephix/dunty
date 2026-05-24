@@ -1,7 +1,7 @@
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { ToolTipComponent } from "@sdk-pixi/ToolTipComponent";
-import { Container, DisplayObject } from "@pixi/display";
-import type { InteractionManager } from "@pixi/interaction";
+import { Container, Point } from "pixi.js";
+import type { FederatedPointerEvent } from "pixi.js";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 
 type TooltipOptions = {
@@ -13,14 +13,15 @@ type TooltipOptions = {
   wordWrapWidth: number;
 };
 
-const DEFAULT_DELAY = .700;
+const DEFAULT_DELAY = 0.7;
 
 export class TooltipManager {
   private currentTooltip: ToolTipComponent | null = null;
-  private currentTarget: DisplayObject | null = null;
-  private timeoutHandle: NodeJS.Timeout | null = null;
+  private currentTarget: Container | null = null;
+  private timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+  private lastPointerPosition = new Point();
 
-  public readonly targets = new Map<DisplayObject, Partial<TooltipOptions>>();
+  public readonly targets = new Map<Container, Partial<TooltipOptions>>();
 
   constructor(public readonly container: Container) {
     this.handleClearOnClick();
@@ -39,13 +40,13 @@ export class TooltipManager {
 
   clearDestroyedTargets() {
     for (const [target] of this.targets) {
-      if (target.destroyed) {
+      if ((target as any).destroyed) {
         this.targets.delete(target);
       }
     }
   }
 
-  registerTarget(target: DisplayObject, options: Partial<TooltipOptions> | string) {
+  registerTarget(target: Container, options: Partial<TooltipOptions> | string) {
     if (typeof options === "string") {
       options = { content: options };
     }
@@ -61,9 +62,9 @@ export class TooltipManager {
       }
     };
 
-    const on = () => {
+    const on = (event: FederatedPointerEvent) => {
       clearCurrentTimeout();
-
+      this.lastPointerPosition.copyFrom(event.global);
       this.timeoutHandle = setTimeout(() => this.setCurrentTooltipTarget(target), 1000 * delay);
     };
 
@@ -77,7 +78,7 @@ export class TooltipManager {
       requestAnimationFrame(() => this.clearDestroyedTargets());
     };
 
-    target.interactive = true;
+    target.eventMode = "static";
     target.on("pointerover", on);
     target.on("pointerout", off);
     target.on("removed", off);
@@ -90,7 +91,7 @@ export class TooltipManager {
     };
   }
 
-  private setCurrentTooltipTarget(target: DisplayObject | null) {
+  private setCurrentTooltipTarget(target: Container | null) {
     if (this.currentTarget === target) {
       return;
     }
@@ -114,20 +115,19 @@ export class TooltipManager {
     }
 
     const app = GameSingletons.getPixiApplicaiton();
-    const interaction = app.renderer.plugins.interaction as InteractionManager;
-    const mousePosition = interaction.mouse.global;
+    const mousePosition = this.lastPointerPosition;
 
     const getDefaultHorizontalAnchor = () => {
-      return mousePosition.x / (app.view.width / app.renderer.resolution) * 2 - 1;
+      return (mousePosition.x / app.screen.width) * 2 - 1;
     };
     const getDefaultVerticalAnchor = () => {
-      return mousePosition.y > (app.view.height / app.renderer.resolution) * 0.9 ? -1 : 1;
+      return mousePosition.y > app.screen.height * 0.9 ? -1 : 1;
     };
 
     const { horizontalAlign = getDefaultHorizontalAnchor(), verticalAlign = getDefaultVerticalAnchor() } = options;
 
     const getDefaultPosition = () => {
-      const bounds = target.getBounds(true);
+      const bounds = target.getBounds();
       const x = bounds.x + bounds.width / 2;
       if (verticalAlign === 1) {
         return { x, y: bounds.y + bounds.height };

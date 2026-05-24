@@ -5,6 +5,7 @@ import { Combat } from "./logic/Combat";
 export async function waitForWinner() {
   const app = GameSingletons.getPixiApplicaiton();
   const game = Combat.current;
+  if (!game) throw new Error("Combat has not started");
   const { groupA, groupB }= game.state;
   const { isGroupAlive } = game.faq;
 

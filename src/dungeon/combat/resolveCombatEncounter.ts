@@ -12,7 +12,7 @@ import { generateBloatCard } from "@dungeon/combat/state/StuffFactory";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { getFloorConfig } from "@dungeon/run/FloorConfig";
 import { UserCrossCombatData } from "@dungeon/run/UserCrossCombatData";
-import { Point } from "@pixi/math";
+import { Point } from "pixi.js";
 import { createAnimatedButtonBehavior } from "@sdk-pixi/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
 import { GlowFilterService } from "@sdk-pixi/asorted/GlowFilterService";

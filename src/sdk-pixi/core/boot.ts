@@ -1,35 +1,12 @@
-import { Application, IApplicationOptions } from "@pixi/app";
-import { Renderer, extensions } from "@pixi/core";
-
-import "@pixi/events";
-
-import { InteractionManager } from "@pixi/interaction";
-extensions.add(InteractionManager);
-
-import { BatchRenderer } from "@pixi/core";
-extensions.add(BatchRenderer);
-
-import { TilingSpriteRenderer } from "@pixi/sprite-tiling";
-extensions.add(TilingSpriteRenderer);
-
-import { AppLoaderPlugin, Loader } from "@pixi/loaders";
-import { SpritesheetLoader } from "@pixi/spritesheet";
-extensions.add(AppLoaderPlugin);
-extensions.add(SpritesheetLoader);
-
-import "@pixi/math-extras";
-import { Ticker, UPDATE_PRIORITY } from "@pixi/ticker";
-
-import { skipHello } from "@pixi/utils";
-
-import * as PIXI from "@pixi/display";
+import * as PIXI from "pixi.js";
+import { Application, Filter, Ticker, UPDATE_PRIORITY } from "pixi.js";
+import type { ApplicationOptions } from "pixi.js";
 import { gsap } from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
+import { initDebugging } from "@debug";
 import { callOnEnterFrameRecursively } from "@sdk/pixi/enchant/oef/callOnEnterFrameRecursively";
 
-import { settings } from "@pixi/settings";
-import { initDebugging } from "@debug";
-settings.FILTER_RESOLUTION = window.devicePixelRatio || 1;
+Filter.defaultOptions.resolution = window.devicePixelRatio || 1;
 
 PixiPlugin.registerPIXI(PIXI);
 gsap.registerPlugin(PixiPlugin);
@@ -37,32 +14,31 @@ gsap.registerPlugin(PixiPlugin);
 gsap.defaults({ overwrite: "auto" });
 gsap.ticker.lagSmoothing(33, 33);
 
-skipHello();
-
 const APP_DIV_ID = "app";
 const CANVAS_ID = "canvas";
 
 initDebugging();
 
-export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
+export async function boot(applicationOptions: Partial<ApplicationOptions> = {}) {
   const parentElement = document.getElementById(APP_DIV_ID) ?? document.body;
   const canvas = document.getElementById(CANVAS_ID) as HTMLCanvasElement | null;
 
-  const app = new Application({
+  const app = new Application();
+  await app.init({
     backgroundColor: 0x090b0e,
-    //backgroundColor: 0xFFFFFF,
     resolution: window.devicePixelRatio || 1,
-    view: canvas || undefined,
+    canvas: canvas || undefined,
     resizeTo: parentElement,
     autoDensity: true,
     antialias: true,
     sharedTicker: true,
     autoStart: true,
+    hello: false,
     ...applicationOptions,
   });
 
   parentElement.innerHTML = ``;
-  parentElement.appendChild(app.view);
+  parentElement.appendChild(app.canvas);
 
   const onlyIfPageVisible = (callback: () => void) => (): void =>
     void (document.visibilityState === "visible" && callback());
@@ -70,15 +46,15 @@ export function boot(applicationOptions: Partial<IApplicationOptions> = {}) {
   ticker.start();
   ticker.add(
     onlyIfPageVisible(() => app.render()),
-    null,
+    undefined,
     UPDATE_PRIORITY.LOW
   );
   ticker.add(
     onlyIfPageVisible(() => callOnEnterFrameRecursively(app.stage)),
-    null,
+    undefined,
     UPDATE_PRIORITY.HIGH
   );
-  app.ticker = ticker;
+  Object.assign(app, { ticker });
 
   return app;
 }

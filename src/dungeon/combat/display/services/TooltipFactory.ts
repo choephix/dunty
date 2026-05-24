@@ -5,10 +5,10 @@ import {
   StatusEffectKey,
 } from "@dungeon/combat/state/StatusEffectBlueprints";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
-import { Sprite } from "@pixi/sprite";
+import { Container } from "pixi.js";
 import { VCard } from "../entities/VCard";
 
-export module ToolTipFactory {
+export namespace ToolTipFactory {
   function getStatusEffectHintText(statusEffect: StatusEffectKey, value: number) {
     const blueprint = StatusEffectBlueprints[statusEffect];
     const { displayName = statusEffect.toUpperCase(), description = `Unknown status effect` } = blueprint || {};
@@ -96,17 +96,17 @@ export module ToolTipFactory {
     tooltips.registerTarget(card, { content: hint, wordWrapWidth: 300 });
   }
 
-  export function addIntentionIndicator(sprite: Sprite, data: Card | string) {
+  export function addIntentionIndicator(sprite: Container, data: Card | string) {
     const tooltips = GameSingletons.getTooltipManager();
     tooltips.registerTarget(sprite, { content: getEnemyIntentionHintText(data), wordWrapWidth: 300 });
   }
 
-  export function addToStatusEffect(sprite: Sprite, statusEffect: StatusEffectKey, value: number) {
+  export function addToStatusEffect(sprite: Container, statusEffect: StatusEffectKey, value: number) {
     const tooltips = GameSingletons.getTooltipManager();
     tooltips.registerTarget(sprite, { content: getStatusEffectHintText(statusEffect, value), wordWrapWidth: 300 });
   }
 
-  export function addToEnergyIndicator(sprite: Sprite, value: number) {
+  export function addToEnergyIndicator(sprite: Container, value: number) {
     const tooltipHintText = `Energy is used to play cards.\n\nYou have ${value} energy.`;
     const tooltips = GameSingletons.getTooltipManager();
     tooltips.registerTarget(sprite, {

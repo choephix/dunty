@@ -1,3 +1,4 @@
+import { spriteFromUrl, waitForTexture } from "@sdk-pixi/assets/loadTexture";
 import { VCombatantAnimations } from "@dungeon/combat/display/entities/VCombatant.animations";
 import { getStatusEffectEmojiOnly } from "@dungeon/combat/display/entities/VCombatant.emojis";
 import { ToolTipFactory } from "@dungeon/combat/display/services/TooltipFactory";
@@ -9,11 +10,11 @@ import {
 } from "@dungeon/combat/state/StatusEffectBlueprints";
 import { __VERBOSE__ } from "@dungeon/debug/URL_PARAMS";
 import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
-import { BLEND_MODES } from "@pixi/constants";
-import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
-import { Sprite } from "@pixi/sprite";
-import { Text } from "@pixi/text";
+
+import { Texture } from "pixi.js";
+import { Container } from "pixi.js";
+import { Sprite } from "pixi.js";
+import { Text } from "pixi.js";
 import { arrangeInStraightLine } from "@sdk-pixi/layout/arrangeInStraightLine";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
@@ -30,22 +31,22 @@ export class VCombatant extends Container {
 
   thought?: string;
 
-  name = this.data.name;
+  name = this.data.name ?? "";
 
   readonly breathingOptions = {};
 
   constructor(public readonly data: Combatant) {
     super();
 
-    this.highlight = new Sprite(Texture.from("https://undroop-assets.web.app/davinci/3/radial-4.png"));
+    this.highlight = spriteFromUrl("https://undroop-assets.web.app/davinci/3/radial-4.png");
     this.highlight.anchor.set(0.45, 0.35);
     this.highlight.position.set(0, -50);
     this.highlight.scale.set(2.8, 0.7);
-    this.highlight.blendMode = BLEND_MODES.ADD;
+    this.highlight.blendMode = "add";
     this.highlight.visible = false;
     this.addChild(this.highlight);
 
-    this.sprite = new Sprite(Texture.from(data.textureId));
+    this.sprite = spriteFromUrl(data.textureId);
     this.sprite.anchor.set(0.5, 0.95);
     this.addChild(this.sprite);
 
@@ -149,8 +150,7 @@ export class VCombatant extends Container {
       fontFamily: FontFamily.NumericIndicators,
       fontWeight: "700",
       fontSize: 24,
-      stroke: 0x202020,
-      strokeThickness: 5,
+      stroke: { color: 0x202020, width: 5 },
     });
     this.addChild(intentionIndicator);
 
@@ -181,7 +181,7 @@ export class VCombatant extends Container {
   }
 
   waitUntilLoaded() {
-    return this.onEnterFrame.waitUntil(() => this.sprite.texture.baseTexture.valid);
+    return waitForTexture(this.sprite);
   }
 }
 
@@ -245,15 +245,14 @@ class StatusEffectIndicators extends Container {
       fontFamily: FontFamily.NumericIndicators,
       fontWeight: "700",
       fontSize: 40,
-      stroke: 0xf0f0f0,
-      strokeThickness: 5,
+      stroke: { color: 0xf0f0f0, width: 5 },
       align: "right",
     });
     label.anchor.set(0.5);
 
     function update(value: number) {
       label.text = getStatusEffectEmojifiedString(key, value) || "?";
-      label.buttonMode = true;
+      label.cursor = "pointer";
       ToolTipFactory.addToStatusEffect(label, key, value);
     }
 
@@ -350,8 +349,7 @@ class IntentionIndicators extends Container {
       fontFamily: FontFamily.NumericIndicators,
       fontWeight: "700",
       fontSize: 40,
-      stroke: 0xf0f0f0,
-      strokeThickness: 5,
+      stroke: { color: 0xf0f0f0, width: 5 },
       align: "right",
     });
     label.anchor.set(0.5);
@@ -395,13 +393,12 @@ class IntentionIndicators extends Container {
       fontFamily: FontFamily.NumericIndicators,
       fontWeight: "700",
       fontSize: 40,
-      stroke: 0x202020,
-      strokeThickness: 5,
+      stroke: { color: 0x202020, width: 5 },
       align: "right",
     });
     label.anchor.set(0.5);
 
-    label.buttonMode = true;
+    label.cursor = "pointer";
     ToolTipFactory.addIntentionIndicator(label, card);
 
     return label;
@@ -418,7 +415,7 @@ class IntentionIndicators extends Container {
         const fx = spawnSpriteWave(
           "https://undroop-assets.web.app/davinci/3/radial-4.png",
           { pixi: { scale: 2 }, duration: 2 },
-          { scale: 0, tint: waveColor, blendMode: BLEND_MODES.ADD }
+          { scale: 0, tint: waveColor, blendMode: "add" }
         );
         return sprite.addChild(fx);
       }

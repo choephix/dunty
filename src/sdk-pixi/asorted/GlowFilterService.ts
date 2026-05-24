@@ -1,13 +1,12 @@
-import { Filter } from "@pixi/core";
-import { DisplayObject } from "@pixi/display";
-import { GlowFilter, GlowFilterOptions } from "@pixi/filter-glow";
+import { Container, Filter } from "pixi.js";
+import { GlowFilter, GlowFilterOptions } from "pixi-filters";
 
 export class GlowFilterService {
   public readonly filter;
   private readonly targets;
 
   constructor(options: Partial<GlowFilterOptions>) {
-    this.targets = new Set<DisplayObject>();
+    this.targets = new Set<Container>();
     this.filter = new GlowFilter({
       outerStrength: 2.6,
       distance: 12,
@@ -16,29 +15,26 @@ export class GlowFilterService {
     });
   }
 
-  addFilter(sprite: DisplayObject) {
+  addFilter(sprite: Container) {
     this.targets.add(sprite);
 
     if (sprite.filters == null) {
       sprite.filters = [this.filter];
     } else {
       if (!sprite.filters.includes(this.filter)) {
-        sprite.filters.push(this.filter);
+        sprite.filters = [...sprite.filters, this.filter];
       }
     }
   }
 
-  removeFrom(sprite: DisplayObject) {
+  removeFrom(sprite: Container) {
     this.targets.delete(sprite);
 
     if (sprite.filters == null) {
       return;
     }
 
-    const index = sprite.filters.indexOf(this.filter);
-    if (index >= 0) {
-      sprite.filters.splice(index, 1);
-    }
+    sprite.filters = sprite.filters.filter(filter => filter !== this.filter);
   }
 
   clear() {
@@ -50,33 +46,30 @@ export class GlowFilterService {
 }
 
 export class FilterService<T extends Filter = GlowFilter> {
-  private readonly targets = new Set<DisplayObject>();
+  private readonly targets = new Set<Container>();
 
   constructor(public readonly filter: T) {}
 
-  addFilter(sprite: DisplayObject) {
+  addFilter(sprite: Container) {
     this.targets.add(sprite);
 
     if (sprite.filters == null) {
       sprite.filters = [this.filter];
     } else {
       if (!sprite.filters.includes(this.filter)) {
-        sprite.filters.push(this.filter);
+        sprite.filters = [...sprite.filters, this.filter];
       }
     }
   }
 
-  removeFrom(sprite: DisplayObject) {
+  removeFrom(sprite: Container) {
     this.targets.delete(sprite);
 
     if (sprite.filters == null) {
       return;
     }
 
-    const index = sprite.filters.indexOf(this.filter);
-    if (index >= 0) {
-      sprite.filters.splice(index, 1);
-    }
+    sprite.filters = sprite.filters.filter(filter => filter !== this.filter);
   }
 
   clear() {

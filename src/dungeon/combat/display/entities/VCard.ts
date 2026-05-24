@@ -1,15 +1,16 @@
+import { spriteFromUrl } from "@sdk-pixi/assets/loadTexture";
 import { ToolTipFactory } from "@dungeon/combat/display/services/TooltipFactory";
 import { Combat } from "@dungeon/combat/logic/Combat";
 import { Card, Combatant, CombatantStatus } from "@dungeon/combat/state/CombatState";
 import { StatusEffectBlueprints } from "@dungeon/combat/state/StatusEffectBlueprints";
 import { createAnimatedButtonBehavior } from "@sdk-pixi/asorted/createAnimatedButtonBehavior";
 import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
-import { BLEND_MODES } from "@pixi/constants";
-import { Texture } from "@pixi/core";
-import { Container } from "@pixi/display";
-import { Rectangle } from "@pixi/math";
-import { Sprite } from "@pixi/sprite";
-import { Text } from "@pixi/text";
+
+import { Texture } from "pixi.js";
+import { Container } from "pixi.js";
+import { Rectangle } from "pixi.js";
+import { Sprite } from "pixi.js";
+import { Text } from "pixi.js";
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 
 export class VCard extends Container {
@@ -70,7 +71,7 @@ export class VCard extends Container {
       : isToken
       ? "front-sneak"
       : { atk: "front-red", def: "front-grand", func: "front-pink" }[type];
-    const sprite = Sprite.from(`https://undroop.web.app/ccgu/${filename}.png`);
+    const sprite = spriteFromUrl(`https://undroop.web.app/ccgu/${filename}.png`);
     sprite.anchor.set(0.5);
     this.addChild(sprite);
     return sprite;
@@ -134,7 +135,7 @@ export class VCard extends Container {
       return [`https://undroop-assets.web.app/confucius/${cfg.textureCategory}/${num}.png`, cfg.scale];
     };
     const [textureUrl, scale] = getStuff();
-    const sprite = Sprite.from(textureUrl);
+    const sprite = spriteFromUrl(textureUrl);
     sprite.anchor.set(0.5);
     sprite.scale.set(scale);
     sprite.position.set(0, -40);
@@ -156,8 +157,7 @@ export class VCard extends Container {
       fontFamily: "Impact, fantasy",
       fontSize: 16,
       fontWeight: `bold`,
-      stroke: 0xf0f0f0,
-      strokeThickness: 2,
+      stroke: { color: 0xf0f0f0, width: 2 },
     });
     label.scale.set(3);
     label.anchor.set(0);
@@ -197,8 +197,8 @@ export class VCard extends Container {
 
     if (!cfg) return Sprite.from(Texture.EMPTY);
 
-    // const sprite = Sprite.from(`https://undroop.web.app/dunty/asorted/slot.png`);
-    const pad = Sprite.from(`https://undroop.web.app/dunty/asorted/${cfg.file}.png`);
+    // const sprite = spriteFromUrl(`https://undroop.web.app/dunty/asorted/slot.png`);
+    const pad = spriteFromUrl(`https://undroop.web.app/dunty/asorted/${cfg.file}.png`);
     pad.anchor.set(0.5);
     pad.position.set(0, 300);
     pad.scale.set(cfg.scale);
@@ -211,16 +211,16 @@ export class VCard extends Container {
         fontFamily: "Impact, fantasy",
         fontSize: 60,
         fontWeight: `bold`,
-        stroke: 0x0,
-        strokeThickness: 8,
+        stroke: { color: 0x0, width: 8 },
       });
       label.anchor.set(0.5);
       label.scale.set(2 / cfg.scale);
       pad.addChild(label);
 
+      const combat = Combat.current;
       const getCurrentValue =
-        Combat.current && this.data.type == "atk"
-          ? () => Combat.current.faq.calculateAttackPower(this.data, this.actor)
+        combat && this.data.type == "atk"
+          ? () => combat.faq.calculateAttackPower(this.data, this.actor)
           : () => this.data.value || 0;
       const onEnterFrame = createEnchantedFrameLoop(pad);
       onEnterFrame.watch(
@@ -242,8 +242,7 @@ export class VCard extends Container {
           fontFamily: "Impact, fantasy",
           fontSize: 70,
           fontWeight: `bold`,
-          stroke: 0x104050,
-          strokeThickness: 8,
+          stroke: { color: 0x104050, width: 8 },
         });
         label.anchor.set(0.5, 0.55);
         label.scale.set(2 / cfg.scale);
@@ -255,9 +254,9 @@ export class VCard extends Container {
   }
 
   addGlow() {
-    const sprite = Sprite.from("https://undroop.web.app/ccgu/fx-glow-orange.png");
+    const sprite = spriteFromUrl("https://undroop.web.app/ccgu/fx-glow-orange.png");
     sprite.anchor.set(0.5);
-    sprite.blendMode = BLEND_MODES.ADD;
+    sprite.blendMode = "add";
     sprite.scale.set(2.15);
     this.addChild(sprite);
     return sprite;
@@ -272,7 +271,7 @@ export function formatEnergyCost(cost: number) {
   return cost ? new Array(cost).fill("⦿").join("") : "FREE";
 }
 
-export module VCard {
+export namespace VCard {
   export const DESIGN_WIDTH = 500;
   export const DESIGN_HEIGHT = 700;
 }

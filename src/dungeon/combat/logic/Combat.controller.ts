@@ -120,7 +120,7 @@ export class CombatController extends CombatDriver {
   }
 
   async resetCombatantsForTurnStart(side: CombatGroup) {
-    function updateStatusExpiryAfterTurn(combatant: Combatant, key: StatusEffectKey) {
+    const updateStatusExpiryAfterTurn = (combatant: Combatant, key: StatusEffectKey) => {
       const blueprint = StatusEffectBlueprints[key];
       if (!blueprint) return;
       switch (blueprint.expiryType) {
@@ -129,11 +129,11 @@ export class CombatController extends CombatDriver {
         case StatusEffectExpiryType.DECREMENT_BEFORE_TURN:
           this.decrementStatus(combatant, key);
       }
-    }
+    };
 
     for (const combatant of side.combatants) {
       for (const [key] of CombatantStatus.entries(combatant.status)) {
-        updateStatusExpiryAfterTurn.call(this, combatant, key);
+        updateStatusExpiryAfterTurn(combatant, key);
       }
     }
   }
@@ -144,7 +144,7 @@ export class CombatController extends CombatDriver {
     this.changeStatus(target, "health", -directDamage);
     this.changeStatus(target, "block", -blockDamage);
 
-    function updateStatusExpiryAfterHurt(key: StatusEffectKey) {
+    const updateStatusExpiryAfterHurt = (key: StatusEffectKey) => {
       const blueprint = StatusEffectBlueprints[key];
       if (!blueprint) return;
       switch (blueprint.expiryType) {
@@ -155,11 +155,11 @@ export class CombatController extends CombatDriver {
         case StatusEffectExpiryType.SUBTRACT_HURT:
           return this.changeStatus(target, key, -directDamage);
       }
-    }
+    };
 
     if (directDamage) {
       for (const [key] of CombatantStatus.entries(target.status)) {
-        updateStatusExpiryAfterHurt.call(this, key);
+        updateStatusExpiryAfterHurt(key);
       }
 
       // Add cleanup of dead combatants

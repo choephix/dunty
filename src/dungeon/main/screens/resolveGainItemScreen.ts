@@ -1,3 +1,4 @@
+import { loadTexture } from "@sdk-pixi/assets/loadTexture";
 import { VConsumableItem } from "@dungeon/combat/display/ui/ConsumablesList";
 import { ConsumableItemBlueprints } from "@dungeon/combat/state/ConsumableItemBlueprints";
 import { UserCrossCombatData } from "@dungeon/run/UserCrossCombatData";
@@ -7,9 +8,9 @@ import { VScene } from "@dungeon/common/display/VScene";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
 import { spawnSpriteWave } from "@sdk-pixi/asorted/animations/spawnSpriteWave";
-import { BLEND_MODES } from "@pixi/constants";
-import { Texture } from "@pixi/core";
-import { Text } from "@pixi/text";
+
+import { Texture } from "pixi.js";
+import { Text } from "pixi.js";
 import { getRandomItemFrom } from "@sdk/helpers/arrays";
 import { delay } from "@sdk/utils/promises";
 import FontFaceObserver from "fontfaceobserver";
@@ -37,8 +38,7 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
     fill: 0x50f0d0,
     fontFamily: FontFamily.CardPickScreen,
     fontSize: 60,
-    stroke: 0x0,
-    strokeThickness: 8,
+    stroke: { color: 0x0, width: 8 },
     lineHeight: 80,
     align: "center",
   });
@@ -47,11 +47,11 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
   vscene.addChild(hint);
   vscene.tweeener.from(hint, { alpha: 0, duration: 0.5 });
 
-  new FontFaceObserver("Irish Grover").load().then(() => hint.updateText(false));
+  new FontFaceObserver("Irish Grover").load().then(() => void (hint.text = hint.text));
 
   await Promise.race([waitForDocumentClick(), delay(0.3)]);
-  await Texture.fromURL(item.iconTextureUrl);
-  await Texture.fromURL(waveTextureUrl);
+  await loadTexture(item.iconTextureUrl);
+  await loadTexture(waveTextureUrl);
 
   const vitem = new VConsumableItem(item);
   vitem.position.copyFrom(vscene.getFractionalPosition(0.5, 0.5));
@@ -62,7 +62,7 @@ export async function resolveNewItemRewardPresentation(vscene: VScene) {
   spawnSpriteWave(
     waveTextureUrl,
     { pixi: { scale: 2.0 }, duration: 1 },
-    { x: vitem.x, y: vitem.y, blendMode: BLEND_MODES.ADD, parent: vscene }
+    { x: vitem.x, y: vitem.y, blendMode: "add", parent: vscene }
   );
 
   await waitForDocumentClick();

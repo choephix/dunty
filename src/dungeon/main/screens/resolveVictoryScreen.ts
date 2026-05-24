@@ -4,7 +4,7 @@ import { waitForDocumentClick } from "@dungeon/common/display/utils/waitForDocum
 import { VScene } from "@dungeon/common/display/VScene";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { __window__ } from "@debug/__window__";
-import { Text } from "@pixi/text";
+import { Text } from "pixi.js";
 import { delay } from "@sdk/utils/promises";
 import FontFaceObserver from "fontfaceobserver";
 import { resolveChooseNewCardScreen } from "./resolveChooseNewCardScreen";
@@ -33,8 +33,7 @@ async function resolveCongrats(vscene: VScene) {
     fill: 0xffff00,
     fontFamily: FontFamily.GameOver,
     fontSize: 160,
-    stroke: 0x0,
-    strokeThickness: 2,
+    stroke: { color: 0x0, width: 2 },
     lineHeight: 160,
     align: "center",
   });

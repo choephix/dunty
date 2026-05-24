@@ -1,26 +1,36 @@
 {
-  "include": ["src", "vite.config.ts"],
+  "include": [
+    "src",
+    "vite.config.ts"
+  ],
   "compilerOptions": {
     "declaration": true,
-    "module": "es2020",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "outDir": "dist",
     "sourceMap": true,
     "target": "es2020",
-
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "strictPropertyInitialization": false,
-
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-jsx",
-    "lib": ["dom", "es2018"],
+    "lib": [
+      "dom",
+      "es2018"
+    ],
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@*": ["src/*"]
+      "@*": [
+        "src/*"
+      ]
     },
-    "types": ["vite/client"]
+    "types": [
+      "node",
+      "vite/client"
+    ]
   }
 }

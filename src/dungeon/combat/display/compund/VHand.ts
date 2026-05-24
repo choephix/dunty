@@ -1,6 +1,6 @@
 import { Card } from "@dungeon/combat/state/CombatState";
 import { createEnchantedFrameLoop } from "@sdk-pixi/asorted/createEnchangedFrameLoop";
-import { Container } from "@pixi/display";
+import { Container } from "pixi.js";
 import { buttonizeDisplayObject } from "@sdk-pixi/ui-helpers/buttonizeDisplayObject";
 import { VCard } from "@dungeon/combat/display/entities/VCard";
 import { VCardAnimations } from "@dungeon/combat/display/entities/VCard.animations";

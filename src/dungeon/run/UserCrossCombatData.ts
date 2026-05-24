@@ -23,7 +23,7 @@ export class UserCrossCombatData {
   playerCharacterId = getRandomItemFrom(COMBATANT_TEXTURES_LOOKING_RIGHT);
 }
 
-export module UserCrossCombatData {
+export namespace UserCrossCombatData {
   export const current = new UserCrossCombatData();
 }
 

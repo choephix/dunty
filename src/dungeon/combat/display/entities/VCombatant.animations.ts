@@ -1,17 +1,17 @@
 import { TemporaryTweeener } from "@sdk/pixi/animations/TemporaryTweener";
 import { VCombatant } from "@dungeon/combat/display/entities/VCombatant";
 import { spawnSpriteWave } from "@sdk-pixi/asorted/animations/spawnSpriteWave";
-import { BLEND_MODES } from "@pixi/constants";
-import { Container } from "@pixi/display";
-import { Text } from "@pixi/text";
+
+import { Container } from "pixi.js";
+import { Text } from "pixi.js";
 import { delay } from "@sdk/utils/promises";
-import { AdjustmentFilter } from "@pixi/filter-adjustment";
+import { AdjustmentFilter } from "pixi-filters";
 
 function spawnBlobOfLight(parent: Container, tint: number) {
   const fx = spawnSpriteWave(
     "https://undroop-assets.web.app/davinci/3/radial-4.png",
     { pixi: { scale: 2.7 }, duration: 2 },
-    { tint: tint, blendMode: BLEND_MODES.ADD }
+    { tint: tint, blendMode: "add" }
   );
   return parent.addChild(fx);
 }
@@ -20,7 +20,7 @@ function spawnFlazma(parent: Container, tint: number, scale: number = 0.7) {
   const fx = spawnSpriteWave(
     "https://undroop-assets.web.app/davinci/3/plazmo-6.png",
     { pixi: { scale } },
-    { tint: tint, blendMode: BLEND_MODES.ADD }
+    { tint: tint, blendMode: "add" }
   );
   return parent.addChild(fx);
 }
@@ -29,7 +29,7 @@ function spawnFlare1(parent: Container, tint: number) {
   const fx = spawnSpriteWave(
     "https://undroop-assets.web.app/davinci/2/ring-w.png",
     { pixi: { scale: 0.99 }, duration: 3 },
-    { tint: tint, blendMode: BLEND_MODES.ADD }
+    { tint: tint, blendMode: "add" }
   );
   return parent.addChild(fx);
 }
@@ -49,7 +49,7 @@ async function blinkThought(vunit: VCombatant, thought: string) {
   await delay(0.07);
 }
 
-export module VCombatantAnimations {
+export namespace VCombatantAnimations {
   export function enter(unit: VCombatant) {
     const direction = unit.sprite.scale.x < 0 ? 1 : -1;
     const tweeener = new TemporaryTweeener(unit);
@@ -115,7 +115,7 @@ export module VCombatantAnimations {
     const fx = spawnSpriteWave(
       "https://undroop.web.app/dunty/asorted/shield-blur.png",
       { pixi: { scale: 0.95 }, duration: 1.2, ease: "power5.out" },
-      { tint: 0x3060a0, blendMode: BLEND_MODES.SCREEN }
+      { tint: 0x3060a0, blendMode: "screen" }
     );
     unit.addChild(fx);
 
@@ -174,8 +174,7 @@ export module VCombatantAnimations {
       fontFamily: "Impact, fantasy",
       fontSize: 40 + (20 * 2) / value.length,
       fontWeight: `bold`,
-      stroke: 0x102030,
-      strokeThickness: 10,
+      stroke: { color: 0x102030, width: 10 },
       align: "center",
     });
     fx.anchor.set(0.5, 0.5);

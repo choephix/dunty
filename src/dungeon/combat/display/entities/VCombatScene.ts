@@ -1,13 +1,13 @@
+import { spriteFromUrl, tilingSpriteFromUrl } from "@sdk-pixi/assets/loadTexture";
 import { VScene } from "@dungeon/common/display/VScene";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
-import { BLEND_MODES } from "@pixi/constants";
-import { Sprite } from "@pixi/sprite";
-import { TilingSprite } from "@pixi/sprite-tiling";
+
+import { Sprite } from "pixi.js";
 import { EnchantmentGlobals } from "@sdk/pixi/enchant/EnchantmentGlobals";
 
 const BACKDROP_PRESETS = [
-  [`https://undroop-assets.web.app/blackbeard/bg-1920x1920/4.jpg`, 0xc0d0f0, true, BLEND_MODES.SUBTRACT, 0xffffff, 0.2] as const, // Slope
-  [`https://undroop-assets.web.app/davinci/3/bg/grid2.webp`, 0x404050, true, BLEND_MODES.ADD, 0xf03030, 0.3] as const, // Grid
+  [`https://undroop-assets.web.app/blackbeard/bg-1920x1920/4.jpg`, 0xc0d0f0, true, "subtract", 0xffffff, 0.2] as const, // Slope
+  [`https://undroop-assets.web.app/davinci/3/bg/grid2.webp`, 0x404050, true, "add", 0xf03030, 0.3] as const, // Grid
 ];
 
 export class VCombatScene extends VScene {
@@ -22,7 +22,7 @@ export class VCombatScene extends VScene {
       BACKDROP_PRESETS[BACKDROP_PRESET_INDEX];
 
     {
-      this.backdrop = Sprite.from(backdropTextureId);
+      this.backdrop = spriteFromUrl(backdropTextureId);
       this.backdrop.anchor.set(0.5);
       this.backdrop.position.set(this.designWidth / 2, this.designHeight / 2);
       this.backdrop.tint = backdropTint;
@@ -32,8 +32,8 @@ export class VCombatScene extends VScene {
           const app = GameSingletons.getPixiApplicaiton();
           const { width, height } = app.screen;
           if (backdropStretch) {
-            const scaleX = width / this.texture.width / this.parent.scale.x;
-            const scaleY = height / this.texture.height / this.parent.scale.y;
+            const scaleX = width / this.texture.width / (this.parent?.scale.x ?? 1);
+            const scaleY = height / this.texture.height / (this.parent?.scale.y ?? 1);
             this.scale.set(scaleX, scaleY);
           } else {
             this.scale.set(1);
@@ -48,10 +48,10 @@ export class VCombatScene extends VScene {
     }
   }
 
-  addStreakyEffect({ lnBlendMode = BLEND_MODES.SUBTRACT, lnTint = 0x808080, lnAlpha = 1.0 } = {}) {
+  addStreakyEffect({ lnBlendMode = "subtract", lnTint = 0x808080, lnAlpha = 1.0 } = {}) {
     const lnTextureId = "https://undroop-assets.web.app/confucius/ln2.jpg";
-    const sprite = TilingSprite.from(lnTextureId, { width: this.designWidth, height: this.designHeight });
-    sprite.blendMode = lnBlendMode;
+    const sprite = tilingSpriteFromUrl(lnTextureId, { width: this.designWidth, height: this.designHeight });
+    sprite.blendMode = lnBlendMode as any;
     sprite.tint = lnTint;
     sprite.scale.y = 2;
     sprite.tileScale.y = 10;

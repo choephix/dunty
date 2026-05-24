@@ -1,6 +1,6 @@
 import { Card, CardTarget } from "../combat/state/CombatState";
 
-export module CardPools {
+export namespace CardPools {
   export const playerStartingCards: Card[] = [
     { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },
     { cost: 1, type: "atk", value: 2, target: CardTarget.TARGET_ENEMY },

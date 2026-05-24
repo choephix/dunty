@@ -1,13 +1,13 @@
-import { Container } from "@pixi/display";
-import { Text } from "@pixi/text";
+import { Container } from "pixi.js";
+import { Text } from "pixi.js";
 
 export class EndTurnButton extends Container {
-  label;
+  labelText;
 
   constructor() {
     super();
 
-    this.label = new Text("End Turn".toUpperCase(), {
+    this.labelText = new Text("End Turn".toUpperCase(), {
       fill: 0xffffff,
       // fontFamily: "'Henny Penny', Impact, fantasy",
       // fontWeight: '400',
@@ -19,10 +19,9 @@ export class EndTurnButton extends Container {
       // fontWeight: "400",
       fontFamily: "Impact, fantasy",
       fontSize: 60,
-      stroke: 0x0,
-      strokeThickness: 8,
+      stroke: { color: 0x0, width: 8 },
     });
-    this.label.anchor.set(0.5);
-    this.addChild(this.label);
+    this.labelText.anchor.set(0.5);
+    this.addChild(this.labelText);
   }
 }

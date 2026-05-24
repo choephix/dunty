@@ -3,7 +3,7 @@ import { VScene } from "@dungeon/common/display/VScene";
 import { GameSingletons } from "@dungeon/core/GameSingletons";
 import { FontFamily } from "@dungeon/common/display/constants/FontFamily";
 import { __window__ } from "@debug/__window__";
-import { Text } from "@pixi/text";
+import { Text } from "pixi.js";
 import { delay } from "@sdk/utils/promises";
 import FontFaceObserver from "fontfaceobserver";
 
@@ -20,8 +20,7 @@ export async function resolveMessageScreen(message: string) {
     fill: 0xff0050,
     fontFamily: FontFamily.FloorIndicator,
     fontSize: 160,
-    stroke: 0x0,
-    strokeThickness: 2,
+    stroke: { color: 0x0, width: 2 },
     lineHeight: 160,
   });
   text.anchor.set(0.5);

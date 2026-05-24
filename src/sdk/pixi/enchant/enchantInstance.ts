@@ -1,11 +1,9 @@
-import { Container } from "@pixi/display";
+import type { Container } from "pixi.js";
 import { Enchantments } from "./Enchantments";
 import { EnchantableInstance } from "./interfaces";
 
 export function enchantInstance<T extends EnchantableInstance>(target: T) {
   const $super = {
-    updateTransform: target.updateTransform,
-    render: target.render,
     destroy: target.destroy,
   };
 

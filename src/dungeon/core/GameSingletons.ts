@@ -1,9 +1,9 @@
 import { TooltipManager } from "@sdk-pixi/TooltipManager";
-import { Application } from "@pixi/app";
+import { Application } from "pixi.js";
 
 let bucket: ReturnType<typeof createGameSingletonsBucket> = null!;
 
-export module GameSingletons {
+export namespace GameSingletons {
   export function getPixiApplicaiton() {
     return bucket.app as Application;
   }
